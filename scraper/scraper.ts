@@ -1,5 +1,6 @@
 import { Browser, Page } from 'puppeteer';
 import { toSnakeCase } from '../helpers/helpers';
+import { Logger } from '@nestjs/common';
 
 const metroSelector = '#metro_code';
 const stateSelector = 'select[name="STATES"]';
@@ -8,72 +9,108 @@ const url =
   'https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2024_code/select_Geography_sa.odn';
 
 export default class Scraper {
-  constructor(private browser: Browser) {}
+  private logger;
+
+  constructor(private browser: Browser) {
+    this.logger = new Logger();
+  }
 
   async getMetropolitans() {
-    const page = await this.goToPage();
-    const result = await this.getNamesWithCodes(page, metroSelector);
+    try {
+      const page = await this.goToPage();
+      const result = await this.getNamesWithCodes(page, metroSelector);
 
-    await page.close();
+      await page.close();
 
-    return result;
+      new Logger();
+
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
+    return [];
   }
 
   async getStates() {
-    const page = await this.goToPage();
-    const result = await this.getNamesWithCodes(page, stateSelector);
+    try {
+      const page = await this.goToPage();
+      const result = await this.getNamesWithCodes(page, stateSelector);
 
-    await page.close();
+      await page.close();
 
-    return result;
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
+    return [];
   }
 
   async getCounties(state: string) {
-    const page = await this.goToPage();
+    try {
+      const page = await this.goToPage();
 
-    await page.locator(`option[value="${state}"]`).click();
-    await page.waitForNavigation();
+      await page.locator(`option[value="${state}"]`).click();
+      await page.waitForNavigation();
 
-    const result = await this.getNamesWithCodes(page, countySelector);
+      const result = await this.getNamesWithCodes(page, countySelector);
 
-    await page.close();
+      await page.close();
 
-    return result;
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
+    return [];
   }
 
   async getZipCodesForCounty(stateCode: string, countyCode: string) {
-    const page = await this.goToPage();
+    try {
+      const page = await this.goToPage();
 
-    await page.locator(`option[value="${stateCode}"]`).click();
-    await page.waitForNavigation();
+      await page.locator(`option[value="${stateCode}"]`).click();
+      await page.waitForNavigation();
 
-    await page.click(countySelector);
-    await page.select(countySelector, countyCode);
+      await page.click(countySelector);
+      await page.select(countySelector, countyCode);
 
-    await page.locator('input[value="Next Screen..."]').click();
-    await page.waitForNavigation();
+      await page.locator('input[value="Next Screen..."]').click();
+      await page.waitForNavigation();
 
-    const result = await this.parseZipCodes(page);
+      const result = await this.parseZipCodes(page);
 
-    await page.close();
+      await page.close();
 
-    return result;
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
+    return [];
   }
 
   async getZipCodesForMetropolitan(metroCode: string) {
-    const page = await this.goToPage();
+    try {
+      const page = await this.goToPage();
 
-    await page.click(metroSelector);
-    await page.select(metroSelector, metroCode);
+      await page.click(metroSelector);
+      await page.select(metroSelector, metroCode);
 
-    await page.locator('input[value="Select Metropolitan Area"]').click();
-    await page.waitForNavigation();
+      await page.locator('input[value="Select Metropolitan Area"]').click();
+      await page.waitForNavigation();
 
-    const result = await this.parseZipCodes(page);
+      const result = await this.parseZipCodes(page);
 
-    await page.close();
+      await page.close();
 
-    return result;
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+    }
+
+    return [];
   }
 
   // Парсинг зіп-кодів з таблиці
@@ -95,15 +132,18 @@ export default class Scraper {
     const items = [];
 
     data.forEach((arr) => {
+      const prices = {};
       items.push(
         headings.reduce((obj, key, index) => {
           const snakeCaseKey = toSnakeCase(key);
           if (snakeCaseKey === 'zip_code') {
-            obj[snakeCaseKey] = arr[index];
+            obj['code'] = arr[index];
           } else {
             const cleanedValue = arr[index].replace(/[^0-9.-]+/g, '');
-            obj[snakeCaseKey] = parseFloat(cleanedValue);
+            prices[snakeCaseKey] = parseFloat(cleanedValue);
           }
+
+          obj['prices'] = JSON.stringify(prices);
 
           return obj;
         }, {}),

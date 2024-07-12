@@ -1,15 +1,14 @@
-import { seeders } from '../prisma/seeds/seeders';
+import { MetropolitanSeeder } from '../prisma/seeds/seeders/metropolitan.seeder';
+import { PrismaClient } from '@prisma/client';
+import { StateSeeder } from '../prisma/seeds/seeders/state.seeder';
+import { CountySeeder } from '../prisma/seeds/seeders/county.seeder';
+import { ZipCodeSeeder } from '../prisma/seeds/seeders/zip-code.seeder';
 
-async function main() {
-  await call(seeders);
-}
+const prisma = new PrismaClient();
 
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+(async () => {
+  await new MetropolitanSeeder().run(prisma);
+  await new StateSeeder().run(prisma);
+  await new CountySeeder().run(prisma);
+  await new ZipCodeSeeder().run(prisma);
+})();

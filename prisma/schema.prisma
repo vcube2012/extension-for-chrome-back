@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  email String @unique
+
+  @@map("users")
+}
+
+model Package {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  type           String  @unique
+  name           String
+  requests_limit Int
+  price          BigInt  @default(0)
+  is_active      Boolean @default(false)
+
+  @@map("packages")
+}
+
+model Metropolitan {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  code     String    @unique
+  name     String
+  zipCodes ZipCode[]
+
+  @@map("metropolitans")
+}
+
+model State {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  code String @unique
+  name String
+
+  counties County[]
+
+  @@map("states")
+}
+
+model County {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  code String @unique
+  name String
+
+  stateId  Int
+  state    State     @relation(fields: [stateId], references: [id])
+  zipCodes ZipCode[]
+
+  @@map("counties")
+}
+
+model ZipCode {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  code          String         @unique
+  prices        Json
+  counties      County[]
+  metropolitans Metropolitan[]
+
+  @@map("zip_codes")
+}

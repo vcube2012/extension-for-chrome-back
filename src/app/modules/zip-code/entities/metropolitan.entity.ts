@@ -1,1 +1,1 @@
-export class ZipCode {}
+export class Metropolitan {}

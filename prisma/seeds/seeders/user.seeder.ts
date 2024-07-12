@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ISeeder } from '../ISeeder';
+import { ISeeder } from './interfaces/ISeeder';
 
 export class UserSeeder implements ISeeder {
   async run(prisma: PrismaClient) {
