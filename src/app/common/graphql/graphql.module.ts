@@ -6,14 +6,6 @@ import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import GraphQLJSON from 'graphql-type-json';
 
-interface ICookieToken {
-  id: string;
-  email: string;
-  role: string;
-  remember?: boolean;
-  iat?: number;
-  exp?: number;
-}
 @Module({
   imports: [
     GraphQLModuleClass.forRoot<ApolloDriverConfig>({

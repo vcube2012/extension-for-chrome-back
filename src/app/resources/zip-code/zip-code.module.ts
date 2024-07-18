@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ZipCodeService } from './zip-code.service';
-import { ZipCodeController } from './zip-code.controller';
+import { ZipCodeResolver } from './zip-code.resolver';
 
 @Module({
-  controllers: [ZipCodeController],
-  providers: [ZipCodeService],
+  providers: [ZipCodeResolver, ZipCodeService],
 })
 export class ZipCodeModule {}

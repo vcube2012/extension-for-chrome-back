@@ -1,5 +1,5 @@
 import { Browser, Page } from 'puppeteer';
-import { toSnakeCase } from '../../../../helpers/helpers';
+import { sleep, toSnakeCase } from '../../../../helpers/helpers';
 import { Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { MetropolitanSeeder } from '../../../../prisma/seeds/seeders/metropolitan.seeder';
@@ -7,7 +7,8 @@ import { StateSeeder } from '../../../../prisma/seeds/seeders/state.seeder';
 import { CountySeeder } from '../../../../prisma/seeds/seeders/county.seeder';
 import { ZipCodeSeeder } from '../../../../prisma/seeds/seeders/zip-code.seeder';
 import { DomSelectorEnum } from './enums/dom-selector.enum';
-import { DatabaseService } from '../database/database.service';
+import { DatabaseService } from '../../globals/database/database.service';
+import { ScraperRunner } from './scraper.runner';
 
 const url =
   'https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2024_code/select_Geography_sa.odn';
@@ -19,20 +20,17 @@ export default class ScraperService {
     this.logger = new Logger();
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async scrape() {
-    const db = new DatabaseService();
-
-    await new MetropolitanSeeder().run(db);
-    await new StateSeeder().run(db);
-    await new CountySeeder().run(db);
-    await new ZipCodeSeeder().run(db);
+    await new ScraperRunner().run();
   }
 
   async getMetropolitans() {
     try {
       const page = await this.goToPage();
       const result = await this.getNamesWithCodes(page, DomSelectorEnum.metro);
+
+      await sleep(1);
 
       await page.close();
 
@@ -50,6 +48,8 @@ export default class ScraperService {
     try {
       const page = await this.goToPage();
       const result = await this.getNamesWithCodes(page, DomSelectorEnum.state);
+
+      await sleep(1);
 
       await page.close();
 
@@ -69,6 +69,8 @@ export default class ScraperService {
       await page.waitForNavigation();
 
       const result = await this.getNamesWithCodes(page, DomSelectorEnum.county);
+
+      await sleep(1);
 
       await page.close();
 
@@ -95,6 +97,8 @@ export default class ScraperService {
 
       const result = await this.parseZipCodes(page);
 
+      await sleep(1);
+
       await page.close();
 
       return result;
@@ -116,6 +120,8 @@ export default class ScraperService {
       await page.waitForNavigation();
 
       const result = await this.parseZipCodes(page);
+
+      await sleep(1);
 
       await page.close();
 

@@ -1,19 +1,20 @@
 import { ISeeder } from './interfaces/ISeeder';
 import ScraperService from '../../../src/app/common/scraper/./scraper.service';
-import * as puppeteer from 'puppeteer';
-import { DatabaseService } from '../../../src/app/common/database/database.service';
+import { DatabaseService } from '../../../src/app/globals/database/database.service';
 
 export class ZipCodeSeeder implements ISeeder {
+  constructor(private readonly scraperService: ScraperService) {}
+
   async run(db: DatabaseService) {
-    const browser = await puppeteer.launch();
-    const scraper = new ScraperService(browser);
     const metropolitans = await db.metropolitan.findMany();
 
     for (const metro of metropolitans) {
-      const zipCodes = await scraper.getZipCodesForMetropolitan(metro.code);
+      const zipCodes = await this.scraperService.getZipCodesForMetropolitan(
+        metro.code,
+      );
 
-      for (const zipCode of zipCodes) {
-        db.$transaction(async () => {
+      await db.$transaction(async () => {
+        for (const zipCode of zipCodes) {
           const zipCodeRecord = await this.createZipCode(zipCode, db);
 
           await db.metropolitan.update({
@@ -26,8 +27,8 @@ export class ZipCodeSeeder implements ISeeder {
               },
             },
           });
-        });
-      }
+        }
+      });
     }
 
     const counties = await db.county.findMany({
@@ -37,13 +38,13 @@ export class ZipCodeSeeder implements ISeeder {
     });
 
     for (const county of counties) {
-      const zipCodes = await scraper.getZipCodesForCounty(
+      const zipCodes = await this.scraperService.getZipCodesForCounty(
         county.state.code,
         county.code,
       );
 
-      for (const zipCode of zipCodes) {
-        db.$transaction(async () => {
+      await db.$transaction(async () => {
+        for (const zipCode of zipCodes) {
           const zipCodeRecord = await this.createZipCode(zipCode, db);
 
           await db.county.update({
@@ -56,11 +57,9 @@ export class ZipCodeSeeder implements ISeeder {
               },
             },
           });
-        });
-      }
+        }
+      });
     }
-
-    await browser.close();
   }
 
   createZipCode(zipCode: { code; prices }, db: DatabaseService) {

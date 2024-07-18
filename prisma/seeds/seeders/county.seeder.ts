@@ -1,18 +1,17 @@
 import { ISeeder } from './interfaces/ISeeder';
 import ScraperService from '../../../src/app/common/scraper/./scraper.service';
-import * as puppeteer from 'puppeteer';
-import { DatabaseService } from '../../../src/app/common/database/database.service';
+import { DatabaseService } from '../../../src/app/globals/database/database.service';
 
 export class CountySeeder implements ISeeder {
+  constructor(private readonly scraperService: ScraperService) {}
+
   async run(db: DatabaseService) {
-    const browser = await puppeteer.launch();
-    const scraper = new ScraperService(browser);
     const states = await db.state.findMany();
 
     for (const state of states) {
-      const counties = await scraper.getCounties(state.code);
+      const counties = await this.scraperService.getCounties(state.code);
 
-      db.$transaction(async () => {
+      await db.$transaction(async () => {
         for (const county of counties) {
           await db.state.update({
             where: {
@@ -38,7 +37,5 @@ export class CountySeeder implements ISeeder {
         }
       });
     }
-
-    await browser.close();
   }
 }

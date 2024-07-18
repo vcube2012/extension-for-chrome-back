@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../common/database/database.service';
+import { DatabaseService } from '../../globals/database/database.service';
 
 @Injectable()
 export class ZipCodeService {

@@ -1,15 +1,12 @@
 import { ISeeder } from './interfaces/ISeeder';
-import { PrismaClient } from '@prisma/client';
 import ScraperService from '../../../src/app/common/scraper/./scraper.service';
-import * as puppeteer from 'puppeteer';
-import { DatabaseService } from '../../../src/app/common/database/database.service';
+import { DatabaseService } from '../../../src/app/globals/database/database.service';
 
 export class StateSeeder implements ISeeder {
-  async run(db: DatabaseService) {
-    const browser = await puppeteer.launch();
-    const scraper = new ScraperService(browser);
+  constructor(private readonly scraperService: ScraperService) {}
 
-    const items = await scraper.getStates();
+  async run(db: DatabaseService) {
+    const items = await this.scraperService.getStates();
 
     for (const item of items) {
       await db.state.upsert({
@@ -25,7 +22,5 @@ export class StateSeeder implements ISeeder {
         },
       });
     }
-
-    await browser.close();
   }
 }

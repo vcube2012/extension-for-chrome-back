@@ -1,32 +1,26 @@
 import { ISeeder } from './interfaces/ISeeder';
-import ScraperService from '../../../src/app/common/scraper/./scraper.service';
-import * as puppeteer from 'puppeteer';
-import { DatabaseService } from '../../../src/app/common/database/database.service';
+import { DatabaseService } from '../../../src/app/globals/database/database.service';
+import ScraperService from '../../../src/app/common/scraper/scraper.service';
 
 export class MetropolitanSeeder implements ISeeder {
+  constructor(private readonly scraperService: ScraperService) {}
+
   async run(db: DatabaseService) {
-    const browser = await puppeteer.launch();
-    const scraper = new ScraperService(browser);
+    const items = await this.scraperService.getMetropolitans();
 
-    const items = await scraper.getMetropolitans();
-
-    db.$transaction(async () => {
-      for (const item of items) {
-        await db.metropolitan.upsert({
-          where: {
-            code: item.code,
-          },
-          update: {
-            name: item.name,
-          },
-          create: {
-            code: item.code,
-            name: item.name,
-          },
-        });
-      }
-    });
-
-    await browser.close();
+    for (const item of items) {
+      await db.metropolitan.upsert({
+        where: {
+          code: item.code,
+        },
+        update: {
+          name: item.name,
+        },
+        create: {
+          code: item.code,
+          name: item.name,
+        },
+      });
+    }
   }
 }

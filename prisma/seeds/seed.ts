@@ -1,11 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 import { seeders } from './seeders';
 import { ISeeder } from './seeders/interfaces/ISeeder';
+import { ScraperRunner } from '../../src/app/common/scraper/scraper.runner';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await call(seeders);
+  await new ScraperRunner().run();
 }
 
 async function call(seeders: Array<ISeeder>) {
