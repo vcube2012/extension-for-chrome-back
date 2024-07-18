@@ -1,54 +1,41 @@
+import { ForbiddenError } from '@nestjs/apollo';
 import {
   BadRequestException,
-  ForbiddenException,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 
-export function ExceptionHandlerDecorator() {
-  return function <T extends { new (...args: any[]) }>(constructor: T) {
-    const logger = new Logger(constructor.name); // Get logger for the class
+// error graphql handling decorator
+export const ExceptionHandlerDecorator = (name?: string) => {
+  const logger = new Logger();
 
-    console.log(234567);
+  // return
+  return (_target: any, _key: string, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value;
 
-    // Iterate over the prototype's methods
-    for (const propertyName of Object.getOwnPropertyNames(
-      constructor.prototype,
-    )) {
-      const originalMethod = constructor.prototype[propertyName];
+    descriptor.value = async function (...args: any[]) {
+      const key = `\x1b[33m${_key}\x1b[0m`;
 
-      // Check if it's a function and not a constructor
-      if (
-        typeof originalMethod === 'function' &&
-        propertyName !== 'constructor'
-      ) {
-        constructor.prototype[propertyName] = async function (...args: any[]) {
-          try {
-            logger.log(`Executing resolver: ${propertyName}`);
-            const result = await originalMethod.apply(this, args);
-            logger.log(`Resolver ${propertyName} completed successfully`);
-            return result;
-          } catch (error) {
-            logger.error(
-              `Error in resolver: ${propertyName} - ${error.message}`,
-              error.stack,
-            );
+      try {
+        logger.log(`Operation: ${key}`, name);
 
-            // Map errors to appropriate exceptions (customize as needed)
-            if (error?.statusCode >= 500) {
-              throw new InternalServerErrorException('Internal Server Error');
-            } else if (error?.statusCode === 403) {
-              throw new ForbiddenException('Forbidden');
-            } else if (error.message?.length > 70) {
-              throw new BadRequestException('Bad Request');
-            } else {
-              throw new BadRequestException(error.message);
-            }
-          }
-        };
+        return await originalMethod.apply(this, args);
+      } catch (error) {
+        logger.error(`Operation: ${_key}. Error: ${error.message}`, name);
+
+        if (error?.statusCode?.includes(50)) {
+          throw new InternalServerErrorException('Internal Server Error');
+        } else if (error?.statusCode?.includes(403)) {
+          throw new ForbiddenError(error.message);
+        } else if (error.message?.length > 70) {
+          throw new BadRequestException('Bad Request');
+        } else {
+          throw new BadRequestException(error.message);
+        }
       }
-    }
+    };
 
-    return constructor;
+    // return
+    return descriptor;
   };
-}
+};

@@ -7,12 +7,12 @@ import { RequestedFieldsDecorator } from '../../decorators/requested-fields.deco
 import { Prisma } from '@prisma/client';
 import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.decorator';
 
-// @ExceptionHandlerDecorator()
 @Resolver()
 export class ZipCodeResolver {
   constructor(private readonly zipCodeService: ZipCodeService) {}
 
   @Query(() => [ZipCodeEntity])
+  @ExceptionHandlerDecorator()
   findManyZipCodes(
     @Args('dto') dto: ZipCodesDto,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
@@ -21,6 +21,7 @@ export class ZipCodeResolver {
   }
 
   @Query(() => ZipCodeEntity)
+  @ExceptionHandlerDecorator()
   findOneZipCode(
     @Args('dto') dto: ZipCodeDto,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
