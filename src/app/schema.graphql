@@ -2,17 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ZipCode {
-  id: Float!
-  code: String!
-  prices: JSON!
-  created_at: DateTime!
+type ZipCodeInterfacePrices {
+  efficiency: Float!
+  one_bedroom: Float!
+  two_bedroom: Float!
+  three_bedroom: Float!
+  four_bedroom: Float!
 }
 
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON
+type ZipCodeEntity {
+  id: Float!
+  code: String!
+  prices: ZipCodeInterfacePrices!
+  created_at: DateTime!
+}
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
@@ -20,6 +23,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  findManyZipCodes(codes: [String!]!): [ZipCode!]!
-  findZipCode(code: String!): ZipCode!
+  findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
+  findZipCode(dto: ZipCodeDto!): ZipCodeEntity!
+}
+
+input ZipCodesDto {
+  codes: [String!]!
+}
+
+input ZipCodeDto {
+  code: String!
 }

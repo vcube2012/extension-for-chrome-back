@@ -1,25 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
+import { ZipCodeDto } from './dto/zip-code.dto';
+import { ZipCodesDto } from './dto/zip-codes.dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ZipCodeService {
   constructor(private readonly db: DatabaseService) {}
 
-  findByCode(code: string) {
+  async findByCode(dto: ZipCodeDto, fields: Prisma.ZipCodeSelect) {
     return this.db.zipCode.findUnique({
       where: {
-        code: code,
+        code: dto.code,
+      },
+      select: {
+        ...fields,
+        prices: true,
       },
     });
   }
 
-  findManyByCodes(codes: string[]) {
-    return this.db.zipCode.findMany({
-      where: {
-        code: {
-          in: codes,
-        },
+  async findManyByCodes(dto: ZipCodesDto, fields: Prisma.ZipCodeSelect) {
+    const where: Prisma.ZipCodeWhereInput = {
+      code: {
+        in: dto.codes,
       },
+    };
+    if (!dto.codes?.length) {
+      delete where.code;
+    }
+
+    return this.db.zipCode.findMany({
+      where,
+      select: { ...fields, prices: true },
     });
   }
 }

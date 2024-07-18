@@ -163,7 +163,7 @@ export default class ScraperService {
             prices[snakeCaseKey] = parseFloat(cleanedValue);
           }
 
-          obj['prices'] = JSON.stringify(prices);
+          obj['prices'] = prices;
 
           return obj;
         }, {}),
