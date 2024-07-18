@@ -1,24 +1,38 @@
 import { Browser, Page } from 'puppeteer';
-import { toSnakeCase } from '../helpers/helpers';
+import { toSnakeCase } from '../../../../helpers/helpers';
 import { Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { MetropolitanSeeder } from '../../../../prisma/seeds/seeders/metropolitan.seeder';
+import { StateSeeder } from '../../../../prisma/seeds/seeders/state.seeder';
+import { CountySeeder } from '../../../../prisma/seeds/seeders/county.seeder';
+import { ZipCodeSeeder } from '../../../../prisma/seeds/seeders/zip-code.seeder';
+import { DomSelectorEnum } from './enums/dom-selector.enum';
+import { DatabaseService } from '../database/database.service';
 
-const metroSelector = '#metro_code';
-const stateSelector = 'select[name="STATES"]';
-const countySelector = '#countyselect';
 const url =
   'https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2024_code/select_Geography_sa.odn';
 
-export default class Scraper {
+export default class ScraperService {
   private logger;
 
   constructor(private browser: Browser) {
     this.logger = new Logger();
   }
 
+  @Cron(CronExpression.EVERY_HOUR)
+  async scrape() {
+    const db = new DatabaseService();
+
+    await new MetropolitanSeeder().run(db);
+    await new StateSeeder().run(db);
+    await new CountySeeder().run(db);
+    await new ZipCodeSeeder().run(db);
+  }
+
   async getMetropolitans() {
     try {
       const page = await this.goToPage();
-      const result = await this.getNamesWithCodes(page, metroSelector);
+      const result = await this.getNamesWithCodes(page, DomSelectorEnum.metro);
 
       await page.close();
 
@@ -35,7 +49,7 @@ export default class Scraper {
   async getStates() {
     try {
       const page = await this.goToPage();
-      const result = await this.getNamesWithCodes(page, stateSelector);
+      const result = await this.getNamesWithCodes(page, DomSelectorEnum.state);
 
       await page.close();
 
@@ -54,7 +68,7 @@ export default class Scraper {
       await page.locator(`option[value="${state}"]`).click();
       await page.waitForNavigation();
 
-      const result = await this.getNamesWithCodes(page, countySelector);
+      const result = await this.getNamesWithCodes(page, DomSelectorEnum.county);
 
       await page.close();
 
@@ -73,8 +87,8 @@ export default class Scraper {
       await page.locator(`option[value="${stateCode}"]`).click();
       await page.waitForNavigation();
 
-      await page.click(countySelector);
-      await page.select(countySelector, countyCode);
+      await page.click(DomSelectorEnum.county);
+      await page.select(DomSelectorEnum.county, countyCode);
 
       await page.locator('input[value="Next Screen..."]').click();
       await page.waitForNavigation();
@@ -95,8 +109,8 @@ export default class Scraper {
     try {
       const page = await this.goToPage();
 
-      await page.click(metroSelector);
-      await page.select(metroSelector, metroCode);
+      await page.click(DomSelectorEnum.metro);
+      await page.select(DomSelectorEnum.metro, metroCode);
 
       await page.locator('input[value="Select Metropolitan Area"]').click();
       await page.waitForNavigation();
@@ -162,7 +176,7 @@ export default class Scraper {
     });
   }
 
-  // Перехід на базову сторінку
+  // Перехід на сторінку
   private async goToPage() {
     const page = await this.browser.newPage();
     await page.goto(url);

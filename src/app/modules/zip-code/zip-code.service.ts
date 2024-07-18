@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateZipCodeDto } from './dto/update-zip-code.dto';
+import { DatabaseService } from '../../common/database/database.service';
 
 @Injectable()
 export class ZipCodeService {
-  findAll() {
-    return `This action returns all zipCode`;
+  constructor(private readonly db: DatabaseService) {}
+
+  findByCode(code: string) {
+    return this.db.zipCode.findUnique({
+      where: {
+        code: code,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} zipCode`;
+  findManyByCodes(codes: string[]) {
+    return this.db.zipCode.findMany({
+      where: {
+        code: {
+          in: codes,
+        },
+      },
+    });
   }
 }

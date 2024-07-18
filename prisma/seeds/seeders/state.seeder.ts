@@ -1,17 +1,18 @@
 import { ISeeder } from './interfaces/ISeeder';
 import { PrismaClient } from '@prisma/client';
-import Scraper from '../../../scraper/scraper';
+import ScraperService from '../../../src/app/common/scraper/./scraper.service';
 import * as puppeteer from 'puppeteer';
+import { DatabaseService } from '../../../src/app/common/database/database.service';
 
 export class StateSeeder implements ISeeder {
-  async run(prisma: PrismaClient) {
+  async run(db: DatabaseService) {
     const browser = await puppeteer.launch();
-    const scraper = new Scraper(browser);
+    const scraper = new ScraperService(browser);
 
     const items = await scraper.getStates();
 
     for (const item of items) {
-      await prisma.state.upsert({
+      await db.state.upsert({
         where: {
           code: item.code,
         },
