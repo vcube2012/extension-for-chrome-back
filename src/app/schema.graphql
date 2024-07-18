@@ -24,7 +24,7 @@ scalar DateTime
 
 type Query {
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
-  findZipCode(dto: ZipCodeDto!): ZipCodeEntity!
+  findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
 }
 
 input ZipCodesDto {

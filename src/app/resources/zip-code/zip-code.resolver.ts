@@ -5,7 +5,9 @@ import { ZipCodeDto } from './dto/zip-code.dto';
 import { ZipCodesDto } from './dto/zip-codes.dto';
 import { RequestedFieldsDecorator } from '../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
+import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.decorator';
 
+// @ExceptionHandlerDecorator()
 @Resolver()
 export class ZipCodeResolver {
   constructor(private readonly zipCodeService: ZipCodeService) {}
@@ -19,10 +21,10 @@ export class ZipCodeResolver {
   }
 
   @Query(() => ZipCodeEntity)
-  findZipCode(
+  findOneZipCode(
     @Args('dto') dto: ZipCodeDto,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
   ) {
-    return this.zipCodeService.findByCode(dto, fields);
+    return this.zipCodeService.findOneByCode(dto, fields);
   }
 }
