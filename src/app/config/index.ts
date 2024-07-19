@@ -1,3 +1,4 @@
 import GoogleConfig from './google.config';
+import JwtConfig from './jwt.config';
 
-export default [GoogleConfig];
+export default [GoogleConfig, JwtConfig];

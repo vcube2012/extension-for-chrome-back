@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { seeders } from './seeders';
-import { ISeeder } from './seeders/interfaces/ISeeder';
+import { SeederInterface } from './seeders/interfaces/seeder.interface';
 import { ScraperRunner } from '../../src/app/common/scraper/scraper.runner';
 
 const prisma = new PrismaClient();
@@ -10,7 +10,7 @@ async function main() {
   await new ScraperRunner().run();
 }
 
-async function call(seeders: Array<ISeeder>) {
+async function call(seeders: Array<SeederInterface>) {
   for (const seeder of seeders) {
     await seeder.run(prisma);
   }

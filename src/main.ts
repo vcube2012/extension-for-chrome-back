@@ -6,6 +6,9 @@ async function bootstrap() {
   const env = process.env.NODE_ENV;
 
   const app = await NestFactory.create(AppModule);
+
+  app.setGlobalPrefix('api');
+
   await app.listen(port, '0.0.0.0', () => {
     console.log(
       `server start on port - ${port}, env - ${env !== 'production' ? 'develop' : 'production'}`,

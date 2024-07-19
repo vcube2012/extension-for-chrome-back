@@ -4,7 +4,7 @@ import { MetropolitanSeeder } from '../../../../prisma/seeds/seeders/metropolita
 import { StateSeeder } from '../../../../prisma/seeds/seeders/state.seeder';
 import { CountySeeder } from '../../../../prisma/seeds/seeders/county.seeder';
 import { ZipCodeSeeder } from '../../../../prisma/seeds/seeders/zip-code.seeder';
-import { ISeeder } from '../../../../prisma/seeds/seeders/interfaces/ISeeder';
+import { SeederInterface } from '../../../../prisma/seeds/seeders/interfaces/seeder.interface';
 import { DatabaseService } from '../../globals/database/database.service';
 
 export class ScraperRunner {
@@ -26,7 +26,7 @@ export class ScraperRunner {
     await browser.close();
   }
 
-  async callOne(seeder: ISeeder) {
+  async callOne(seeder: SeederInterface) {
     await seeder.run(this.db);
   }
 }

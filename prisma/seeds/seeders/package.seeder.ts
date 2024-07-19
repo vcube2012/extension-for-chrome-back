@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { ISeeder } from './interfaces/ISeeder';
+import { SeederInterface } from './interfaces/seeder.interface';
 
 const newbie = {
   where: { type: 'newbie' },
@@ -37,7 +37,7 @@ const expert = {
   },
 };
 
-export class PackageSeeder implements ISeeder {
+export class PackageSeeder implements SeederInterface {
   async run(prisma: PrismaClient) {
     await prisma.package.upsert(newbie);
     await prisma.package.upsert(professional);

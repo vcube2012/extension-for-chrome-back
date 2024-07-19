@@ -1,13 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import { ISeeder } from './interfaces/ISeeder';
+import { SeederInterface } from './interfaces/seeder.interface';
 
-export class UserSeeder implements ISeeder {
+export class UserSeeder implements SeederInterface {
   async run(prisma: PrismaClient) {
     await prisma.user.upsert({
       where: { email: 'emexesemexes@gmail.com' },
       update: {},
       create: {
         email: 'emexesemexes@gmail.com',
+        name: 'Emexes Emexes',
       },
     });
   }

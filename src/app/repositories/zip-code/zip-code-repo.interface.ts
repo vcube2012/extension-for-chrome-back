@@ -19,7 +19,7 @@ class ZipCodeInterfacePrices {
 }
 
 @InterfaceType()
-export class ZipCodeInterface {
+export class ZipCodeRepoInterface {
   @Field()
   readonly id: number;
 

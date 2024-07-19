@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id Int @id @default(autoincrement())
 
   email String @unique
+  name  String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 
   @@map("users")
 }
 
 model Package {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id Int @id @default(autoincrement())
 
   type           String  @unique
   name           String
@@ -28,28 +28,33 @@ model Package {
   price          BigInt  @default(0)
   is_active      Boolean @default(false)
 
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
   @@map("packages")
 }
 
 model Metropolitan {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id Int @id @default(autoincrement())
 
   code     String    @unique
   name     String
   zipCodes ZipCode[]
 
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
   @@map("metropolitans")
 }
 
 model State {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id Int @id @default(autoincrement())
 
   code String @unique
   name String
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
 
   counties County[]
 
@@ -57,27 +62,31 @@ model State {
 }
 
 model County {
-  id         Int       @id @default(autoincrement())
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id Int @id @default(autoincrement())
 
   code String @unique
   name String
 
-  stateId  Int
-  state    State     @relation(fields: [stateId], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  stateId Int
+  state   State @relation(fields: [stateId], references: [id])
+
   zipCodes ZipCode[]
 
   @@map("counties")
 }
 
 model ZipCode {
-  id         Int       @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
+  code   String @unique
+  prices Json
+
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  code          String         @unique
-  prices        Json
   counties      County[]
   metropolitans Metropolitan[]
 

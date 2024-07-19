@@ -1,9 +1,9 @@
 import { ObjectType, OmitType } from '@nestjs/graphql';
-import { ZipCodeInterface } from '../interface/zip-code.interface';
+import { ZipCodeRepoInterface } from '../../../repositories/zip-code/zip-code-repo.interface';
 
 @ObjectType()
 export class ZipCodeEntity extends OmitType(
-  ZipCodeInterface,
+  ZipCodeRepoInterface,
   ['updated_at'],
   ObjectType,
 ) {}

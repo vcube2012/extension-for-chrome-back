@@ -1,8 +1,8 @@
-import { ISeeder } from './interfaces/ISeeder';
+import { SeederInterface } from './interfaces/seeder.interface';
 import { DatabaseService } from '../../../src/app/globals/database/database.service';
 import ScraperService from '../../../src/app/common/scraper/scraper.service';
 
-export class MetropolitanSeeder implements ISeeder {
+export class MetropolitanSeeder implements SeederInterface {
   constructor(private readonly scraperService: ScraperService) {}
 
   async run(db: DatabaseService) {
