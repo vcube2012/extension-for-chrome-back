@@ -1,45 +1,80 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserService } from '../../resources/user/user.service';
-import { LoginTicket, OAuth2Client } from 'google-auth-library';
-import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { SocialAuthRepoService } from '../../repositories/user/social-auth-repo.service';
+import { SocialSignInInput } from './dto/social-sign-in.input';
+import { SocialAuthUserEntity } from './entity/social-auth-user.entity';
+import { DatabaseService } from '../../globals/database/database.service';
+import * as bcrypt from 'bcrypt';
+import { UserEntity } from '../../resources/user/entity/user.entity';
+
+interface JwtPayloadInterface {
+  id: number | string;
+  email: string;
+}
 
 @Injectable()
 export class AuthService {
-  private readonly google: OAuth2Client;
-
   constructor(
-    private readonly userService: UserService,
-    private readonly configService: ConfigService,
-  ) {
-    this.google = new OAuth2Client(
-      this.configService.get<string>('google.clientID'),
-      this.configService.get<string>('google.clientSecret'),
-      this.configService.get<string>('google.callbackURL'),
+    private readonly socialAuthService: SocialAuthRepoService,
+    private readonly db: DatabaseService,
+    private jwtService: JwtService,
+  ) {}
+  async socialSignIn(input: SocialSignInInput) {
+    const socialUser = await this.socialAuthService.getUser(
+      input.code,
+      input.type,
     );
+
+    if (!socialUser) {
+      throw new BadRequestException('Unauthenticated');
+    }
+
+    let userExists = await this.checkIfUserExists(socialUser.email);
+
+    if (userExists) {
+      const hashPassword = await this.hash(socialUser.password);
+      const isMatch = await bcrypt.compare(userExists.password, hashPassword);
+
+      if (!isMatch) {
+        throw new BadRequestException('Unauthenticated');
+      }
+    } else {
+      userExists = await this.createSocialUser(socialUser);
+    }
+
+    const token = await this.createToken({
+      id: userExists.id,
+      email: userExists.email,
+    });
+
+    return token;
   }
 
-  async getAuthorizedUrl() {
-    return this.google.generateAuthUrl({
-      access_type: 'offline',
-      prompt: 'consent',
-      scope: 'https://www.googleapis.com/auth/userinfo.profile',
+  private async createSocialUser(socialAuthUserEntity: SocialAuthUserEntity) {
+    return this.db.user.create({
+      data: {
+        email: socialAuthUserEntity.email,
+        first_name: socialAuthUserEntity.first_name,
+        last_name: socialAuthUserEntity.last_name,
+        password: await this.hash(socialAuthUserEntity.password),
+        avatar: socialAuthUserEntity.avatar,
+      },
     });
   }
 
-  async googleSignIn(token: string): Promise<LoginTicket> {
-    try {
-      const user = await this.google.verifyIdToken({
-        idToken: token,
-        audience: this.configService.get<string>('google.clientID'),
-      });
+  private async hash(data: string, saltOrRounds: string | number = 10) {
+    return bcrypt.hash(data, saltOrRounds);
+  }
 
-      if (!user?.getPayload()?.email) {
-        new Error('Email is required');
-      }
+  private async createToken(payload: JwtPayloadInterface) {
+    return this.jwtService.signAsync(payload);
+  }
 
-      return user;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+  private async checkIfUserExists(email: string): Promise<UserEntity> {
+    return this.db.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
   }
 }

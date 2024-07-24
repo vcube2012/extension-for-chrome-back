@@ -23,7 +23,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Query {
-  auth: String!
+  getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
 }
@@ -34,4 +34,17 @@ input ZipCodesDto {
 
 input ZipCodeDto {
   code: String!
+}
+
+type Mutation {
+  socialSignIn(input: SocialSignInInput!): String!
+}
+
+input SocialSignInInput {
+  code: String!
+  type: SocialAuthType! = GOOGLE
+}
+
+enum SocialAuthType {
+  GOOGLE
 }

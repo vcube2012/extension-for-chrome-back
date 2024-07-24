@@ -1,6 +1,12 @@
-import { Field, Int, InterfaceType } from '@nestjs/graphql';
-import { IsEmail, IsNotEmpty, MaxLength } from 'class-validator';
+import { Field, Int, InterfaceType, registerEnumType } from '@nestjs/graphql';
+import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { Prisma } from '@prisma/client';
+
+export enum SocialAuthType {
+  GOOGLE = 'google',
+}
+
+registerEnumType(SocialAuthType, { name: 'SocialAuthType' });
 
 @InterfaceType()
 export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
@@ -8,9 +14,14 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
   readonly id: number;
 
   @Field()
-  @MaxLength(500)
+  @MaxLength(255)
   @IsNotEmpty()
-  readonly name: string;
+  readonly first_name: string;
+
+  @Field()
+  @MaxLength(255)
+  @IsNotEmpty()
+  readonly last_name: string;
 
   @Field()
   @MaxLength(255)
@@ -23,4 +34,12 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
 
   @Field()
   readonly updated_at: Date;
+
+  @Field()
+  @IsNotEmpty()
+  password: string;
+
+  @Field()
+  @IsOptional()
+  avatar?: string;
 }
