@@ -2,12 +2,7 @@ import { Browser, Page } from 'puppeteer';
 import { sleep, toSnakeCase } from '../../../../helpers/helpers';
 import { Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { MetropolitanSeeder } from '../../../../prisma/seeds/seeders/metropolitan.seeder';
-import { StateSeeder } from '../../../../prisma/seeds/seeders/state.seeder';
-import { CountySeeder } from '../../../../prisma/seeds/seeders/county.seeder';
-import { ZipCodeSeeder } from '../../../../prisma/seeds/seeders/zip-code.seeder';
 import { DomSelectorEnum } from './enums/dom-selector.enum';
-import { DatabaseService } from '../../globals/database/database.service';
 import { ScraperRunner } from './scraper.runner';
 
 const url =
@@ -152,18 +147,18 @@ export default class ScraperService {
     const items = [];
 
     data.forEach((arr) => {
-      const prices = {};
       items.push(
         headings.reduce((obj, key, index) => {
           const snakeCaseKey = toSnakeCase(key);
+
           if (snakeCaseKey === 'zip_code') {
             obj['code'] = arr[index];
-          } else {
-            const cleanedValue = arr[index].replace(/[^0-9.-]+/g, '');
-            prices[snakeCaseKey] = parseFloat(cleanedValue);
           }
 
-          obj['prices'] = prices;
+          if (snakeCaseKey === 'one_bedroom') {
+            const cleanedValue = arr[index].replace(/[^0-9.-]+/g, '');
+            obj['price'] = parseFloat(cleanedValue);
+          }
 
           return obj;
         }, {}),

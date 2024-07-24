@@ -15,7 +15,7 @@ export class ZipCodeService {
       },
       select: {
         ...fields,
-        prices: true,
+        price: true,
       },
     });
   }
@@ -33,7 +33,7 @@ export class ZipCodeService {
 
     return this.db.zipCode.findMany({
       where,
-      select: { ...fields, prices: true },
+      select: { ...fields, price: true },
     });
   }
 }

@@ -62,17 +62,17 @@ export class ZipCodeSeeder implements SeederInterface {
     }
   }
 
-  createZipCode(zipCode: { code; prices }, db: DatabaseService) {
+  createZipCode(zipCode: { code; price }, db: DatabaseService) {
     return db.zipCode.upsert({
       where: {
         code: zipCode.code,
       },
       update: {
-        prices: zipCode.prices,
+        price: zipCode.price,
       },
       create: {
         code: zipCode.code,
-        prices: zipCode.prices,
+        price: zipCode.price,
       },
     });
   }

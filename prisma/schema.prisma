@@ -84,8 +84,8 @@ model County {
 model ZipCode {
   id Int @id @default(autoincrement())
 
-  code   String @unique
-  prices Json
+  code  String  @unique
+  price Decimal
 
   created_at DateTime  @default(now())
   updated_at DateTime?
