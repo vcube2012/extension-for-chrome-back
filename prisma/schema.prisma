@@ -19,6 +19,8 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
+  setting Setting?
+
   @@map("users")
 }
 
@@ -40,12 +42,13 @@ model Package {
 model Metropolitan {
   id Int @id @default(autoincrement())
 
-  code     String    @unique
-  name     String
-  zipCodes ZipCode[]
+  code String @unique
+  name String
 
   created_at DateTime  @default(now())
   updated_at DateTime?
+
+  zipCodes ZipCodesOnMetropolitans[]
 
   @@map("metropolitans")
 }
@@ -67,16 +70,15 @@ model State {
 model County {
   id Int @id @default(autoincrement())
 
-  code String @unique
-  name String
+  stateId Int    @map("state_id")
+  code    String @unique
+  name    String
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  stateId Int
-  state   State @relation(fields: [stateId], references: [id])
-
-  zipCodes ZipCode[]
+  state    State                @relation(fields: [stateId], references: [id])
+  zipCodes ZipCodesOnCounties[]
 
   @@map("counties")
 }
@@ -90,8 +92,46 @@ model ZipCode {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  counties      County[]
-  metropolitans Metropolitan[]
+  counties      ZipCodesOnCounties[]
+  metropolitans ZipCodesOnMetropolitans[]
 
   @@map("zip_codes")
+}
+
+model ZipCodesOnCounties {
+  zipCodeId  Int      @map("zip_code_id")
+  countyId   Int      @map("county_id")
+  created_at DateTime @default(now())
+
+  zipCode ZipCode @relation(fields: [zipCodeId], references: [id])
+  county  County  @relation(fields: [countyId], references: [id])
+
+  @@id([zipCodeId, countyId])
+  @@map("county_zip_code")
+}
+
+model ZipCodesOnMetropolitans {
+  zipCodeId      Int      @map("zip_code_id")
+  metropolitanId Int      @map("metropolitan_id")
+  created_at     DateTime @default(now())
+
+  zipCode      ZipCode      @relation(fields: [zipCodeId], references: [id])
+  metropolitan Metropolitan @relation(fields: [metropolitanId], references: [id])
+
+  @@id([zipCodeId, metropolitanId])
+  @@map("metropolitan_zip_code")
+}
+
+model Setting {
+  id Int @id @default(autoincrement())
+
+  userId Int  @unique @map("user_id")
+  data   Json
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("settings")
 }

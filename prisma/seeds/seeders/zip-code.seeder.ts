@@ -14,20 +14,18 @@ export class ZipCodeSeeder implements SeederInterface {
       );
 
       await db.$transaction(async () => {
-        for (const zipCode of zipCodes) {
-          const zipCodeRecord = await this.createZipCode(zipCode, db);
+        const zipCodeIds = await this.getZipCodeIdsForConnect(zipCodes, db);
 
-          await db.metropolitan.update({
-            where: {
-              id: metro.id,
+        await db.metropolitan.update({
+          where: {
+            id: metro.id,
+          },
+          data: {
+            zipCodes: {
+              create: zipCodeIds,
             },
-            data: {
-              zipCodes: {
-                connect: { id: zipCodeRecord.id },
-              },
-            },
-          });
-        }
+          },
+        });
       });
     }
 
@@ -44,25 +42,44 @@ export class ZipCodeSeeder implements SeederInterface {
       );
 
       await db.$transaction(async () => {
-        for (const zipCode of zipCodes) {
-          const zipCodeRecord = await this.createZipCode(zipCode, db);
+        const zipCodeIds = await this.getZipCodeIdsForConnect(zipCodes, db);
 
-          await db.county.update({
-            where: {
-              id: county.id,
+        await db.county.update({
+          where: {
+            id: county.id,
+          },
+          data: {
+            zipCodes: {
+              create: zipCodeIds,
             },
-            data: {
-              zipCodes: {
-                connect: { id: zipCodeRecord.id },
-              },
-            },
-          });
-        }
+          },
+        });
       });
     }
   }
 
-  createZipCode(zipCode: { code; price }, db: DatabaseService) {
+  async getZipCodeIdsForConnect(
+    zipCodes: { code: string; price: number }[],
+    db: DatabaseService,
+  ) {
+    const data = [];
+
+    for (const zipCode of zipCodes) {
+      const zipCodeRecord = await this.createZipCode(zipCode, db);
+
+      data.push({
+        zipCode: {
+          connect: {
+            id: zipCodeRecord.id,
+          },
+        },
+      });
+    }
+
+    return data;
+  }
+
+  async createZipCode(zipCode: { code; price }, db: DatabaseService) {
     return db.zipCode.upsert({
       where: {
         code: zipCode.code,

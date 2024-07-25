@@ -77,7 +77,10 @@ export default class ScraperService {
     return [];
   }
 
-  async getZipCodesForCounty(stateCode: string, countyCode: string) {
+  async getZipCodesForCounty(
+    stateCode: string,
+    countyCode: string,
+  ): Promise<{ code: string; price: number }[]> {
     try {
       const page = await this.goToPage();
 
@@ -104,7 +107,9 @@ export default class ScraperService {
     return [];
   }
 
-  async getZipCodesForMetropolitan(metroCode: string) {
+  async getZipCodesForMetropolitan(
+    metroCode: string,
+  ): Promise<{ code: string; price: number }[]> {
     try {
       const page = await this.goToPage();
 
@@ -129,7 +134,9 @@ export default class ScraperService {
   }
 
   // Парсинг зіп-кодів з таблиці
-  private async parseZipCodes(page: Page) {
+  private async parseZipCodes(
+    page: Page,
+  ): Promise<{ code: string; price: number }[]> {
     const headings = await page.$$eval('table > thead > tr', (elements) => {
       const arr = Array.from(elements).map((element) => {
         return Array.from(element.children).map((item) => item.textContent);
