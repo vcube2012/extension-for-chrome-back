@@ -2,11 +2,14 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ZipCodeEntity {
-  id: Float!
-  code: String!
-  price: Float!
+type UserEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
   created_at: DateTime!
+  password: String!
+  avatar: String!
 }
 
 """
@@ -14,10 +17,22 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type TokenResponse {
+  token: String!
+}
+
+type ZipCodeEntity {
+  id: Float!
+  code: String!
+  price: Float!
+  created_at: DateTime!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
+  getProfile: UserEntity!
 }
 
 input ZipCodesDto {
@@ -29,7 +44,7 @@ input ZipCodeDto {
 }
 
 type Mutation {
-  socialSignIn(input: SocialSignInInput!): String!
+  socialSignIn(input: SocialSignInInput!): TokenResponse!
 }
 
 input SocialSignInInput {

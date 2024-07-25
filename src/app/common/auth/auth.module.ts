@@ -12,7 +12,7 @@ import { SocialAuthRepoService } from '../../repositories/user/social-auth-repo.
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '30d' },
     }),
   ],
   providers: [AuthService, GoogleService, SocialAuthRepoService, AuthResolver],
