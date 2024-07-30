@@ -6,7 +6,10 @@ import { ZipCodesDto } from './dto/zip-codes.dto';
 import { RequestedFieldsDecorator } from '../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
 import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.decorator';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../../common/auth/guard/auth.guard';
 
+@UseGuards(AuthGuard)
 @Resolver()
 export class ZipCodeResolver {
   constructor(private readonly zipCodeService: ZipCodeService) {}

@@ -7,11 +7,11 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
 import { IContextServer } from '../../common/graphql/graphql.module';
 
+@UseGuards(AuthGuard)
 @Resolver()
 export class SettingResolver {
   constructor(private readonly settingService: SettingService) {}
 
-  @UseGuards(AuthGuard)
   @Mutation(() => SettingEntity)
   @ExceptionHandlerDecorator()
   async updateSetting(

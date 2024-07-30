@@ -7,9 +7,19 @@ interface RequestedFieldsInfo {
   [fieldName: string]: boolean | RequestedFieldsInfo;
 }
 
+interface RequestedFieldsDecoratorOptions {
+  exclude?: string[];
+}
+
 // requested fields decorator
 export const RequestedFieldsDecorator = createParamDecorator(
-  (data: unknown, context: ExecutionContext) => {
+  (options: RequestedFieldsDecoratorOptions, context: ExecutionContext) => {
+    if (!options) {
+      options = { exclude: [] };
+    }
+
+    options.exclude.push('__typename');
+
     const ctx = GqlExecutionContext.create(context);
     const info: GraphQLResolveInfo = ctx.getInfo();
     const selections: readonly SelectionNode[] =
@@ -21,7 +31,11 @@ export const RequestedFieldsDecorator = createParamDecorator(
       const requestedFields: RequestedFieldsInfo = {};
 
       selections.forEach((field: FieldNode) => {
-        if (field.name.value === '__typename') return;
+        if (options.exclude.includes(field.name.value)) return;
+
+        if (field.name.value === 'data') {
+          console.log(field.selectionSet.selections);
+        }
 
         if (field.selectionSet) {
           requestedFields[field.name.value] = {

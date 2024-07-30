@@ -13,6 +13,11 @@ export class UserService {
       },
       select: {
         ...fields,
+        setting: {
+          select: {
+            data: true,
+          },
+        },
       },
     });
   }

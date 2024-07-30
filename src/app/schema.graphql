@@ -2,6 +2,59 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+interface PurchaseRange {
+  from: Float
+  to: Float
+}
+
+interface Mortgage {
+  down_payment: Float
+  interest_rate: Float
+  loan_term: Float
+  closing_costs: Float
+}
+
+interface Expenses {
+  property_taxes: Float
+  insurance: Float
+  hoa_fee: Float
+  management: Float
+  maintenance: Float
+  vacancy: Float
+}
+
+type SettingDataExpenses {
+  property_taxes: Float
+  insurance: Float
+  hoa_fee: Float
+  management: Float
+  maintenance: Float
+  vacancy: Float
+}
+
+type SettingDataMortgage {
+  down_payment: Float
+  interest_rate: Float
+  loan_term: Float
+  closing_costs: Float
+}
+
+type SettingDataPurchaseRange {
+  from: Float
+  to: Float
+}
+
+type EntitySettingData {
+  use_loan: Boolean!
+  purchase_range: SettingDataPurchaseRange!
+  mortgage: SettingDataMortgage!
+  expenses: SettingDataExpenses!
+}
+
+type SettingEntity {
+  data: EntitySettingData
+}
+
 type UserEntity {
   id: Int!
   first_name: String!
@@ -10,6 +63,7 @@ type UserEntity {
   created_at: DateTime!
   password: String!
   avatar: String!
+  setting: SettingEntity
 }
 
 """
@@ -32,7 +86,7 @@ type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
-  getProfile: UserEntity!
+  getProfile: UserEntity
 }
 
 input ZipCodesDto {
@@ -45,6 +99,7 @@ input ZipCodeDto {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
+  updateSetting(input: UpdateSettingInput!): SettingEntity!
 }
 
 input SocialSignInInput {
@@ -54,4 +109,36 @@ input SocialSignInInput {
 
 enum SocialAuthType {
   GOOGLE
+}
+
+input UpdateSettingInput {
+  data: UpdateSettingData!
+}
+
+input UpdateSettingData {
+  use_loan: Boolean! = false
+  purchase_range: UpdateSettingDataPurchaseRange!
+  mortgage: UpdateSettingDataMortgage!
+  expenses: UpdateSettingDataExpenses!
+}
+
+input UpdateSettingDataPurchaseRange {
+  from: Float = null
+  to: Float = null
+}
+
+input UpdateSettingDataMortgage {
+  down_payment: Float = null
+  interest_rate: Float = null
+  loan_term: Float = null
+  closing_costs: Float = null
+}
+
+input UpdateSettingDataExpenses {
+  property_taxes: Float = null
+  insurance: Float = null
+  hoa_fee: Float = null
+  management: Float = null
+  maintenance: Float = null
+  vacancy: Float = null
 }

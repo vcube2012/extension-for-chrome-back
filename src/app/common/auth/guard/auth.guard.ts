@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -20,7 +21,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(ctx.req);
 
     if (!token) {
-      throw new UnauthorizedException();
+      throw new BadRequestException('Token not found');
     }
 
     try {

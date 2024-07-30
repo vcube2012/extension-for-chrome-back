@@ -1,63 +1,69 @@
-import {
-  Field,
-  Float,
-  ID,
-  Int,
-  InterfaceType,
-  ObjectType,
-} from '@nestjs/graphql';
+import { Field, Float, InterfaceType } from '@nestjs/graphql';
+import { IsNumber } from 'class-validator';
 
-@ObjectType()
+@InterfaceType()
 export class PurchaseRange {
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   from?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   to?: number;
 }
 
-@ObjectType()
+@InterfaceType()
 export class Mortgage {
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   down_payment?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   interest_rate?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   loan_term?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   closing_costs?: number;
 }
 
-@ObjectType()
+@InterfaceType()
 export class Expenses {
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   property_taxes?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   insurance?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   hoa_fee?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   management?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   maintenance?: number;
 
-  @Field(() => Float, { defaultValue: null })
+  @Field(() => Float, { defaultValue: null, nullable: true })
+  @IsNumber()
   vacancy?: number;
 }
 
-@ObjectType()
+@InterfaceType()
 export class SettingData {
   @Field(() => PurchaseRange)
   purchase_range: PurchaseRange;
 
-  @Field()
+  @Field({ defaultValue: false })
   use_loan: boolean;
 
   @Field(() => Mortgage)
@@ -65,22 +71,4 @@ export class SettingData {
 
   @Field(() => Expenses)
   expenses: Expenses;
-}
-
-@InterfaceType()
-export class SettingRepoInterface {
-  @Field(() => ID)
-  readonly id: number;
-
-  @Field(() => Int)
-  user_id: number;
-
-  @Field(() => SettingData)
-  data: SettingData;
-
-  @Field()
-  readonly created_at: Date;
-
-  @Field()
-  updated_at: Date;
 }

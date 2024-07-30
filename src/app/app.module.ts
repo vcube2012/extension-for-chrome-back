@@ -6,6 +6,7 @@ import { CommonModule } from './common/common.module';
 import { GraphqlModule } from './common/graphql/graphql.module';
 import { ZipCodeModule } from './resources/zip-code/zip-code.module';
 import configs from './config';
+import { SettingModule } from './resources/setting/setting.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import configs from './config';
     GraphqlModule,
     ZipCodeModule,
     UserModule,
+    SettingModule,
   ],
 })
 export class AppModule {}

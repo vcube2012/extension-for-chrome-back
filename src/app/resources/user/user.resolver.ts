@@ -13,11 +13,12 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(AuthGuard)
-  @Query(() => UserEntity)
+  @Query(() => UserEntity, { nullable: true })
   @ExceptionHandlerDecorator()
   async getProfile(
     @Context() ctx: IContextServer,
-    @RequestedFieldsDecorator() fields: Prisma.UserSelect,
+    @RequestedFieldsDecorator()
+    fields: Prisma.UserSelect,
   ) {
     return this.userService.findOneById(ctx.req.user.id, fields);
   }
