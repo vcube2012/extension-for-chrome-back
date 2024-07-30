@@ -1,10 +1,4 @@
-import {
-  Field,
-  HideField,
-  Int,
-  InterfaceType,
-  registerEnumType,
-} from '@nestjs/graphql';
+import { Field, Int, InterfaceType, registerEnumType } from '@nestjs/graphql';
 import { IsEmail, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 import { Prisma } from '@prisma/client';
 

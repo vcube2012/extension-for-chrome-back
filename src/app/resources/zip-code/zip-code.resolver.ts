@@ -16,7 +16,7 @@ export class ZipCodeResolver {
 
   @Query(() => [ZipCodeEntity])
   @ExceptionHandlerDecorator()
-  findManyZipCodes(
+  async findManyZipCodes(
     @Args('dto') dto: ZipCodesDto,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
   ) {
@@ -25,7 +25,7 @@ export class ZipCodeResolver {
 
   @Query(() => ZipCodeEntity)
   @ExceptionHandlerDecorator()
-  findOneZipCode(
+  async findOneZipCode(
     @Args('dto') dto: ZipCodeDto,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
   ) {

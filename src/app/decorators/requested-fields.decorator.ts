@@ -33,10 +33,6 @@ export const RequestedFieldsDecorator = createParamDecorator(
       selections.forEach((field: FieldNode) => {
         if (options.exclude.includes(field.name.value)) return;
 
-        if (field.name.value === 'data') {
-          console.log(field.selectionSet.selections);
-        }
-
         if (field.selectionSet) {
           requestedFields[field.name.value] = {
             select: getRequestedFields(field.selectionSet.selections),

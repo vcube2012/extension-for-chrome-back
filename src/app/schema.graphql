@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+interface AddressRepoInfoInterface {
+  beds: Int
+  baths: Int
+  square: Float
+}
+
 interface PurchaseRange {
   from: Float
   to: Float
@@ -21,6 +27,51 @@ interface Expenses {
   management: Float
   maintenance: Float
   vacancy: Float
+}
+
+type TokenResponse {
+  token: String!
+}
+
+type ZipCodeEntity {
+  id: Float!
+  code: String!
+  price: Float!
+  created_at: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AddressEntityInfo {
+  beds: Int
+  baths: Int
+  square: Float
+}
+
+type AddressEntity {
+  id: ID!
+  address: String!
+  created_at: DateTime!
+  updated_at: DateTime
+  info: AddressEntityInfo!
+}
+
+type FavoriteAddressEntityInfo {
+  asking: Float
+  offer: Float
+  down: Float
+  cashflow: Float
+  repairs: Float
+}
+
+type FavoriteAddressEntity {
+  created_at: DateTime!
+  updated_at: DateTime
+  info: FavoriteAddressEntityInfo!
+  address: AddressEntity
 }
 
 type SettingDataExpenses {
@@ -66,26 +117,11 @@ type UserEntity {
   setting: SettingEntity
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type TokenResponse {
-  token: String!
-}
-
-type ZipCodeEntity {
-  id: Float!
-  code: String!
-  price: Float!
-  created_at: DateTime!
-}
-
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
+  getFavorites: [FavoriteAddressEntity!]!
   getProfile: UserEntity
 }
 
@@ -99,6 +135,7 @@ input ZipCodeDto {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
+  addAddressToFavorite(addressData: AddressInput!, pricesData: FavoriteAddressPricesInput!): AddressEntity!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
 }
 
@@ -109,6 +146,26 @@ input SocialSignInInput {
 
 enum SocialAuthType {
   GOOGLE
+}
+
+input AddressInput {
+  address: String!
+  zipCode: String!
+  info: AddressInputInfo!
+}
+
+input AddressInputInfo {
+  beds: Int = null
+  baths: Int = null
+  square: Float = null
+}
+
+input FavoriteAddressPricesInput {
+  asking: Float = null
+  offer: Float = null
+  down: Float = null
+  cashflow: Float = null
+  repairs: Float = null
 }
 
 input UpdateSettingInput {

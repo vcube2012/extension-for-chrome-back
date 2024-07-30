@@ -19,7 +19,8 @@ model User {
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  setting Setting?
+  setting           Setting?
+  favoriteAddresses FavoriteAddress[]
 
   @@map("users")
 }
@@ -94,6 +95,7 @@ model ZipCode {
 
   counties      ZipCodesOnCounties[]
   metropolitans ZipCodesOnMetropolitans[]
+  addresses     Address[]
 
   @@map("zip_codes")
 }
@@ -134,4 +136,36 @@ model Setting {
   user User @relation(fields: [userId], references: [id])
 
   @@map("settings")
+}
+
+model Address {
+  id Int @id @default(autoincrement())
+
+  zipCodeId Int    @map("zip_code_id")
+  address   String
+  info      Json?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  zipCode           ZipCode           @relation(fields: [zipCodeId], references: [id])
+  favoriteAddresses FavoriteAddress[]
+
+  @@map("addresses")
+}
+
+model FavoriteAddress {
+  userId    Int @map("user_id")
+  addressId Int @map("address_id")
+
+  info Json
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  user    User    @relation(fields: [userId], references: [id])
+  address Address @relation(fields: [addressId], references: [id])
+
+  @@id([userId, addressId])
+  @@map("favorite_addresses")
 }
