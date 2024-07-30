@@ -40,6 +40,7 @@ export interface IContextServer {
       autoSchemaFile: join(process.cwd(), 'src/app/schema.graphql'),
       subscriptions: { 'graphql-ws': true },
       path: '/graphql',
+      introspection: true,
       context: async (
         request: IContext['request'],
         replay: IContext['reply'],
