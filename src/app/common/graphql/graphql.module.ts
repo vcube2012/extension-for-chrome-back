@@ -33,9 +33,10 @@ export interface IContextServer {
       driver: ApolloDriver,
       playground: false,
       plugins: [
-        process.env.NODE_ENV === 'production'
-          ? ApolloServerPluginLandingPageDisabled()
-          : ApolloServerPluginLandingPageLocalDefault(),
+        ApolloServerPluginLandingPageLocalDefault()
+        // process.env.NODE_ENV === 'production'
+        //   ? ApolloServerPluginLandingPageDisabled()
+        //   : ApolloServerPluginLandingPageLocalDefault(),
       ],
       autoSchemaFile: join(process.cwd(), 'src/app/schema.graphql'),
       subscriptions: { 'graphql-ws': true },
