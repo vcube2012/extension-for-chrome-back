@@ -33,7 +33,7 @@ export interface IContextServer {
       driver: ApolloDriver,
       playground: false,
       plugins: [
-        ApolloServerPluginLandingPageLocalDefault()
+        ApolloServerPluginLandingPageLocalDefault(),
         // process.env.NODE_ENV === 'production'
         //   ? ApolloServerPluginLandingPageDisabled()
         //   : ApolloServerPluginLandingPageLocalDefault(),
