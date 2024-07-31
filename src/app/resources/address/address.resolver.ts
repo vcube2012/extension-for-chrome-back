@@ -3,13 +3,16 @@ import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
 import { AddressService } from './address.service';
 import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.decorator';
-import { AddressEntity, FavoriteAddressEntity } from './entity/address.entity';
+import {
+  AddressEntity,
+  FavoriteAddressEntity,
+  PaginatedFavoriteAddresses,
+} from './entity/address.entity';
 import { IContextServer } from '../../common/graphql/graphql.module';
 import { AddressInput } from './dto/address.input';
 import { FavoriteAddressPricesInput } from './dto/favorite-address-prices.input';
 import { UserService } from '../user/user.service';
-import { RequestedFieldsDecorator } from '../../decorators/requested-fields.decorator';
-import { Prisma } from '@prisma/client';
+import { PaginationInput } from '../../repositories/common/pagination/pagination.input';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -19,13 +22,21 @@ export class AddressResolver {
     private readonly userService: UserService,
   ) {}
 
-  @Query(() => [FavoriteAddressEntity])
+  @Query(() => PaginatedFavoriteAddresses)
   @ExceptionHandlerDecorator()
   async getFavorites(
     @Context() ctx: IContextServer,
-    @RequestedFieldsDecorator() fields: Prisma.FavoriteAddressSelect,
+    @Args('input') input: PaginationInput,
   ) {
-    return this.addressService.findAllFavorites(ctx.req.user.id, fields);
+    const data = await this.addressService.paginateFavorites(
+      ctx.req.user.id,
+      input.page,
+      input.perPage,
+    );
+
+    console.log(data);
+
+    return data;
   }
 
   @Mutation(() => AddressEntity)

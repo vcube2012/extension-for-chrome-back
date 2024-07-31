@@ -45,6 +45,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type PaginationMeta {
+  currentPage: Int!
+  lastPage: Int!
+  total: Int!
+  perPage: Int!
+  count: Int!
+  hasMorePages: Boolean!
+}
+
 type AddressEntityInfo {
   beds: Int
   baths: Int
@@ -72,6 +81,11 @@ type FavoriteAddressEntity {
   updated_at: DateTime
   info: FavoriteAddressEntityInfo!
   address: AddressEntity
+}
+
+type PaginatedFavoriteAddresses {
+  data: [FavoriteAddressEntity!]!
+  meta: PaginationMeta!
 }
 
 type SettingDataExpenses {
@@ -121,7 +135,7 @@ type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
-  getFavorites: [FavoriteAddressEntity!]!
+  getFavorites(input: PaginationInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
 }
 
@@ -131,6 +145,11 @@ input ZipCodesDto {
 
 input ZipCodeDto {
   code: String!
+}
+
+input PaginationInput {
+  page: Int! = 1
+  perPage: Int! = 10
 }
 
 type Mutation {

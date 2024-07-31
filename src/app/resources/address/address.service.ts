@@ -9,14 +9,22 @@ import { Prisma } from '@prisma/client';
 export class AddressService {
   constructor(private readonly db: DatabaseService) {}
 
-  async findAllFavorites(userId: number, fields: Prisma.FavoriteAddressSelect) {
-    return this.db.favoriteAddress.findMany({
-      where: {
-        userId: userId,
+  async paginateFavorites(userId: number, page: number, perPage: number) {
+    return await this.db.paginate({
+      model: 'favoriteAddress',
+      query: {
+        where: {
+          userId: userId,
+        },
+        include: {
+          address: true,
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
       },
-      include: {
-        address: true,
-      },
+      page: page,
+      limit: perPage,
     });
   }
 

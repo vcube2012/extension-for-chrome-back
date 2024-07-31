@@ -6,6 +6,7 @@ import {
   FavoriteAddressRepoInterface,
 } from '../../../repositories/address/address-repo.interface';
 import { Prisma } from '@prisma/client';
+import { Paginated } from '../../../repositories/common/pagination/pagination.entity';
 
 @ObjectType()
 class AddressEntityInfo extends PickType(
@@ -43,3 +44,8 @@ export class FavoriteAddressEntity extends OmitType(
   @Field({ nullable: true })
   address?: AddressEntity;
 }
+
+@ObjectType()
+export class PaginatedFavoriteAddresses extends Paginated(
+  FavoriteAddressEntity,
+) {}
