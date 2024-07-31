@@ -1,16 +1,23 @@
 import { DatabaseService } from '../../globals/database/database.service';
 import { Injectable } from '@nestjs/common';
-import { AddressInput } from './dto/address.input';
 import { AddressEntity } from './entity/address.entity';
-import { FavoriteAddressPricesInput } from './dto/favorite-address-prices.input';
 import { Prisma } from '@prisma/client';
+import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
+import {
+  AddressInput,
+  FavoriteAddressPricesInput,
+} from './dto/add-to-favorite.input';
+import { GetFavoritesInput } from './dto/get-favorites.input';
 
 @Injectable()
 export class AddressService {
   constructor(private readonly db: DatabaseService) {}
 
-  async paginateFavorites(userId: number, page: number, perPage: number) {
-    return await this.db.paginate({
+  async paginateFavorites(
+    userId: number,
+    input: GetFavoritesInput,
+  ): Promise<PaginatedFavoriteAddresses> {
+    return this.db.paginate({
       model: 'favoriteAddress',
       query: {
         where: {
@@ -23,8 +30,8 @@ export class AddressService {
           created_at: 'desc',
         },
       },
-      page: page,
-      limit: perPage,
+      page: input.page,
+      limit: input.perPage,
     });
   }
 
@@ -40,11 +47,9 @@ export class AddressService {
   async addToFavorite(
     user,
     address: AddressEntity,
-    pricesInput: FavoriteAddressPricesInput,
+    prices: FavoriteAddressPricesInput,
   ) {
-    const info = pricesInput as Prisma.JsonObject;
-
-    await this.db.user.update({
+    return this.db.user.update({
       where: {
         id: user.id,
       },
@@ -59,13 +64,21 @@ export class AddressService {
             },
             create: {
               addressId: address.id,
-              info: info,
+              info: prices as Prisma.JsonObject,
             },
             update: {
               addressId: address.id,
-              info: info,
+              info: prices as Prisma.JsonObject,
               updated_at: new Date(),
             },
+          },
+        },
+      },
+      include: {
+        favoriteAddresses: {
+          where: {
+            userId: user.id,
+            addressId: address.id,
           },
         },
       },

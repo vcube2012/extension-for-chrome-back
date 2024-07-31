@@ -45,15 +45,6 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type PaginationMeta {
-  currentPage: Int!
-  lastPage: Int!
-  total: Int!
-  perPage: Int!
-  count: Int!
-  hasMorePages: Boolean!
-}
-
 type AddressEntityInfo {
   beds: Int
   baths: Int
@@ -66,6 +57,15 @@ type AddressEntity {
   created_at: DateTime!
   updated_at: DateTime
   info: AddressEntityInfo!
+}
+
+type PaginationMeta {
+  currentPage: Int!
+  lastPage: Int!
+  total: Int!
+  perPage: Int!
+  count: Int!
+  hasMorePages: Boolean!
 }
 
 type FavoriteAddressEntityInfo {
@@ -135,7 +135,7 @@ type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
   findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
-  getFavorites(input: PaginationInput!): PaginatedFavoriteAddresses!
+  getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
 }
 
@@ -147,14 +147,14 @@ input ZipCodeDto {
   code: String!
 }
 
-input PaginationInput {
+input GetFavoritesInput {
   page: Int! = 1
   perPage: Int! = 10
 }
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
-  addAddressToFavorite(addressData: AddressInput!, pricesData: FavoriteAddressPricesInput!): AddressEntity!
+  addAddressToFavorite(input: AddToFavoriteInput!): AddressEntity!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
 }
 
@@ -165,6 +165,11 @@ input SocialSignInInput {
 
 enum SocialAuthType {
   GOOGLE
+}
+
+input AddToFavoriteInput {
+  address: AddressInput!
+  prices: FavoriteAddressPricesInput!
 }
 
 input AddressInput {

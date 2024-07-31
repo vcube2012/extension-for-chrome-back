@@ -3,16 +3,12 @@ import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
 import { AddressService } from './address.service';
 import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.decorator';
-import {
-  AddressEntity,
-  FavoriteAddressEntity,
-  PaginatedFavoriteAddresses,
-} from './entity/address.entity';
+import { AddressEntity } from './entity/address.entity';
 import { IContextServer } from '../../common/graphql/graphql.module';
-import { AddressInput } from './dto/address.input';
-import { FavoriteAddressPricesInput } from './dto/favorite-address-prices.input';
 import { UserService } from '../user/user.service';
-import { PaginationInput } from '../../repositories/common/pagination/pagination.input';
+import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
+import { AddToFavoriteInput } from './dto/add-to-favorite.input';
+import { GetFavoritesInput } from './dto/get-favorites.input';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -26,25 +22,16 @@ export class AddressResolver {
   @ExceptionHandlerDecorator()
   async getFavorites(
     @Context() ctx: IContextServer,
-    @Args('input') input: PaginationInput,
+    @Args('input') input: GetFavoritesInput,
   ) {
-    const data = await this.addressService.paginateFavorites(
-      ctx.req.user.id,
-      input.page,
-      input.perPage,
-    );
-
-    console.log(data);
-
-    return data;
+    return this.addressService.paginateFavorites(ctx.req.user.id, input);
   }
 
   @Mutation(() => AddressEntity)
   @ExceptionHandlerDecorator()
   async addAddressToFavorite(
     @Context() ctx: IContextServer,
-    @Args('addressData') addressInput: AddressInput,
-    @Args('pricesData') pricesInput: FavoriteAddressPricesInput,
+    @Args('input') input: AddToFavoriteInput,
   ) {
     const user = await this.userService.findOneById(ctx.req.user.id, {
       id: true,
@@ -54,9 +41,15 @@ export class AddressResolver {
       throw new UnauthorizedException();
     }
 
-    const address = await this.addressService.createOrUpdate(addressInput);
+    const address = await this.addressService.createOrUpdate(input.address);
 
-    await this.addressService.addToFavorite(user, address, pricesInput);
+    const favoriteAddress = await this.addressService.addToFavorite(
+      user,
+      address,
+      input.prices,
+    );
+
+    console.log(favoriteAddress);
 
     return address;
   }

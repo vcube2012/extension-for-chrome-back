@@ -1,10 +1,12 @@
 import { Field, InputType, PickType } from '@nestjs/graphql';
+import { PaginationInput } from '../../../repositories/common/pagination/pagination.input';
 import {
   AddressRepoInfoInterface,
   AddressRepoInterface,
+  FavoriteAddressInfoRepoInterface,
 } from '../../../repositories/address/address-repo.interface';
-import { Prisma } from '@prisma/client';
 import { IsNotEmpty } from 'class-validator';
+import { Prisma } from '@prisma/client';
 
 @InputType()
 class AddressInputInfo extends PickType(
@@ -25,4 +27,20 @@ export class AddressInput extends PickType(
 
   @Field(() => AddressInputInfo)
   info?: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue;
+}
+
+@InputType()
+export class FavoriteAddressPricesInput extends PickType(
+  FavoriteAddressInfoRepoInterface,
+  ['asking', 'offer', 'repairs', 'down', 'cashflow'],
+  InputType,
+) {}
+
+@InputType()
+export class AddToFavoriteInput {
+  @Field()
+  address: AddressInput;
+
+  @Field()
+  prices: FavoriteAddressPricesInput;
 }
