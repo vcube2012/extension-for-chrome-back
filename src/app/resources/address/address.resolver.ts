@@ -6,7 +6,10 @@ import { ExceptionHandlerDecorator } from '../../decorators/exception-handler.de
 import { AddressEntity } from './entity/address.entity';
 import { IContextServer } from '../../common/graphql/graphql.module';
 import { UserService } from '../user/user.service';
-import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
+import {
+  FavoriteAddressEntity,
+  PaginatedFavoriteAddresses,
+} from './entity/favorite-address.entity';
 import { AddToFavoriteInput } from './dto/add-to-favorite.input';
 import { GetFavoritesInput } from './dto/get-favorites.input';
 
@@ -27,7 +30,7 @@ export class AddressResolver {
     return this.addressService.paginateFavorites(ctx.req.user.id, input);
   }
 
-  @Mutation(() => AddressEntity)
+  @Mutation(() => FavoriteAddressEntity)
   @ExceptionHandlerDecorator()
   async addAddressToFavorite(
     @Context() ctx: IContextServer,
@@ -43,14 +46,6 @@ export class AddressResolver {
 
     const address = await this.addressService.createOrUpdate(input.address);
 
-    const favoriteAddress = await this.addressService.addToFavorite(
-      user,
-      address,
-      input.prices,
-    );
-
-    console.log(favoriteAddress);
-
-    return address;
+    return this.addressService.addToFavorite(user, address, input.prices);
   }
 }

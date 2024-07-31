@@ -49,7 +49,7 @@ export class AddressService {
     address: AddressEntity,
     prices: FavoriteAddressPricesInput,
   ) {
-    return this.db.user.update({
+    const updatedUser = await this.db.user.update({
       where: {
         id: user.id,
       },
@@ -80,9 +80,14 @@ export class AddressService {
             userId: user.id,
             addressId: address.id,
           },
+          include: {
+            address: true,
+          },
         },
       },
     });
+
+    return updatedUser.favoriteAddresses[0];
   }
 
   async createOrUpdate(input: AddressInput): Promise<AddressEntity> {
