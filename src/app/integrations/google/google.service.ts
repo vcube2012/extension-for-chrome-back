@@ -29,31 +29,31 @@ export class GoogleService {
   }
 
   async getUser(code: string): Promise<SocialAuthUserEntity> {
-    try {
-      const result = await this.client.getToken(code);
+    // try {
+    const result = await this.client.getToken(code);
 
-      const loginTicket = await this.client.verifyIdToken({
-        idToken: result.tokens.id_token,
-        audience: this.configService.get<string>('google.clientID'),
-      });
+    const loginTicket = await this.client.verifyIdToken({
+      idToken: result.tokens.id_token,
+      audience: this.configService.get<string>('google.clientID'),
+    });
 
-      const googlePayload = await loginTicket?.getPayload();
+    const googlePayload = await loginTicket?.getPayload();
 
-      if (!googlePayload?.email) {
-        new Error('Email is required');
-      }
-
-      return {
-        email: googlePayload.email,
-        first_name: googlePayload.given_name,
-        last_name: googlePayload.family_name,
-        avatar: googlePayload.picture,
-        password: googlePayload.sub,
-      };
-    } catch (e) {
-      this.logger.error(e.message);
-
-      throw new InternalServerErrorException('Google authorization error');
+    if (!googlePayload?.email) {
+      new Error('Email is required');
     }
+
+    return {
+      email: googlePayload.email,
+      first_name: googlePayload.given_name,
+      last_name: googlePayload.family_name,
+      avatar: googlePayload.picture,
+      password: googlePayload.sub,
+    };
+    // } catch (e) {
+    //   this.logger.error(e.message);
+    //
+    //   throw new InternalServerErrorException('Google authorization error');
+    // }
   }
 }
