@@ -70,6 +70,12 @@ type AddressEntity {
   info: AddressEntityInfo!
 }
 
+type TagEntity {
+  id: ID!
+  name: String!
+  created_at: DateTime!
+}
+
 type FavoriteAddressEntityInfo {
   asking: Float
   offer: Float
@@ -83,6 +89,7 @@ type FavoriteAddressEntity {
   updated_at: DateTime
   info: FavoriteAddressEntityInfo!
   address: AddressEntity
+  tags: [TagEntity!]
 }
 
 type PaginatedFavoriteAddresses {
@@ -158,6 +165,7 @@ type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
+  addTag(input: SaveTagsInput!): [TagEntity!]!
 }
 
 input SocialSignInInput {
@@ -225,4 +233,9 @@ input UpdateSettingDataExpenses {
   management: Float = null
   maintenance: Float = null
   vacancy: Float = null
+}
+
+input SaveTagsInput {
+  address_id: Int!
+  tags: [String!]!
 }

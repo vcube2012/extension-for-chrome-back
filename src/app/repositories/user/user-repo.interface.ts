@@ -30,10 +30,10 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
   readonly email: string;
 
   @Field()
-  readonly created_at: Date;
+  created_at: Date;
 
-  @Field()
-  readonly updated_at: Date;
+  @Field({ nullable: true })
+  updated_at?: Date;
 
   @Field()
   @IsNotEmpty()

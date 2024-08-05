@@ -6,6 +6,7 @@ import {
 import { Prisma } from '@prisma/client';
 import { Paginated } from '../../../repositories/common/pagination/pagination.entity';
 import { AddressEntity } from './address.entity';
+import { TagEntity } from '../../tag/entity/tag.entity';
 
 @ObjectType()
 class FavoriteAddressEntityInfo extends PickType(
@@ -25,6 +26,9 @@ export class FavoriteAddressEntity extends OmitType(
 
   @Field({ nullable: true })
   address?: AddressEntity;
+
+  @Field(() => [TagEntity], { nullable: true })
+  tags?: [TagEntity];
 }
 
 @ObjectType()

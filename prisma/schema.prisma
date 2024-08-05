@@ -17,10 +17,11 @@ model User {
   password   String
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
-  setting           Setting?
-  favoriteAddresses FavoriteAddress[]
+  setting            Setting?
+  favoriteAddresses  FavoriteAddress[]
+  tagFavoriteAddress TagFavoriteAddress[]
 
   @@map("users")
 }
@@ -35,7 +36,7 @@ model Package {
   is_active      Boolean @default(false)
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   @@map("packages")
 }
@@ -47,7 +48,7 @@ model Metropolitan {
   name String
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   zipCodes ZipCodesOnMetropolitans[]
 
@@ -61,7 +62,7 @@ model State {
   name String
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   counties County[]
 
@@ -76,7 +77,7 @@ model County {
   name     String
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   state    State                @relation(fields: [state_id], references: [id])
   zipCodes ZipCodesOnCounties[]
@@ -91,7 +92,7 @@ model ZipCode {
   price Decimal
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   counties      ZipCodesOnCounties[]
   metropolitans ZipCodesOnMetropolitans[]
@@ -131,7 +132,7 @@ model Setting {
   data    Json
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
   user User @relation(fields: [user_id], references: [id])
 
@@ -147,10 +148,11 @@ model Address {
   info        Json?
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
-  zipCode           ZipCode           @relation(fields: [zip_code_id], references: [id])
-  favoriteAddresses FavoriteAddress[]
+  zipCode            ZipCode              @relation(fields: [zip_code_id], references: [id])
+  favoriteAddresses  FavoriteAddress[]
+  tagFavoriteAddress TagFavoriteAddress[]
 
   @@map("addresses")
 }
@@ -162,10 +164,11 @@ model FavoriteAddress {
   info Json
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
 
-  user    User    @relation(fields: [user_id], references: [id])
-  address Address @relation(fields: [address_id], references: [id])
+  user    User                 @relation(fields: [user_id], references: [id])
+  address Address              @relation(fields: [address_id], references: [id])
+  tags    TagFavoriteAddress[]
 
   @@id([user_id, address_id])
   @@map("favorite_addresses")
@@ -177,17 +180,25 @@ model Tag {
   name String @unique
 
   created_at DateTime  @default(now())
-  updated_at DateTime?
+  updated_at DateTime? @updatedAt
+
+  tagFavoriteAddress TagFavoriteAddress[]
 
   @@map("tags")
 }
 
-model UserTag {
-  user_id Int
-  tag_id  Int
+model TagFavoriteAddress {
+  address_id Int
+  user_id    Int
+  tag_id     Int
 
   created_at DateTime @default(now())
 
-  @@id([user_id, tag_id])
-  @@map("user_tag")
+  tag             Tag              @relation(fields: [tag_id], references: [id])
+  address         Address          @relation(fields: [address_id], references: [id])
+  user            User             @relation(fields: [user_id], references: [id])
+  favoriteAddress FavoriteAddress? @relation(fields: [user_id, address_id], references: [user_id, address_id])
+
+  @@id([address_id, user_id, tag_id])
+  @@map("tag_favorite_address")
 }

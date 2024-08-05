@@ -17,7 +17,7 @@ export class AddressService {
     userId: number,
     input: GetFavoritesInput,
   ): Promise<PaginatedFavoriteAddresses> {
-    return this.db.paginate({
+    const paginatedRecords = await this.db.paginate({
       model: 'favoriteAddress',
       query: {
         where: {
@@ -25,6 +25,11 @@ export class AddressService {
         },
         include: {
           address: true,
+          tagFavoriteAddress: {
+            select: {
+              tag: true,
+            },
+          },
         },
         orderBy: {
           created_at: 'desc',
@@ -32,6 +37,27 @@ export class AddressService {
       },
       page: input.page,
       limit: input.perPage,
+    });
+
+    const data = paginatedRecords.data.map((favoriteAddress) => ({
+      ...favoriteAddress,
+      tags: favoriteAddress.tagFavoriteAddress.map(
+        (tagFavoriteAddress) => tagFavoriteAddress.tag,
+      ),
+    }));
+
+    return {
+      data: data,
+      meta: paginatedRecords.meta,
+    };
+  }
+
+  async findOneFavoriteAddress(userId: number, addressId: number) {
+    return this.db.favoriteAddress.findFirst({
+      where: {
+        user_id: userId,
+        address_id: addressId,
+      },
     });
   }
 
@@ -87,7 +113,9 @@ export class AddressService {
       },
     });
 
-    return updatedUser;
+    const [favoriteAddress] = updatedUser.favoriteAddresses;
+
+    return favoriteAddress;
   }
 
   async createOrUpdate(input: AddressInput): Promise<AddressEntity> {
@@ -117,7 +145,7 @@ export class AddressService {
           data: {
             zip_code_id: findZipCode.id,
             address: input.address,
-            info: input.address,
+            info: input.info,
             link: input.link,
           },
         });
