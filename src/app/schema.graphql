@@ -134,7 +134,7 @@ type UserEntity {
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
-  findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity!
+  findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
 }
