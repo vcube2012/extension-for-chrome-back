@@ -17,11 +17,45 @@ export class AddressService {
     userId: number,
     input: GetFavoritesInput,
   ): Promise<PaginatedFavoriteAddresses> {
+    let wheres = {
+      user_id: userId,
+    };
+
+    if (!!input.search?.length) {
+      wheres = {
+        ...wheres,
+        ...{
+          OR: [
+            {
+              address: {
+                address: {
+                  contains: input.search,
+                },
+              },
+            },
+            {
+              tagFavoriteAddress: {
+                some: {
+                  tag: {
+                    name: {
+                      contains: input.search,
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+      };
+    }
+
+    console.log(wheres);
+
     const paginatedRecords = await this.db.paginate({
       model: 'favoriteAddress',
       query: {
         where: {
-          user_id: userId,
+          ...wheres,
         },
         include: {
           address: true,
@@ -32,7 +66,7 @@ export class AddressService {
           },
         },
         orderBy: {
-          created_at: 'desc',
+          created_at: input.sorting,
         },
       },
       page: input.page,
@@ -49,7 +83,7 @@ export class AddressService {
     return {
       data: data,
       meta: paginatedRecords.meta,
-    };
+    } as PaginatedFavoriteAddresses;
   }
 
   async findOneFavoriteAddress(userId: number, addressId: number) {
