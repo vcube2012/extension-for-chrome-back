@@ -49,8 +49,6 @@ export class AddressService {
       };
     }
 
-    console.log(wheres);
-
     const paginatedRecords = await this.db.paginate({
       model: 'favoriteAddress',
       query: {
