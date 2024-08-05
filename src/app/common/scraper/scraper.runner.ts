@@ -15,7 +15,9 @@ export class ScraperRunner {
   }
 
   async run() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox'],
+    });
     const scraper = new ScraperService(browser);
 
     await this.callOne(new MetropolitanSeeder(scraper));
