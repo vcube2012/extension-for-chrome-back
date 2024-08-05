@@ -29,8 +29,6 @@ export default class ScraperService {
 
       await page.close();
 
-      new Logger();
-
       return result;
     } catch (error) {
       this.logger.error(error);

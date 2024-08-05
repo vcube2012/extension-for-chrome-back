@@ -23,10 +23,10 @@ export class FavoriteAddressInfoRepoInterface {
 @InterfaceType()
 export class FavoriteAddressRepoInterface {
   @Field(() => Int)
-  userId: number;
+  user_id: number;
 
   @Field(() => Int)
-  addressId: number;
+  address_id: number;
 
   @Field()
   created_at?: Date;
@@ -52,9 +52,16 @@ export class AddressRepoInterface {
   @Field(() => ID)
   id: number;
 
+  @Field(() => Int)
+  zip_code_id: number;
+
   @Field()
   @IsNotEmpty()
   address: string;
+
+  @Field()
+  @IsNotEmpty()
+  link: string;
 
   @Field(() => AddressRepoInfoInterface)
   @IsNotEmpty()

@@ -17,7 +17,7 @@ class FavoriteAddressEntityInfo extends PickType(
 @ObjectType()
 export class FavoriteAddressEntity extends OmitType(
   FavoriteAddressRepoInterface,
-  ['userId', 'addressId'],
+  ['user_id', 'address_id'],
   ObjectType,
 ) {
   @Field(() => FavoriteAddressEntityInfo)

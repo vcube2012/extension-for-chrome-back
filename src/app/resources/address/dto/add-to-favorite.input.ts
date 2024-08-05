@@ -18,7 +18,7 @@ class AddressInputInfo extends PickType(
 @InputType()
 export class AddressInput extends PickType(
   AddressRepoInterface,
-  ['address'],
+  ['address', 'link'],
   InputType,
 ) {
   @Field()

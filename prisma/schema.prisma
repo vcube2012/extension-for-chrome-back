@@ -71,14 +71,14 @@ model State {
 model County {
   id Int @id @default(autoincrement())
 
-  stateId Int    @map("state_id")
-  code    String @unique
-  name    String
+  state_id Int
+  code     String @unique
+  name     String
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  state    State                @relation(fields: [stateId], references: [id])
+  state    State                @relation(fields: [state_id], references: [id])
   zipCodes ZipCodesOnCounties[]
 
   @@map("counties")
@@ -101,39 +101,39 @@ model ZipCode {
 }
 
 model ZipCodesOnCounties {
-  zipCodeId  Int      @map("zip_code_id")
-  countyId   Int      @map("county_id")
-  created_at DateTime @default(now())
+  zip_code_id Int      @map("zip_code_id")
+  county_id   Int      @map("county_id")
+  created_at  DateTime @default(now())
 
-  zipCode ZipCode @relation(fields: [zipCodeId], references: [id])
-  county  County  @relation(fields: [countyId], references: [id])
+  zipCode ZipCode @relation(fields: [zip_code_id], references: [id])
+  county  County  @relation(fields: [county_id], references: [id])
 
-  @@id([zipCodeId, countyId])
+  @@id([zip_code_id, county_id])
   @@map("county_zip_code")
 }
 
 model ZipCodesOnMetropolitans {
-  zipCodeId      Int      @map("zip_code_id")
-  metropolitanId Int      @map("metropolitan_id")
-  created_at     DateTime @default(now())
+  zip_code_id     Int
+  metropolitan_id Int
+  created_at      DateTime @default(now())
 
-  zipCode      ZipCode      @relation(fields: [zipCodeId], references: [id])
-  metropolitan Metropolitan @relation(fields: [metropolitanId], references: [id])
+  zipCode      ZipCode      @relation(fields: [zip_code_id], references: [id])
+  metropolitan Metropolitan @relation(fields: [metropolitan_id], references: [id])
 
-  @@id([zipCodeId, metropolitanId])
+  @@id([zip_code_id, metropolitan_id])
   @@map("metropolitan_zip_code")
 }
 
 model Setting {
   id Int @id @default(autoincrement())
 
-  userId Int  @unique @map("user_id")
-  data   Json
+  user_id Int  @unique
+  data    Json
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [user_id], references: [id])
 
   @@map("settings")
 }
@@ -141,31 +141,53 @@ model Setting {
 model Address {
   id Int @id @default(autoincrement())
 
-  zipCodeId Int    @map("zip_code_id")
-  address   String
-  info      Json?
+  zip_code_id Int
+  address     String
+  link        String
+  info        Json?
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  zipCode           ZipCode           @relation(fields: [zipCodeId], references: [id])
+  zipCode           ZipCode           @relation(fields: [zip_code_id], references: [id])
   favoriteAddresses FavoriteAddress[]
 
   @@map("addresses")
 }
 
 model FavoriteAddress {
-  userId    Int @map("user_id")
-  addressId Int @map("address_id")
+  user_id    Int
+  address_id Int
 
   info Json
 
   created_at DateTime  @default(now())
   updated_at DateTime?
 
-  user    User    @relation(fields: [userId], references: [id])
-  address Address @relation(fields: [addressId], references: [id])
+  user    User    @relation(fields: [user_id], references: [id])
+  address Address @relation(fields: [address_id], references: [id])
 
-  @@id([userId, addressId])
+  @@id([user_id, address_id])
   @@map("favorite_addresses")
+}
+
+model Tag {
+  id Int @id @default(autoincrement())
+
+  name String @unique
+
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  @@map("tags")
+}
+
+model UserTag {
+  user_id Int
+  tag_id  Int
+
+  created_at DateTime @default(now())
+
+  @@id([user_id, tag_id])
+  @@map("user_tag")
 }

@@ -21,7 +21,7 @@ export class AddressService {
       model: 'favoriteAddress',
       query: {
         where: {
-          userId: userId,
+          user_id: userId,
         },
         include: {
           address: true,
@@ -38,7 +38,7 @@ export class AddressService {
   async findOne(zipCodeId: number, address: string) {
     return this.db.address.findFirst({
       where: {
-        zipCodeId: zipCodeId,
+        zip_code_id: zipCodeId,
         address: address,
       },
     });
@@ -57,17 +57,17 @@ export class AddressService {
         favoriteAddresses: {
           upsert: {
             where: {
-              userId_addressId: {
-                userId: user.id,
-                addressId: address.id,
+              user_id_address_id: {
+                user_id: user.id,
+                address_id: address.id,
               },
             },
             create: {
-              addressId: address.id,
+              address_id: address.id,
               info: prices as Prisma.JsonObject,
             },
             update: {
-              addressId: address.id,
+              address_id: address.id,
               info: prices as Prisma.JsonObject,
               updated_at: new Date(),
             },
@@ -77,8 +77,8 @@ export class AddressService {
       include: {
         favoriteAddresses: {
           where: {
-            userId: user.id,
-            addressId: address.id,
+            user_id: user.id,
+            address_id: address.id,
           },
           include: {
             address: true,
@@ -87,7 +87,7 @@ export class AddressService {
       },
     });
 
-    return updatedUser.favoriteAddresses[0];
+    return updatedUser;
   }
 
   async createOrUpdate(input: AddressInput): Promise<AddressEntity> {
@@ -115,9 +115,10 @@ export class AddressService {
       } else {
         address = await this.db.address.create({
           data: {
-            zipCodeId: findZipCode.id,
+            zip_code_id: findZipCode.id,
             address: input.address,
-            info: input.info,
+            info: input.address,
+            link: input.link,
           },
         });
       }

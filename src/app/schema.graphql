@@ -62,7 +62,9 @@ type AddressEntityInfo {
 
 type AddressEntity {
   id: ID!
+  zip_code_id: Int!
   address: String!
+  link: String!
   created_at: DateTime!
   updated_at: DateTime
   info: AddressEntityInfo!
@@ -174,6 +176,7 @@ input AddToFavoriteInput {
 
 input AddressInput {
   address: String!
+  link: String!
   zipCode: String!
   info: AddressInputInfo!
 }

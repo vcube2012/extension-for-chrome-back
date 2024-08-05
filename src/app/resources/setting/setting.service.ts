@@ -9,10 +9,10 @@ export class SettingService {
   async updateSettings(input: UpdateSettingInput, userId: number) {
     return this.db.setting.upsert({
       where: {
-        userId: userId,
+        user_id: userId,
       },
       create: {
-        userId: userId,
+        user_id: userId,
         data: input.data,
       },
       update: {
