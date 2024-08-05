@@ -23,7 +23,7 @@ export class ZipCodeResolver {
     return this.zipCodeService.findManyByCodes(dto, fields);
   }
 
-  @Query(() => ZipCodeEntity)
+  @Query(() => ZipCodeEntity, { nullable: true })
   @ExceptionHandlerDecorator()
   async findOneZipCode(
     @Args('dto') dto: ZipCodeDto,
