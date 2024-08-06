@@ -34,7 +34,7 @@ export class AddressService {
               },
             },
             {
-              tagFavoriteAddress: {
+              tags: {
                 some: {
                   tag: {
                     name: {
@@ -57,7 +57,7 @@ export class AddressService {
         },
         include: {
           address: true,
-          tagFavoriteAddress: {
+          tags: {
             select: {
               tag: true,
             },
@@ -73,7 +73,7 @@ export class AddressService {
 
     const data = paginatedRecords.data.map((favoriteAddress) => ({
       ...favoriteAddress,
-      tags: favoriteAddress.tagFavoriteAddress.map(
+      tags: favoriteAddress.tags.map(
         (tagFavoriteAddress) => tagFavoriteAddress.tag,
       ),
     }));
