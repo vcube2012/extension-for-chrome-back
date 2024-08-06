@@ -89,7 +89,7 @@ type FavoriteAddressEntity {
   updated_at: DateTime
   info: FavoriteAddressEntityInfo!
   address: AddressEntity
-  tags: [TagEntity!]
+  tags: [TagEntity!]!
 }
 
 type PaginatedFavoriteAddresses {
@@ -142,17 +142,17 @@ type UserEntity {
 
 type Query {
   getGoogleAuthUrl: String!
-  findManyZipCodes(dto: ZipCodesDto!): [ZipCodeEntity!]!
-  findOneZipCode(dto: ZipCodeDto!): ZipCodeEntity
+  findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
+  findOneZipCode(input: ZipCodeInput!): ZipCodeEntity
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
 }
 
-input ZipCodesDto {
+input ZipCodesInput {
   codes: [String!]!
 }
 
-input ZipCodeDto {
+input ZipCodeInput {
   code: String!
 }
 

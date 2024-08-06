@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GoogleService } from '../../integrations/google/google.service';
 import { SocialAuthType } from './user-repo.interface';
-import { SocialAuthUserEntity } from '../../common/auth/entity/social-auth-user.entity';
+import { SocialAuthUserEntity } from '../../modules/common/auth/entity/social-auth-user.entity';
 
 @Injectable()
 export class SocialAuthRepoService {

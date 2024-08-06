@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { seeders } from './seeders';
 import { SeederInterface } from './seeders/interfaces/seeder.interface';
-import { ScraperRunner } from '../../src/app/common/scraper/scraper.runner';
+import { ScraperRunner } from '../../src/app/modules/common/scraper/scraper.runner';
 
 const prisma = new PrismaClient();
 
