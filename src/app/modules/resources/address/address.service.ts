@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
 import {
   AddressInput,
-  FavoriteAddressPricesInput,
+  AddToFavoriteInput,
 } from './input/add-to-favorite.input';
 import { GetFavoritesInput } from './input/get-favorites.input';
 
@@ -71,12 +71,7 @@ export class AddressService {
       limit: input.perPage,
     });
 
-    const data = paginatedRecords.data.map((favoriteAddress) => ({
-      ...favoriteAddress,
-      tags: favoriteAddress.tags.map(
-        (tagFavoriteAddress) => tagFavoriteAddress.tag,
-      ),
-    }));
+    const data = this.transformEntity(paginatedRecords.data);
 
     return {
       data: data,
@@ -102,31 +97,29 @@ export class AddressService {
     });
   }
 
-  async addToFavorite(
-    user,
-    address: AddressEntity,
-    prices: FavoriteAddressPricesInput,
-  ) {
+  async addToFavorite(userId: number, input: AddToFavoriteInput) {
+    const address = await this.createOrUpdate(input.address);
+
     const updatedUser = await this.db.user.update({
       where: {
-        id: user.id,
+        id: userId,
       },
       data: {
         favoriteAddresses: {
           upsert: {
             where: {
               user_id_address_id: {
-                user_id: user.id,
+                user_id: userId,
                 address_id: address.id,
               },
             },
             create: {
               address_id: address.id,
-              info: prices as Prisma.JsonObject,
+              info: input.prices as Prisma.JsonObject,
             },
             update: {
               address_id: address.id,
-              info: prices as Prisma.JsonObject,
+              info: input.prices as Prisma.JsonObject,
               updated_at: new Date(),
             },
           },
@@ -135,7 +128,7 @@ export class AddressService {
       include: {
         favoriteAddresses: {
           where: {
-            user_id: user.id,
+            user_id: userId,
             address_id: address.id,
           },
           include: {
@@ -185,5 +178,53 @@ export class AddressService {
 
       return address;
     });
+  }
+
+  async removeFromFavorites(userId: number, addressId: number) {
+    const favoriteAddress = await this.findOneFavoriteAddress(
+      userId,
+      addressId,
+    );
+
+    if (!favoriteAddress) return null;
+
+    return this.deleteOneFavoriteAddress(userId, addressId);
+  }
+
+  async deleteOneFavoriteAddress(userId: number, addressId: number) {
+    return this.db.$transaction(async () => {
+      await this.db.tagFavoriteAddress.deleteMany({
+        where: {
+          user_id: userId,
+          address_id: addressId,
+        },
+      });
+
+      return this.db.favoriteAddress.delete({
+        where: {
+          user_id_address_id: {
+            address_id: addressId,
+            user_id: userId,
+          },
+        },
+      });
+    });
+  }
+
+  private transformEntity(favoriteAddresses) {
+    const transformer = (favoriteAddress) => ({
+      ...favoriteAddress,
+      tags: favoriteAddress.tags.map(
+        (tagFavoriteAddress) => tagFavoriteAddress.tag,
+      ),
+    });
+
+    if (Array.isArray(favoriteAddresses)) {
+      return favoriteAddresses.map((favoriteAddress) =>
+        transformer(favoriteAddress),
+      );
+    }
+
+    return transformer(favoriteAddresses);
   }
 }

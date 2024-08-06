@@ -171,6 +171,7 @@ enum SortingEnum {
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
+  removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
 }
@@ -208,6 +209,10 @@ input FavoriteAddressPricesInput {
   down: Float = null
   cashflow: Float = null
   repairs: Float = null
+}
+
+input RemoveFromFavoritesInput {
+  address_id: Int!
 }
 
 input UpdateSettingInput {

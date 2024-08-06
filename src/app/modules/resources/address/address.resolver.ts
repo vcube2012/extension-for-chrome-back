@@ -11,6 +11,7 @@ import {
 } from './entity/favorite-address.entity';
 import { AddToFavoriteInput } from './input/add-to-favorite.input';
 import { GetFavoritesInput } from './input/get-favorites.input';
+import { RemoveFromFavoritesInput } from './input/remove-from-favorites.input';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -35,16 +36,18 @@ export class AddressResolver {
     @Context() ctx: IContextServer,
     @Args('input') input: AddToFavoriteInput,
   ) {
-    const user = await this.userService.findOneById(ctx.req.user.id, {
-      id: true,
-    });
+    return this.addressService.addToFavorite(ctx.req.user.id, input);
+  }
 
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const address = await this.addressService.createOrUpdate(input.address);
-
-    return this.addressService.addToFavorite(user, address, input.prices);
+  @Mutation(() => FavoriteAddressEntity, { nullable: true })
+  @ExceptionHandlerDecorator()
+  async removeFromFavorites(
+    @Context() ctx: IContextServer,
+    @Args('input') input: RemoveFromFavoritesInput,
+  ) {
+    return this.addressService.removeFromFavorites(
+      ctx.req.user.id,
+      input.address_id,
+    );
   }
 }
