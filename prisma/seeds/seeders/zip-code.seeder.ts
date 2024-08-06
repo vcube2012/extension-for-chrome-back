@@ -14,17 +14,22 @@ export class ZipCodeSeeder implements SeederInterface {
       );
 
       await db.$transaction(async () => {
-        const zipCodeIds = await this.getZipCodeIdsForConnect(zipCodes, db);
+        const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        await db.metropolitan.update({
-          where: {
-            id: metro.id,
-          },
-          data: {
-            zipCodes: {
-              create: zipCodeIds,
+        await zipCodeIds.forEach((zipCodeId) => {
+          db.zipCodesOnMetropolitans.upsert({
+            where: {
+              zip_code_id_metropolitan_id: {
+                zip_code_id: zipCodeId,
+                metropolitan_id: metro.id,
+              },
             },
-          },
+            update: {},
+            create: {
+              zip_code_id: zipCodeId,
+              metropolitan_id: metro.id,
+            },
+          });
         });
       });
     }
@@ -42,23 +47,28 @@ export class ZipCodeSeeder implements SeederInterface {
       );
 
       await db.$transaction(async () => {
-        const zipCodeIds = await this.getZipCodeIdsForConnect(zipCodes, db);
+        const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        await db.county.update({
-          where: {
-            id: county.id,
-          },
-          data: {
-            zipCodes: {
-              create: zipCodeIds,
+        await zipCodeIds.forEach((zipCodeId) => {
+          db.zipCodesOnCounties.upsert({
+            where: {
+              zip_code_id_county_id: {
+                zip_code_id: zipCodeId,
+                county_id: county.id,
+              },
             },
-          },
+            update: {},
+            create: {
+              zip_code_id: zipCodeId,
+              county_id: county.id,
+            },
+          });
         });
       });
     }
   }
 
-  async getZipCodeIdsForConnect(
+  async getZipCodeIds(
     zipCodes: { code: string; price: number }[],
     db: DatabaseService,
   ) {
@@ -67,13 +77,7 @@ export class ZipCodeSeeder implements SeederInterface {
     for (const zipCode of zipCodes) {
       const zipCodeRecord = await this.createZipCode(zipCode, db);
 
-      data.push({
-        zipCode: {
-          connect: {
-            id: zipCodeRecord.id,
-          },
-        },
-      });
+      data.push(zipCodeRecord.id);
     }
 
     return data;
