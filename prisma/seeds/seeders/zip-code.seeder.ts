@@ -16,8 +16,8 @@ export class ZipCodeSeeder implements SeederInterface {
       await db.$transaction(async () => {
         const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        await zipCodeIds.forEach((zipCodeId) => {
-          db.zipCodesOnMetropolitans.upsert({
+        for (const zipCodeId of zipCodeIds) {
+          await db.zipCodesOnMetropolitans.upsert({
             where: {
               zip_code_id_metropolitan_id: {
                 zip_code_id: zipCodeId,
@@ -30,7 +30,7 @@ export class ZipCodeSeeder implements SeederInterface {
               metropolitan_id: metro.id,
             },
           });
-        });
+        }
       });
     }
 
@@ -49,8 +49,8 @@ export class ZipCodeSeeder implements SeederInterface {
       await db.$transaction(async () => {
         const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        await zipCodeIds.forEach((zipCodeId) => {
-          db.zipCodesOnCounties.upsert({
+        for (const zipCodeId of zipCodeIds) {
+          await db.zipCodesOnCounties.upsert({
             where: {
               zip_code_id_county_id: {
                 zip_code_id: zipCodeId,
@@ -63,7 +63,7 @@ export class ZipCodeSeeder implements SeederInterface {
               county_id: county.id,
             },
           });
-        });
+        }
       });
     }
   }
