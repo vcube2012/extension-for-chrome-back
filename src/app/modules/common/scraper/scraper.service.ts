@@ -15,7 +15,7 @@ export default class ScraperService {
     this.logger = new Logger();
   }
 
-  @Cron(CronExpression.EVERY_3_HOURS)
+  @Cron(CronExpression.EVERY_30_MINUTES_BETWEEN_9AM_AND_5PM)
   async scrape() {
     await new ScraperRunner().run();
   }
