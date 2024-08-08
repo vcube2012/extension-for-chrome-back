@@ -1,19 +1,8 @@
-import { Field, ObjectType, OmitType, PickType } from '@nestjs/graphql';
-import {
-  FavoriteAddressInfoRepoInterface,
-  FavoriteAddressRepoInterface,
-} from '../../../../repositories/address/address-repo.interface';
-import { Prisma } from '@prisma/client';
+import { Field, Float, ObjectType, OmitType } from '@nestjs/graphql';
+import { FavoriteAddressRepoInterface } from '../../../../repositories/address/address-repo.interface';
 import { Paginated } from '../../../../repositories/common/pagination/pagination.entity';
 import { AddressEntity } from './address.entity';
 import { TagEntity } from '../../tag/entity/tag.entity';
-
-@ObjectType()
-class FavoriteAddressEntityInfo extends PickType(
-  FavoriteAddressInfoRepoInterface,
-  ['asking', 'down', 'cashflow', 'offer', 'repairs'],
-  ObjectType,
-) {}
 
 @ObjectType()
 export class FavoriteAddressEntity extends OmitType(
@@ -21,8 +10,20 @@ export class FavoriteAddressEntity extends OmitType(
   ['user_id', 'address_id'],
   ObjectType,
 ) {
-  @Field(() => FavoriteAddressEntityInfo)
-  info: Prisma.JsonNullValueInput | Prisma.InputJsonValue;
+  @Field(() => Float)
+  asking: number;
+
+  @Field(() => Float)
+  offer: number;
+
+  @Field(() => Float)
+  down: number;
+
+  @Field(() => Float)
+  cashflow: number;
+
+  @Field(() => Float)
+  repairs: number;
 
   @Field({ nullable: true })
   address?: AddressEntity;

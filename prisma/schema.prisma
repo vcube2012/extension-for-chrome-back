@@ -79,7 +79,7 @@ model County {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  state    State                @relation(fields: [state_id], references: [id])
+  state    State                @relation(fields: [state_id], references: [id], onDelete: Cascade)
   zipCodes ZipCodesOnCounties[]
 
   @@map("counties")
@@ -106,8 +106,8 @@ model ZipCodesOnCounties {
   county_id   Int      @map("county_id")
   created_at  DateTime @default(now())
 
-  zipCode ZipCode @relation(fields: [zip_code_id], references: [id])
-  county  County  @relation(fields: [county_id], references: [id])
+  zipCode ZipCode @relation(fields: [zip_code_id], references: [id], onDelete: Cascade)
+  county  County  @relation(fields: [county_id], references: [id], onDelete: Cascade)
 
   @@id([zip_code_id, county_id])
   @@map("county_zip_code")
@@ -118,8 +118,8 @@ model ZipCodesOnMetropolitans {
   metropolitan_id Int
   created_at      DateTime @default(now())
 
-  zipCode      ZipCode      @relation(fields: [zip_code_id], references: [id])
-  metropolitan Metropolitan @relation(fields: [metropolitan_id], references: [id])
+  zipCode      ZipCode      @relation(fields: [zip_code_id], references: [id], onDelete: Cascade)
+  metropolitan Metropolitan @relation(fields: [metropolitan_id], references: [id], onDelete: Cascade)
 
   @@id([zip_code_id, metropolitan_id])
   @@map("metropolitan_zip_code")
@@ -134,7 +134,7 @@ model Setting {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  user User @relation(fields: [user_id], references: [id])
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("settings")
 }
@@ -150,7 +150,7 @@ model Address {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  zipCode            ZipCode              @relation(fields: [zip_code_id], references: [id])
+  zipCode            ZipCode              @relation(fields: [zip_code_id], references: [id], onDelete: Cascade)
   favoriteAddresses  FavoriteAddress[]
   tagFavoriteAddress TagFavoriteAddress[]
 
@@ -161,13 +161,17 @@ model FavoriteAddress {
   user_id    Int
   address_id Int
 
-  info Json
+  asking   Decimal
+  offer    Decimal
+  down     Decimal
+  cashflow Decimal
+  repairs  Decimal
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  user    User                 @relation(fields: [user_id], references: [id])
-  address Address              @relation(fields: [address_id], references: [id])
+  user    User                 @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  address Address              @relation(fields: [address_id], references: [id], onDelete: Cascade)
   tags    TagFavoriteAddress[]
 
   @@id([user_id, address_id])
@@ -194,10 +198,10 @@ model TagFavoriteAddress {
 
   created_at DateTime @default(now())
 
-  tag             Tag              @relation(fields: [tag_id], references: [id])
-  address         Address          @relation(fields: [address_id], references: [id])
-  user            User             @relation(fields: [user_id], references: [id])
-  favoriteAddress FavoriteAddress? @relation(fields: [user_id, address_id], references: [user_id, address_id])
+  tag             Tag              @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+  address         Address          @relation(fields: [address_id], references: [id], onDelete: Cascade)
+  user            User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  favoriteAddress FavoriteAddress? @relation(fields: [user_id, address_id], references: [user_id, address_id], onDelete: Cascade)
 
   @@id([address_id, user_id, tag_id])
   @@map("tag_favorite_address")

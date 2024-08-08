@@ -1,7 +1,6 @@
 import { DatabaseService } from '../../globals/database/database.service';
 import { Injectable } from '@nestjs/common';
 import { AddressEntity } from './entity/address.entity';
-import { Prisma } from '@prisma/client';
 import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
 import {
   AddressInput,
@@ -121,11 +120,19 @@ export class AddressService {
             },
             create: {
               address_id: address.id,
-              info: input.prices as Prisma.JsonObject,
+              asking: input.prices.asking,
+              down: input.prices.down,
+              repairs: input.prices.repairs,
+              cashflow: input.prices.cashflow,
+              offer: input.prices.offer,
             },
             update: {
               address_id: address.id,
-              info: input.prices as Prisma.JsonObject,
+              asking: input.prices.asking,
+              down: input.prices.down,
+              repairs: input.prices.repairs,
+              cashflow: input.prices.cashflow,
+              offer: input.prices.offer,
               updated_at: new Date(),
             },
           },
@@ -242,22 +249,26 @@ export class AddressService {
             address: input.direction,
           },
         };
-      // case GetFavoritesSortingColumn.ASKING:
-      //   return {
-      //     // info:
-      //   };
-      // case GetFavoritesSortingColumn.OFFER:
-      //   console.log(GetFavoritesSortingColumn.OFFER);
-      //   break;
-      // case GetFavoritesSortingColumn.DOWN:
-      //   console.log(GetFavoritesSortingColumn.DOWN);
-      //   break;
-      // case GetFavoritesSortingColumn.CASHFLOW:
-      //   console.log(GetFavoritesSortingColumn.CASHFLOW);
-      //   break;
-      // case GetFavoritesSortingColumn.REPAIRS:
-      //   console.log(GetFavoritesSortingColumn.REPAIRS);
-      //   break;
+      case GetFavoritesSortingColumn.ASKING:
+        return {
+          asking: input.direction,
+        };
+      case GetFavoritesSortingColumn.OFFER:
+        return {
+          offer: input.direction,
+        };
+      case GetFavoritesSortingColumn.DOWN:
+        return {
+          down: input.direction,
+        };
+      case GetFavoritesSortingColumn.CASHFLOW:
+        return {
+          cashflow: input.direction,
+        };
+      case GetFavoritesSortingColumn.REPAIRS:
+        return {
+          repairs: input.direction,
+        };
       default:
         return {
           created_at: input.direction,

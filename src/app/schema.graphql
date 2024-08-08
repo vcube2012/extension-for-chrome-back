@@ -76,18 +76,14 @@ type TagEntity {
   created_at: DateTime!
 }
 
-type FavoriteAddressEntityInfo {
-  asking: Float
-  offer: Float
-  down: Float
-  cashflow: Float
-  repairs: Float
-}
-
 type FavoriteAddressEntity {
   created_at: DateTime!
   updated_at: DateTime
-  info: FavoriteAddressEntityInfo!
+  asking: Float!
+  offer: Float!
+  down: Float!
+  cashflow: Float!
+  repairs: Float!
   address: AddressEntity
   tags: [TagEntity!]!
 }
