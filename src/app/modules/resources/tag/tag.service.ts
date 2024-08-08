@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
 import { SaveTagsInput } from './input/save-tags.input';
 import { AddressService } from '../address/address.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class TagService {
@@ -9,6 +10,21 @@ export class TagService {
     private readonly db: DatabaseService,
     private readonly addressService: AddressService,
   ) {}
+
+  async findAllForUser(userId: number, fields: Prisma.TagSelect) {
+    return this.db.tag.findMany({
+      where: {
+        tagFavoriteAddress: {
+          some: {
+            user_id: userId,
+          },
+        },
+      },
+      select: {
+        ...fields,
+      },
+    });
+  }
 
   async saveTagsForFavoriteAddress(userId: number, input: SaveTagsInput) {
     const favoriteAddress = await this.addressService.findOneFavoriteAddress(

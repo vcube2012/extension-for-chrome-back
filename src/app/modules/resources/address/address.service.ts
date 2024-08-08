@@ -7,7 +7,11 @@ import {
   AddressInput,
   AddToFavoriteInput,
 } from './input/add-to-favorite.input';
-import { GetFavoritesInput } from './input/get-favorites.input';
+import {
+  GetFavoritesInput,
+  GetFavoritesSorting,
+  GetFavoritesSortingColumn,
+} from './input/get-favorites.input';
 
 @Injectable()
 export class AddressService {
@@ -49,6 +53,8 @@ export class AddressService {
       };
     }
 
+    const orderBy = this.makeOrderByConstraint(input.sorting);
+
     const paginatedRecords = await this.db.paginate({
       model: 'favoriteAddress',
       query: {
@@ -64,7 +70,7 @@ export class AddressService {
           },
         },
         orderBy: {
-          created_at: input.sorting,
+          ...orderBy,
         },
       },
       page: input.page,
@@ -226,5 +232,36 @@ export class AddressService {
     }
 
     return transformer(favoriteAddresses);
+  }
+
+  private makeOrderByConstraint(input: GetFavoritesSorting) {
+    switch (input.column) {
+      case GetFavoritesSortingColumn.ADDRESS:
+        return {
+          address: {
+            address: input.direction,
+          },
+        };
+      // case GetFavoritesSortingColumn.ASKING:
+      //   return {
+      //     // info:
+      //   };
+      // case GetFavoritesSortingColumn.OFFER:
+      //   console.log(GetFavoritesSortingColumn.OFFER);
+      //   break;
+      // case GetFavoritesSortingColumn.DOWN:
+      //   console.log(GetFavoritesSortingColumn.DOWN);
+      //   break;
+      // case GetFavoritesSortingColumn.CASHFLOW:
+      //   console.log(GetFavoritesSortingColumn.CASHFLOW);
+      //   break;
+      // case GetFavoritesSortingColumn.REPAIRS:
+      //   console.log(GetFavoritesSortingColumn.REPAIRS);
+      //   break;
+      default:
+        return {
+          created_at: input.direction,
+        };
+    }
   }
 }
