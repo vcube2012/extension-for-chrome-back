@@ -162,6 +162,22 @@ type StaticPageEntity {
   created_at: DateTime!
 }
 
+type BlogEntity {
+  id: ID!
+  slug: String!
+  title: String!
+  image: String
+  content: String!
+  likes: Int!
+  views: Int!
+  created_at: DateTime!
+}
+
+type PaginatedBlogs {
+  data: [BlogEntity!]!
+  meta: PaginationMeta!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -171,6 +187,8 @@ type Query {
   getTags: [TagEntity!]!
   findAllPackages: [PackageEntity!]!
   findAllStaticPages: [StaticPageEntity!]!
+  getBlogs(input: PaginateBlogsInput!): PaginatedBlogs!
+  findBlog(input: FindBlogInput!): BlogEntity
 }
 
 input ZipCodesInput {
@@ -208,12 +226,22 @@ enum SortingEnum {
   DESC
 }
 
+input PaginateBlogsInput {
+  page: Int! = 1
+  perPage: Int! = 3
+}
+
+input FindBlogInput {
+  slug: String!
+}
+
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
+  likeBlog(input: FindBlogInput!): Int
 }
 
 input SocialSignInInput {

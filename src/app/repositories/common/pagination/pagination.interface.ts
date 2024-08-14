@@ -2,7 +2,7 @@ export const PER_PAGE = 10;
 
 export interface PaginationOptions {
   model: string;
-  query: object;
+  query?: object;
   page: number;
   limit?: number;
 }

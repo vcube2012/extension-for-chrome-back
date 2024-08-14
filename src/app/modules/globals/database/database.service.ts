@@ -29,6 +29,10 @@ export class DatabaseService
     const perPage = options.limit ?? PER_PAGE;
     const currentPage = options.page;
 
+    if (!options.query) {
+      options.query = {};
+    }
+
     options.query['take'] = perPage;
     options.query['skip'] =
       currentPage > 1 ? (currentPage - 1) * options.query['take'] : 0;
