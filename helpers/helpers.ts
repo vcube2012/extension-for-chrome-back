@@ -10,3 +10,14 @@ export function toSnakeCase(str: string): string {
 export function sleep(seconds: number) {
   return new Promise((r) => setTimeout(r, seconds * 1000));
 }
+
+export async function loadDefaultClassFromFile(filepath: string) {
+  try {
+    const module = await import(filepath);
+
+    return module.default;
+  } catch (error) {
+    console.error('Error loading class from file:', error);
+    throw error;
+  }
+}
