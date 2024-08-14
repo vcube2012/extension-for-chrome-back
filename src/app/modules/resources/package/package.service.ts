@@ -11,6 +11,9 @@ export class PackageService {
       select: {
         ...fields,
       },
+      orderBy: {
+        sort_order: 'asc',
+      },
     });
   }
 }

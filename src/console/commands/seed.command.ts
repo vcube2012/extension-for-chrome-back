@@ -2,8 +2,8 @@ import { Command, CommandRunner } from 'nest-commander';
 import * as child_process from 'node:child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { loadDefaultClassFromFile } from '../../../../../helpers/helpers';
-import { DatabaseService } from '../../globals/database/database.service';
+import { loadDefaultClassFromFile } from '../../../helpers/helpers';
+import { DatabaseService } from '../../app/modules/globals/database/database.service';
 
 @Command({
   name: 'db:seed',

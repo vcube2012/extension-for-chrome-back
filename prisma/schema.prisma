@@ -37,6 +37,7 @@ model Package {
   is_active      Boolean     @default(false)
   is_bestseller  Boolean     @default(false)
   advantages     Json?
+  sort_order     Int?        @default(0) @db.SmallInt
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt

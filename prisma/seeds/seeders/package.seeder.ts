@@ -18,6 +18,7 @@ export default class PackageSeeder implements SeederInterface {
         price: 0,
         old_price: 9.99,
         is_active: true,
+        is_bestseller: false,
         advantages: [
           'Chrome Extension',
           'All the Pro Features',
