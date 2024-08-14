@@ -136,6 +136,24 @@ type UserEntity {
   setting: SettingEntity
 }
 
+type PackageEntity {
+  id: ID!
+  type: PackageType!
+  name: String!
+  requests_limit: Int!
+  price: Float!
+  old_price: Float
+  is_active: Boolean!
+  is_bestseller: Boolean!
+  advantages: [String!]!
+  created_at: DateTime!
+}
+
+enum PackageType {
+  MONTHLY
+  ANNUALLY
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -143,6 +161,7 @@ type Query {
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
   getTags: [TagEntity!]!
+  findAllPackages: [PackageEntity!]!
 }
 
 input ZipCodesInput {

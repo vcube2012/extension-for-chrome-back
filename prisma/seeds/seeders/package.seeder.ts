@@ -1,46 +1,79 @@
-import { PrismaClient } from '@prisma/client';
+import { PackageType, PrismaClient } from '@prisma/client';
 import { SeederInterface } from './interfaces/seeder.interface';
 
-const newbie = {
-  where: { type: 'newbie' },
-  update: {},
-  create: {
-    type: 'newbie',
-    name: 'Newbie',
-    requests_limit: 200,
-    price: 1900,
-    is_active: true,
-  },
-};
-
-const professional = {
-  where: { type: 'professional' },
-  update: {},
-  create: {
-    type: 'professional',
-    name: 'Professional',
-    requests_limit: 500,
-    price: 3900,
-    is_active: true,
-  },
-};
-
-const expert = {
-  where: { type: 'expert' },
-  update: {},
-  create: {
-    type: 'expert',
-    name: 'Expert',
-    requests_limit: 1000,
-    price: 6900,
-    is_active: true,
-  },
-};
-
-export class PackageSeeder implements SeederInterface {
+export default class PackageSeeder implements SeederInterface {
   async run(prisma: PrismaClient) {
-    await prisma.package.upsert(newbie);
-    await prisma.package.upsert(professional);
-    await prisma.package.upsert(expert);
+    await prisma.package.upsert({
+      where: {
+        type_name: {
+          type: PackageType.MONTHLY,
+          name: 'Free',
+        },
+      },
+      update: {},
+      create: {
+        type: PackageType.MONTHLY,
+        name: 'Free',
+        requests_limit: 100,
+        price: 0,
+        old_price: 9.99,
+        is_active: true,
+        advantages: [
+          'Chrome Extension',
+          'All the Pro Features',
+          "Prices Won't Go Up",
+          'Priority Support',
+        ],
+      },
+    });
+
+    await prisma.package.upsert({
+      where: {
+        type_name: {
+          type: PackageType.MONTHLY,
+          name: 'Professional',
+        },
+      },
+      update: {},
+      create: {
+        type: PackageType.MONTHLY,
+        name: 'Professional',
+        requests_limit: 5000,
+        price: 99,
+        old_price: 165,
+        is_active: true,
+        is_bestseller: true,
+        advantages: [
+          'Chrome Extension',
+          'All the Pro Features',
+          "Prices Won't Go Up",
+          'Priority Support',
+        ],
+      },
+    });
+
+    await prisma.package.upsert({
+      where: {
+        type_name: {
+          type: PackageType.MONTHLY,
+          name: 'Essential',
+        },
+      },
+      update: {},
+      create: {
+        type: PackageType.MONTHLY,
+        name: 'Essential',
+        requests_limit: 1500,
+        price: 30,
+        old_price: 40,
+        is_active: true,
+        advantages: [
+          'Chrome Extension',
+          'All the Pro Features',
+          "Prices Won't Go Up",
+          'Priority Support',
+        ],
+      },
+    });
   }
 }

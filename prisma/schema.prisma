@@ -29,16 +29,25 @@ model User {
 model Package {
   id Int @id @default(autoincrement())
 
-  type           String  @unique
+  type           PackageType
   name           String
   requests_limit Int
-  price          BigInt  @default(0)
-  is_active      Boolean @default(false)
+  price          Decimal     @default(0) @db.Decimal(10, 2)
+  old_price      Decimal?    @db.Decimal(10, 2)
+  is_active      Boolean     @default(false)
+  is_bestseller  Boolean     @default(false)
+  advantages     Json?
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
+  @@unique([type, name])
   @@map("packages")
+}
+
+enum PackageType {
+  MONTHLY
+  ANNUALLY
 }
 
 model Metropolitan {
@@ -206,3 +215,10 @@ model TagFavoriteAddress {
   @@id([address_id, user_id, tag_id])
   @@map("tag_favorite_address")
 }
+
+// model StaticPage {
+//   id Int @id @default(autoincrement())
+//
+//   created_at DateTime  @default(now())
+//   updated_at DateTime? @updatedAt
+// }
