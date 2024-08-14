@@ -154,6 +154,14 @@ enum PackageType {
   ANNUALLY
 }
 
+type StaticPageEntity {
+  id: ID!
+  slug: String!
+  title: String!
+  content: String!
+  created_at: DateTime!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -162,6 +170,7 @@ type Query {
   getProfile: UserEntity
   getTags: [TagEntity!]!
   findAllPackages: [PackageEntity!]!
+  findAllStaticPages: [StaticPageEntity!]!
 }
 
 input ZipCodesInput {

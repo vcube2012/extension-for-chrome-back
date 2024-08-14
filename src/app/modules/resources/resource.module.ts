@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { SettingModule } from './setting/setting.module';
 import { TagModule } from './tag/tag.module';
 import { PackageModule } from './package/package.module';
+import { StaticPageModule } from './static-page/static-page.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PackageModule } from './package/package.module';
     SettingModule,
     TagModule,
     PackageModule,
+    StaticPageModule,
   ],
 })
 export class ResourceModule {}

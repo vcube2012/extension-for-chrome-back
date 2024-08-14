@@ -217,9 +217,15 @@ model TagFavoriteAddress {
   @@map("tag_favorite_address")
 }
 
-// model StaticPage {
-//   id Int @id @default(autoincrement())
-//
-//   created_at DateTime  @default(now())
-//   updated_at DateTime? @updatedAt
-// }
+model StaticPage {
+  id Int @id @default(autoincrement())
+
+  slug    String @unique
+  title   String
+  content String @db.Text
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("static_pages")
+}
