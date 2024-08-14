@@ -41,6 +41,6 @@ export class GetFavoritesInput extends PickType(
   @Field({ nullable: true })
   search?: string;
 
-  @Field(() => GetFavoritesSorting)
+  @Field(() => GetFavoritesSorting, { nullable: true })
   sorting?: GetFavoritesSorting;
 }

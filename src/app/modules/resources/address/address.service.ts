@@ -52,7 +52,11 @@ export class AddressService {
       };
     }
 
-    const orderBy = this.makeOrderByConstraint(input.sorting);
+    let orderBy = {};
+
+    if (!!input?.sorting) {
+      orderBy = this.makeOrderByConstraint(input.sorting);
+    }
 
     const paginatedRecords = await this.db.paginate({
       model: 'favoriteAddress',
