@@ -19,7 +19,7 @@ export class BlogService {
     });
   }
 
-  async findOne(slug: string) {
+  async findOneBySlug(slug: string) {
     return this.db.blog.findUnique({
       where: {
         slug: slug,
@@ -29,17 +29,21 @@ export class BlogService {
   }
 
   async likeBlog(slug: string) {
-    const blog = await this.db.blog.update({
-      where: {
-        slug: slug,
-        is_active: true,
-      },
-      data: {
-        likes: {
-          increment: 1,
+    let blog = await this.findOneBySlug(slug);
+
+    if (!!blog) {
+      blog = await this.db.blog.update({
+        where: {
+          slug: slug,
+          is_active: true,
         },
-      },
-    });
+        data: {
+          likes: {
+            increment: 1,
+          },
+        },
+      });
+    }
 
     return blog?.likes;
   }

@@ -18,7 +18,7 @@ export class BlogResolver {
   @Query(() => BlogEntity, { nullable: true })
   @ExceptionHandlerDecorator()
   async findBlog(@Args('input') input: FindBlogInput) {
-    const blog = await this.blogService.findOne(input.slug);
+    const blog = await this.blogService.findOneBySlug(input.slug);
 
     if (!!blog) {
       const viewsCount = await this.blogService.viewBlog(blog.id);
