@@ -9,6 +9,7 @@ import { StaticPageModule } from './static-page/static-page.module';
 import { BlogModule } from './blog/blog.module';
 import { FaqModule } from './faq/faq.module';
 import { ReviewModule } from './review/review.module';
+import { SiteSettingModule } from './site-setting/site-setting.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ReviewModule } from './review/review.module';
     BlogModule,
     FaqModule,
     ReviewModule,
+    SiteSettingModule,
   ],
 })
 export class ResourceModule {}

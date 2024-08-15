@@ -192,6 +192,12 @@ type ReviewEntity {
   created_at: DateTime!
 }
 
+type VideoMainPageEntity {
+  key: String!
+  created_at: DateTime!
+  value: String!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -205,6 +211,7 @@ type Query {
   findBlog(input: FindBlogInput!): BlogEntity
   getFaq: [FaqEntity!]!
   findReviews: [ReviewEntity!]!
+  getMainPageVideo: VideoMainPageEntity
 }
 
 input ZipCodesInput {

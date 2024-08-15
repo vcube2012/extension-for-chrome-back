@@ -4,6 +4,7 @@ import StaticPageSeeder from './static-page.seeder';
 import BlogSeeder from './blog.seeder';
 import FaqSeeder from './faq.seeder';
 import ReviewSeeder from './review.seeder';
+import SiteSettingSeeder from './site-setting.seeder';
 
 export const seeders: Array<SeederInterface> = [
   new PackageSeeder(),
@@ -11,4 +12,5 @@ export const seeders: Array<SeederInterface> = [
   new BlogSeeder(),
   new FaqSeeder(),
   new ReviewSeeder(),
+  new SiteSettingSeeder(),
 ];

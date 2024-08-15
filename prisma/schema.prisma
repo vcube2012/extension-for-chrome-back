@@ -273,3 +273,14 @@ model Review {
 
   @@map("reviews")
 }
+
+model SiteSetting {
+  key String @id
+
+  value Json
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("site_settings")
+}
