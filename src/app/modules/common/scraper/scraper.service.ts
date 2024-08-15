@@ -1,9 +1,10 @@
 import { Browser, Page } from 'puppeteer';
-import { sleep, toSnakeCase } from '../../../../../helpers/helpers';
+import { sleep } from '../../../../../helpers/helpers';
 import { Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DomSelectorEnum } from './enums/dom-selector.enum';
 import { ScraperRunner } from './scraper.runner';
+import * as lodash from 'lodash';
 
 const url =
   'https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2024_code/select_Geography_sa.odn';
@@ -154,7 +155,7 @@ export default class ScraperService {
     data.forEach((arr) => {
       items.push(
         headings.reduce((obj, key, index) => {
-          const snakeCaseKey = toSnakeCase(key);
+          const snakeCaseKey = lodash.snakeCase(key);
 
           if (snakeCaseKey === 'zip_code') {
             obj['code'] = arr[index];
