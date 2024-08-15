@@ -244,17 +244,18 @@ model Blog {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  // blogLikes BlogLike[]
   @@map("blogs")
 }
 
-// model BlogLike {
-//   blog_id    Int
-//   user_id    Int
-//   created_at DateTime @default(now())
-//
-//   blog Blog? @relation(fields: [blog_id], references: [id])
-//
-//   @@unique([blog_id, user_id])
-//   @@map("blog_likes")
-// }
+model Faq {
+  id Int @id @default(autoincrement())
+
+  question   String
+  answer     String
+  sort_order Int    @db.SmallInt
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("faq")
+}

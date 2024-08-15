@@ -178,6 +178,13 @@ type PaginatedBlogs {
   meta: PaginationMeta!
 }
 
+type FaqEntity {
+  id: Float!
+  question: String!
+  answer: String!
+  created_at: DateTime!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -189,6 +196,7 @@ type Query {
   findAllStaticPages: [StaticPageEntity!]!
   getBlogs(input: PaginateBlogsInput!): PaginatedBlogs!
   findBlog(input: FindBlogInput!): BlogEntity
+  getFaq: [FaqEntity!]!
 }
 
 input ZipCodesInput {

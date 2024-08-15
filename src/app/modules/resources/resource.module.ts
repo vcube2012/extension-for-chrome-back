@@ -7,6 +7,7 @@ import { TagModule } from './tag/tag.module';
 import { PackageModule } from './package/package.module';
 import { StaticPageModule } from './static-page/static-page.module';
 import { BlogModule } from './blog/blog.module';
+import { FaqModule } from './faq/faq.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BlogModule } from './blog/blog.module';
     PackageModule,
     StaticPageModule,
     BlogModule,
+    FaqModule,
   ],
 })
 export class ResourceModule {}
