@@ -242,6 +242,7 @@ type Mutation {
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
   likeBlog(input: FindBlogInput!): Int
+  unlikeBlog(input: FindBlogInput!): Int
 }
 
 input SocialSignInInput {

@@ -34,4 +34,10 @@ export class BlogResolver {
   async likeBlog(@Args('input') input: FindBlogInput) {
     return this.blogService.likeBlog(input.slug);
   }
+
+  @Mutation(() => Int, { nullable: true })
+  @ExceptionHandlerDecorator()
+  async unlikeBlog(@Args('input') input: FindBlogInput) {
+    return this.blogService.unlikeBlog(input.slug);
+  }
 }

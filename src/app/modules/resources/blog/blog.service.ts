@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { BlogEntity } from './entity/blog.entity';
+
+enum LikeEnum {
+  LIKE,
+  UNLIKE,
+}
 
 @Injectable()
 export class BlogService {
@@ -29,23 +33,11 @@ export class BlogService {
   }
 
   async likeBlog(slug: string) {
-    let blog = await this.findOneBySlug(slug);
+    return this.likeOrUnlike(slug, LikeEnum.LIKE);
+  }
 
-    if (!!blog) {
-      blog = await this.db.blog.update({
-        where: {
-          slug: slug,
-          is_active: true,
-        },
-        data: {
-          likes: {
-            increment: 1,
-          },
-        },
-      });
-    }
-
-    return blog?.likes;
+  async unlikeBlog(slug: string) {
+    return this.likeOrUnlike(slug, LikeEnum.UNLIKE);
   }
 
   async viewBlog(id: number) {
@@ -62,5 +54,28 @@ export class BlogService {
     });
 
     return blog?.views;
+  }
+
+  private async likeOrUnlike(slug: string, type: LikeEnum) {
+    let blog = await this.findOneBySlug(slug);
+
+    const statement =
+      type === LikeEnum.LIKE ? { increment: 1 } : { decrement: 1 };
+
+    if (!!blog) {
+      blog = await this.db.blog.update({
+        where: {
+          slug: slug,
+          is_active: true,
+        },
+        data: {
+          likes: {
+            ...statement,
+          },
+        },
+      });
+    }
+
+    return blog?.likes;
   }
 }
