@@ -1,9 +1,10 @@
 import { Command, CommandRunner } from 'nest-commander';
-import * as child_process from 'node:child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { loadDefaultClassFromFile } from '../../../helpers/helpers';
 import { DatabaseService } from '../../app/modules/globals/database/database.service';
+import { seeders } from '../../../prisma/seeds/seeders';
+import { ScraperRunner } from '../../app/modules/common/scraper/scraper.runner';
 
 @Command({
   name: 'db:seed',
@@ -31,8 +32,14 @@ export class SeedCommand extends CommandRunner {
     console.log('Database seeded successfully.');
   }
 
-  private runAllSeeders() {
-    child_process.exec('ts-node prisma/seeds/seed.ts');
+  private async runAllSeeders() {
+    const db = new DatabaseService();
+
+    for (const seeder of seeders) {
+      await seeder.run(db);
+    }
+
+    await new ScraperRunner().run();
   }
 
   private async runSeeder(seeder: string) {

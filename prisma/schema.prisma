@@ -10,11 +10,12 @@ datasource db {
 model User {
   id Int @id @default(autoincrement())
 
-  email      String  @unique
-  first_name String
-  last_name  String
-  avatar     String?
-  password   String
+  email       String  @unique
+  first_name  String
+  last_name   String
+  avatar      String?
+  password    String
+  referrer_id Int?
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
@@ -22,7 +23,12 @@ model User {
   setting            Setting?
   favoriteAddresses  FavoriteAddress[]
   tagFavoriteAddress TagFavoriteAddress[]
+  referrer           User?                @relation("UserRefferals", fields: [referrer_id], references: [id])
+  referrals          User[]               @relation("UserRefferals")
+  partnerBonuses     ReferralBonus[]      @relation("partner")
+  refferalBonuses    ReferralBonus[]      @relation("referral")
 
+  @@index(referrer_id)
   @@map("users")
 }
 
@@ -283,4 +289,24 @@ model SiteSetting {
   updated_at DateTime? @updatedAt
 
   @@map("site_settings")
+}
+
+model ReferralBonus {
+  id BigInt @id @default(autoincrement())
+
+  type        String
+  partner_id  Int
+  referral_id Int?
+  percent     Int     @db.SmallInt
+  amount      Decimal
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  partner  User? @relation("partner", fields: [partner_id], references: [id])
+  referral User? @relation("referral", fields: [referral_id], references: [id])
+
+  @@index(partner_id)
+  @@index(referral_id)
+  @@map("referral_bonuses")
 }

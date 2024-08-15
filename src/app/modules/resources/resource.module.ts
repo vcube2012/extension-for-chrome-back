@@ -10,6 +10,7 @@ import { BlogModule } from './blog/blog.module';
 import { FaqModule } from './faq/faq.module';
 import { ReviewModule } from './review/review.module';
 import { SiteSettingModule } from './site-setting/site-setting.module';
+import { ReferralBonusModule } from './referral-bonus/referral-bonus.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SiteSettingModule } from './site-setting/site-setting.module';
     FaqModule,
     ReviewModule,
     SiteSettingModule,
+    ReferralBonusModule,
   ],
 })
 export class ResourceModule {}

@@ -132,8 +132,9 @@ type UserEntity {
   email: String!
   created_at: DateTime!
   password: String!
-  avatar: String!
+  avatar: String
   setting: SettingEntity
+  invitedBy: UserEntity
 }
 
 type PackageEntity {
@@ -198,6 +199,58 @@ type VideoMainPageEntity {
   value: String!
 }
 
+type PartnerBonusEntity {
+  key: String!
+  created_at: DateTime!
+  value: Int!
+}
+
+type ReferralEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  created_at: DateTime!
+  password: String!
+  avatar: String
+}
+
+type PartnerEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  created_at: DateTime!
+  password: String!
+  avatar: String
+}
+
+type ReferralBonusEntity {
+  id: ID!
+  type: ReferralBonusType!
+  percent: Int!
+  amount: Float!
+  created_at: DateTime!
+  partner: PartnerEntity!
+  referral: ReferralEntity
+}
+
+enum ReferralBonusType {
+  COMMISSION
+  WITHDRAWAL
+}
+
+type PartnerStatisticsEntity {
+  balance: Float!
+  totalEarnings: Float!
+  referralsCount: Int!
+}
+
+type PaginatedReferralBonuses {
+  data: [ReferralBonusEntity!]!
+  meta: PaginationMeta!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -212,6 +265,9 @@ type Query {
   getFaq: [FaqEntity!]!
   findReviews: [ReviewEntity!]!
   getMainPageVideo: VideoMainPageEntity
+  getPartnerBonus: PartnerBonusEntity
+  getReferralBonuses(input: PaginationInput!): PaginatedReferralBonuses!
+  getPartnerStatistics: PartnerStatisticsEntity!
 }
 
 input ZipCodesInput {
@@ -256,6 +312,11 @@ input PaginateBlogsInput {
 
 input FindBlogInput {
   slug: String!
+}
+
+input PaginationInput {
+  page: Int! = 1
+  perPage: Int! = 10
 }
 
 type Mutation {

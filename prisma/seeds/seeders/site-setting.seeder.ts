@@ -15,5 +15,16 @@ export default class SiteSettingSeeder implements SeederInterface {
           'https://www.youtube.com/embed/gmr7sSF3VUo?si=gc2NtXbtfhbA6PQD?autoplay=1',
       },
     });
+
+    await prisma.siteSetting.upsert({
+      where: {
+        key: SiteSettingKey.PARTNER_BONUS,
+      },
+      update: {},
+      create: {
+        key: SiteSettingKey.PARTNER_BONUS,
+        value: 10,
+      },
+    });
   }
 }

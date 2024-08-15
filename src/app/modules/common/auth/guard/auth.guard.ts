@@ -9,10 +9,14 @@ import { JwtService } from '@nestjs/jwt';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { FastifyRequest } from 'fastify';
 import { IContextServer } from '../../graphql/graphql.module';
+import { DatabaseService } from '../../../globals/database/database.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private db: DatabaseService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx: IContextServer =
@@ -25,8 +29,14 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      ctx.req.user = await this.jwtService.verifyAsync(token, {
+      const userData = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
+      });
+
+      ctx.req.user = await this.db.user.findUniqueOrThrow({
+        where: {
+          id: userData.id,
+        },
       });
     } catch (error) {
       throw new UnauthorizedException();

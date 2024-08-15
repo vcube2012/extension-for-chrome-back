@@ -39,7 +39,7 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
   @IsNotEmpty()
   password: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
   avatar?: string;
 }

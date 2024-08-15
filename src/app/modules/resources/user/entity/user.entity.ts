@@ -10,4 +10,7 @@ export class UserEntity extends OmitType(
 ) {
   @Field({ nullable: true })
   setting: SettingEntity;
+
+  @Field({ nullable: true })
+  invitedBy: UserEntity;
 }
