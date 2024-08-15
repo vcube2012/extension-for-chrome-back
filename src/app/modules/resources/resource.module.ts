@@ -8,6 +8,7 @@ import { PackageModule } from './package/package.module';
 import { StaticPageModule } from './static-page/static-page.module';
 import { BlogModule } from './blog/blog.module';
 import { FaqModule } from './faq/faq.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { FaqModule } from './faq/faq.module';
     StaticPageModule,
     BlogModule,
     FaqModule,
+    ReviewModule,
   ],
 })
 export class ResourceModule {}

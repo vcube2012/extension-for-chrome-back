@@ -185,6 +185,13 @@ type FaqEntity {
   created_at: DateTime!
 }
 
+type ReviewEntity {
+  id: ID!
+  author: String!
+  text: String!
+  created_at: DateTime!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -197,6 +204,7 @@ type Query {
   getBlogs(input: PaginateBlogsInput!): PaginatedBlogs!
   findBlog(input: FindBlogInput!): BlogEntity
   getFaq: [FaqEntity!]!
+  findReviews: [ReviewEntity!]!
 }
 
 input ZipCodesInput {

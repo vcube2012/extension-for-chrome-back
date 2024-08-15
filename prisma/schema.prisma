@@ -259,3 +259,17 @@ model Faq {
 
   @@map("faq")
 }
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  rating     Int    @db.SmallInt
+  text       String @db.VarChar(1000)
+  author     String @db.VarChar(255)
+  sort_order Int    @db.SmallInt
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("reviews")
+}
