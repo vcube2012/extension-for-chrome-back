@@ -251,6 +251,21 @@ type PaginatedReferralBonuses {
   meta: PaginationMeta!
 }
 
+type DepositEntity {
+  id: ID!
+  type: String!
+  amount: Float!
+  status: String!
+  payment_id: String
+  error: String
+  created_at: DateTime!
+}
+
+type PaginatedDeposits {
+  data: [DepositEntity!]!
+  meta: PaginationMeta!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -268,6 +283,7 @@ type Query {
   getPartnerBonus: PartnerBonusEntity
   getReferralBonuses(input: PaginationInput!): PaginatedReferralBonuses!
   getPartnerStatistics: PartnerStatisticsEntity!
+  getPaymentsHistory(input: PaginationInput!): PaginatedDeposits!
 }
 
 input ZipCodesInput {
