@@ -8,6 +8,9 @@ export class StaticPageService {
 
   async findAll(fields: Prisma.StaticPageSelect) {
     return this.db.staticPage.findMany({
+      where: {
+        is_active: true,
+      },
       select: {
         ...fields,
       },
