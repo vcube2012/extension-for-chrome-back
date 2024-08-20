@@ -245,9 +245,10 @@ model TagFavoriteAddress {
 model StaticPage {
   id Int @id @default(autoincrement())
 
-  slug    String @unique
-  title   String
-  content String @db.Text
+  slug      String  @unique
+  title     String
+  is_active Boolean @default(false)
+  content   String? @db.Text
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
