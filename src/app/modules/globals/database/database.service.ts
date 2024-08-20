@@ -68,8 +68,6 @@ export class DatabaseService
 
     const lastPage = Math.max(Math.ceil(total / perPage), 1);
 
-    console.log(data);
-
     return {
       data: data,
       meta: {
