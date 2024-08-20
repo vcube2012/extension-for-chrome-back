@@ -15,6 +15,27 @@ export class DatabaseService
     super({
       log: ['query', 'info', 'warn', 'error'],
     });
+
+    // Adding BigInt serialization middleware
+    this.$use(async (params, next) => {
+      const result = await next(params);
+
+      // Recursive function to serialize BigInt fields
+      const serializeBigIntFields = (data: any): any => {
+        if (data && typeof data === 'object') {
+          for (const key in data) {
+            if (typeof data[key] === 'bigint') {
+              data[key] = Number(data[key].toString());
+            } else if (typeof data[key] === 'object') {
+              data[key] = serializeBigIntFields(data[key]);
+            }
+          }
+        }
+        return data;
+      };
+
+      return serializeBigIntFields(result);
+    });
   }
 
   async onModuleInit() {
@@ -46,6 +67,8 @@ export class DatabaseService
     ]);
 
     const lastPage = Math.max(Math.ceil(total / perPage), 1);
+
+    console.log(data);
 
     return {
       data: data,

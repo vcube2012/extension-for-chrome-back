@@ -7,7 +7,7 @@ export class ReferralBonusService {
   constructor(private readonly db: DatabaseService) {}
 
   async paginatePartnerBonuses(userId: number, page: number, perPage: number) {
-    const data = await this.db.paginate({
+    return this.db.paginate({
       model: 'referralBonus',
       query: {
         where: {
@@ -23,8 +23,6 @@ export class ReferralBonusService {
       page: page,
       limit: perPage,
     });
-
-    console.log(data);
   }
 
   async getPartnerStatistics(userId: number) {
@@ -39,7 +37,7 @@ export class ReferralBonusService {
     return {
       balance: queryResults[0]?.balance ?? 0,
       totalEarnings: queryResults[0]?.total ?? 0,
-      referralsCount: String(queryResults[0]?.referrals_count) ?? 0,
+      referralsCount: queryResults[0]?.referrals_count ?? 0,
     };
   }
 }
