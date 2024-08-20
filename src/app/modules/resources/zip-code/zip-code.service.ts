@@ -53,7 +53,7 @@ export class ZipCodeService {
 
   // обрахування зняття кредитів з користувача
   private async calculateCredits(user: any, zipCodes: any[]) {
-    let decrement = 0;
+    const newZipCodesForUser = [];
 
     for (const zipCode of zipCodes) {
       const alreadyCached = await this.cacheManager.get(
@@ -64,17 +64,19 @@ export class ZipCodeService {
         continue;
       }
 
-      decrement++;
+      newZipCodesForUser.push(zipCode);
+    }
 
+    if (newZipCodesForUser.length > 0 && user.credits <= 0) {
+      throw new BadRequestException('Insufficient number of credits');
+    }
+
+    for (const zipCode of newZipCodesForUser) {
       await this.cacheManager.set(
         this.getCacheKey(user.id, zipCode.code),
         1,
         0,
       );
-    }
-
-    if (decrement > 0 && user.credits <= 0) {
-      throw new BadRequestException('Insufficient number of credits');
     }
 
     return this.db.user.update({
@@ -83,7 +85,7 @@ export class ZipCodeService {
       },
       data: {
         credits: {
-          decrement: decrement,
+          decrement: newZipCodesForUser.length,
         },
       },
     });
