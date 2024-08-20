@@ -14,7 +14,7 @@ export default class PackageSeeder implements SeederInterface {
       create: {
         type: PackageType.MONTHLY,
         name: 'Free',
-        requests_limit: 100,
+        credits: 100,
         price: 0,
         old_price: 9.99,
         is_active: true,
@@ -39,7 +39,7 @@ export default class PackageSeeder implements SeederInterface {
       create: {
         type: PackageType.MONTHLY,
         name: 'Professional',
-        requests_limit: 5000,
+        credits: 5000,
         price: 99,
         old_price: 165,
         is_active: true,
@@ -64,7 +64,7 @@ export default class PackageSeeder implements SeederInterface {
       create: {
         type: PackageType.MONTHLY,
         name: 'Essential',
-        requests_limit: 1500,
+        credits: 1500,
         price: 30,
         old_price: 40,
         is_active: true,

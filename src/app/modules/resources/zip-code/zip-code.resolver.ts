@@ -1,4 +1,4 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { ZipCodeService } from './zip-code.service';
 import { ZipCodeEntity } from './entity/zip-code.entity';
 import { ZipCodeInput } from './input/zip-code.input';
@@ -8,6 +8,7 @@ import { Prisma } from '@prisma/client';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
+import { IContextServer } from '../../common/graphql/graphql.module';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -18,9 +19,10 @@ export class ZipCodeResolver {
   @ExceptionHandlerDecorator()
   async findManyZipCodes(
     @Args('input') input: ZipCodesInput,
+    @Context() ctx: IContextServer,
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
   ) {
-    return this.zipCodeService.findManyByCodes(input, fields);
+    return this.zipCodeService.findManyByCodes(input, ctx.req.user, fields);
   }
 
   @Query(() => ZipCodeEntity, { nullable: true })

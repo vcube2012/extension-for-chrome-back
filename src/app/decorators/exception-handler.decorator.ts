@@ -17,11 +17,15 @@ export const ExceptionHandlerDecorator = (name?: string) => {
       const key = `\x1b[33m${_key}\x1b[0m`;
 
       try {
-        logger.log(`Operation: ${key}`, name);
+        logger.log(`Operation: ${key}`);
 
         return await originalMethod.apply(this, args);
       } catch (error) {
         logger.error(`Operation: ${_key}. Error: ${error.message}`, name);
+
+        if (process.env.APP_ENV === 'local') {
+          throw error;
+        }
 
         if (error?.statusCode?.includes(50)) {
           throw new InternalServerErrorException('Internal Server Error');

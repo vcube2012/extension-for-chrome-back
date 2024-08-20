@@ -34,7 +34,7 @@ type TokenResponse {
 }
 
 type ZipCodeEntity {
-  id: Float!
+  id: ID!
   code: String!
   price: Float!
   created_at: DateTime!
@@ -125,23 +125,76 @@ type SettingEntity {
   data: EntitySettingData
 }
 
+type ReferralEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  avatar: String
+  credits: Float!
+  package_available_to: DateTime
+  created_at: DateTime!
+}
+
+type PartnerEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  avatar: String
+  credits: Float!
+  package_available_to: DateTime
+  created_at: DateTime!
+}
+
+type ReferralBonusEntity {
+  id: ID!
+  type: ReferralBonusType!
+  percent: Int!
+  amount: Float!
+  created_at: DateTime!
+  partner: PartnerEntity!
+  referral: ReferralEntity
+}
+
+enum ReferralBonusType {
+  COMMISSION
+  WITHDRAWAL
+}
+
+type PartnerStatisticsEntity {
+  balance: Float!
+  totalEarnings: Float!
+  referralsCount: Int!
+}
+
+type PaginatedReferralBonuses {
+  data: [ReferralBonusEntity!]!
+  meta: PaginationMeta!
+}
+
 type UserEntity {
   id: Int!
   first_name: String!
   last_name: String!
   email: String!
-  created_at: DateTime!
   password: String!
   avatar: String
+  credits: Float!
+  package_available_to: DateTime
+  created_at: DateTime!
   setting: SettingEntity
-  invitedBy: UserEntity
+  referrer: PartnerEntity
+  referrals: [ReferralEntity!]!
 }
 
 type PackageEntity {
   id: ID!
   type: PackageType!
   name: String!
-  requests_limit: Int!
+  credits: Int!
   price: Float!
   old_price: Float
   is_active: Boolean!
@@ -203,52 +256,6 @@ type PartnerBonusEntity {
   key: String!
   created_at: DateTime!
   value: Int!
-}
-
-type ReferralEntity {
-  id: Int!
-  first_name: String!
-  last_name: String!
-  email: String!
-  created_at: DateTime!
-  password: String!
-  avatar: String
-}
-
-type PartnerEntity {
-  id: Int!
-  first_name: String!
-  last_name: String!
-  email: String!
-  created_at: DateTime!
-  password: String!
-  avatar: String
-}
-
-type ReferralBonusEntity {
-  id: ID!
-  type: ReferralBonusType!
-  percent: Int!
-  amount: Float!
-  created_at: DateTime!
-  partner: PartnerEntity!
-  referral: ReferralEntity
-}
-
-enum ReferralBonusType {
-  COMMISSION
-  WITHDRAWAL
-}
-
-type PartnerStatisticsEntity {
-  balance: Float!
-  totalEarnings: Float!
-  referralsCount: Int!
-}
-
-type PaginatedReferralBonuses {
-  data: [ReferralBonusEntity!]!
-  meta: PaginationMeta!
 }
 
 type DepositEntity {

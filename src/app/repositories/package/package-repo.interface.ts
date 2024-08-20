@@ -26,7 +26,7 @@ export class PackageRepoInterface {
   name: string;
 
   @Field(() => Int)
-  requests_limit: number;
+  credits: number;
 
   @Field(() => Float)
   price: number;

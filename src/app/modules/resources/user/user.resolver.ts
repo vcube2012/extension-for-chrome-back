@@ -17,7 +17,7 @@ export class UserResolver {
   @ExceptionHandlerDecorator()
   async getProfile(
     @Context() ctx: IContextServer,
-    @RequestedFieldsDecorator()
+    @RequestedFieldsDecorator({ exclude: ['setting'] })
     fields: Prisma.UserSelect,
   ) {
     return this.userService.findOneById(ctx.req.user.id, fields);

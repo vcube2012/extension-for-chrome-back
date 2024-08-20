@@ -12,7 +12,7 @@ import { ScraperRunner } from '../../app/modules/common/scraper/scraper.runner';
   arguments: '[seeder]',
 })
 export class SeedCommand extends CommandRunner {
-  async run(passedParams: string[]) {
+  async run(passedParams: string[], options?: Record<string, any>) {
     const seeder = passedParams[0] ?? null;
 
     console.log('Seeding database...', '\n');
