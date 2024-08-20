@@ -64,6 +64,7 @@ enum PackageType {
 }
 
 model PackageUser {
+  id         BigInt  @id @default(autoincrement())
   package_id Int
   user_id    Int
   is_active  Boolean @default(true)
@@ -72,7 +73,6 @@ model PackageUser {
   user    User    @relation(fields: [user_id], references: [id])
   package Package @relation(fields: [package_id], references: [id])
 
-  @@id([package_id, user_id])
   @@map("package_user")
 }
 
@@ -368,4 +368,18 @@ model Deposit {
 
   @@index(type)
   @@map("deposits")
+}
+
+model Admin {
+  id Int @id @default(autoincrement())
+
+  name           String  @db.VarChar(255)
+  email          String  @unique
+  password       String  @db.VarChar(255)
+  remember_token String? @db.VarChar(100)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("admins")
 }
