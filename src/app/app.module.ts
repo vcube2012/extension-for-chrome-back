@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CommonModule } from './modules/common/common.module';
 import { GraphqlModule } from './modules/common/graphql/graphql.module';
 import configs from './config';
 import { ResourceModule } from './modules/resources/resource.module';
 import { CacheModule } from '@nestjs/cache-manager';
-import type { ClientOpts } from 'redis';
 
 const redisStore = require('cache-manager-redis-store').redisStore;
+const redisConfig = (configService: ConfigService) => {
+  return process.env.APP_ENV === 'local'
+    ? {
+        store: redisStore,
+        host: configService.get<string>('redis.host'),
+        port: configService.get<number>('redis.port'),
+      }
+    : {
+        store: redisStore,
+        url: configService.get<number>('redis.url'),
+      };
+};
 
 @Module({
   imports: [
@@ -16,11 +27,13 @@ const redisStore = require('cache-manager-redis-store').redisStore;
       isGlobal: true,
       load: configs,
     }),
-    CacheModule.register<ClientOpts>({
+    CacheModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        ...redisConfig(configService),
+      }),
+      inject: [ConfigService],
       isGlobal: true,
-      store: redisStore,
-      host: process.env.REDIS_HOST ?? '127.0.0.1',
-      port: Number(process.env.REDIS_PORT ?? 6379),
     }),
     ScheduleModule.forRoot(),
     CommonModule,
