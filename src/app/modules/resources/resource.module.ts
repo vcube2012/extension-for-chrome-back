@@ -12,6 +12,7 @@ import { ReviewModule } from './review/review.module';
 import { SiteSettingModule } from './site-setting/site-setting.module';
 import { ReferralBonusModule } from './referral-bonus/referral-bonus.module';
 import { DepositModule } from './deposit/deposit.module';
+import { PaymentSystemModule } from './payment-system/payment-system.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DepositModule } from './deposit/deposit.module';
     SiteSettingModule,
     ReferralBonusModule,
     DepositModule,
+    PaymentSystemModule,
   ],
 })
 export class ResourceModule {}

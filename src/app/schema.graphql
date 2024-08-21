@@ -273,6 +273,16 @@ type PaginatedDeposits {
   meta: PaginationMeta!
 }
 
+type PaymentSystemEntity {
+  id: ID!
+  name: String!
+  merchant: String!
+  min_deposit: Float!
+  is_active: Boolean!
+  sort_order: Int!
+  created_at: DateTime!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
@@ -291,6 +301,7 @@ type Query {
   getReferralBonuses(input: PaginationInput!): PaginatedReferralBonuses!
   getPartnerStatistics: PartnerStatisticsEntity!
   getPaymentsHistory(input: PaginationInput!): PaginatedDeposits!
+  getAllPaymentSystems: [PaymentSystemEntity!]!
 }
 
 input ZipCodesInput {
