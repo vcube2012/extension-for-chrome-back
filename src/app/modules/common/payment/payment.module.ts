@@ -4,6 +4,7 @@ import { PaymentService } from './payment.service';
 import { PaymentController } from './payment.controller';
 import { PaymentSystemService } from '../../resources/payment-system/payment-system.service';
 import { PackageService } from '../../resources/package/package.service';
+import { DepositService } from '../../resources/deposit/deposit.service';
 
 @Module({
   providers: [
@@ -11,6 +12,7 @@ import { PackageService } from '../../resources/package/package.service';
     PaymentService,
     PaymentSystemService,
     PackageService,
+    DepositService,
   ],
   controllers: [PaymentController],
 })

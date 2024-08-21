@@ -4,5 +4,6 @@ import { DepositService } from './deposit.service';
 
 @Module({
   providers: [DepositResolver, DepositService],
+  exports: [DepositService],
 })
 export class DepositModule {}
