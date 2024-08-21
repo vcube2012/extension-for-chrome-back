@@ -6,8 +6,8 @@ import { GraphqlModule } from './modules/common/graphql/graphql.module';
 import configs from './config';
 import { ResourceModule } from './modules/resources/resource.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import redisStore from 'cache-manager-redis-yet';
 
-const redisStore = require('cache-manager-redis-store').redisStore;
 const redisConfig = (configService: ConfigService) => {
   return process.env.APP_ENV === 'local'
     ? {
@@ -27,13 +27,13 @@ const redisConfig = (configService: ConfigService) => {
       isGlobal: true,
       load: configs,
     }),
-    CacheModule.registerAsync({
+    CacheModule.register({
+      isGlobal: true,
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         ...redisConfig(configService),
       }),
-      inject: [ConfigService],
-      isGlobal: true,
     }),
     ScheduleModule.forRoot(),
     CommonModule,
