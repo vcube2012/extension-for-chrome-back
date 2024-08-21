@@ -10,7 +10,7 @@ const redisConfig = (configService: ConfigService) => {
         port: configService.get<number>('redis.port'),
       }
     : {
-        url: configService.get<number>('redis.url'),
+        url: configService.get<string>('redis.url'),
       };
 };
 
