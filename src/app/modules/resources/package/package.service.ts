@@ -11,8 +11,20 @@ export class PackageService {
       select: {
         ...fields,
       },
+      where: {
+        is_active: true,
+      },
       orderBy: {
         sort_order: 'asc',
+      },
+    });
+  }
+
+  async findActiveOne(id: number) {
+    return this.db.package.findUnique({
+      where: {
+        is_active: true,
+        id: id,
       },
     });
   }

@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ScraperModule } from './scraper/scraper.module';
 import { GraphqlModule } from './graphql/graphql.module';
 import { AuthModule } from './auth/auth.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [ScraperModule, GraphqlModule, AuthModule],
+  imports: [ScraperModule, GraphqlModule, AuthModule, PaymentModule],
 })
 export class CommonModule {}

@@ -33,6 +33,11 @@ type TokenResponse {
   token: String!
 }
 
+type PaymentUrlResponseEntity {
+  url: String!
+  txid: String
+}
+
 type ZipCodeEntity {
   id: ID!
   code: String!
@@ -355,6 +360,7 @@ input PaginationInput {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
+  payWithUrl(input: MakeDepositInput!): PaymentUrlResponseEntity!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
   updateSetting(input: UpdateSettingInput!): SettingEntity!
@@ -370,6 +376,11 @@ input SocialSignInInput {
 
 enum SocialAuthType {
   GOOGLE
+}
+
+input MakeDepositInput {
+  payment_system_id: Int!
+  package_id: Int!
 }
 
 input AddToFavoriteInput {

@@ -4,5 +4,6 @@ import { PackageResolver } from './package.resolver';
 
 @Module({
   providers: [PackageService, PackageResolver],
+  exports: [PackageService],
 })
 export class PackageModule {}
