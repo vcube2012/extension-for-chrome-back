@@ -24,7 +24,9 @@ const redisConfig = (configService: ConfigService) => {
       useFactory: async (configService: ConfigService) => ({
         store: await redisStore({
           socket: {
-            ...redisConfig(configService),
+            host: configService.get<string>('redis.host'),
+            port: configService.get<number>('redis.port'),
+            password: configService.get<string | undefined>('redis.password'),
           },
         }),
       }),
