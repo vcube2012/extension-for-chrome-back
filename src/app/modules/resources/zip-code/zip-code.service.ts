@@ -10,7 +10,7 @@ import { Cache } from 'cache-manager';
 export class ZipCodeService {
   constructor(
     private readonly db: DatabaseService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
 
   async findOneByCode(input: ZipCodeInput, fields: Prisma.ZipCodeSelect) {
@@ -56,7 +56,7 @@ export class ZipCodeService {
     const newZipCodesForUser = [];
 
     for (const zipCode of zipCodes) {
-      const alreadyCached = await this.cacheManager.get(
+      const alreadyCached = await this.cacheService.get(
         this.getCacheKey(user.id, zipCode.code),
       );
 
@@ -72,7 +72,7 @@ export class ZipCodeService {
     }
 
     for (const zipCode of newZipCodesForUser) {
-      await this.cacheManager.set(
+      await this.cacheService.set(
         this.getCacheKey(user.id, zipCode.code),
         1,
         0,
