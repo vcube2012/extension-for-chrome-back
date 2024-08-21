@@ -3,17 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { redisStore } from 'cache-manager-redis-yet';
 import { CacheModule as BaseCacheModule } from '@nestjs/cache-manager';
 
-const redisConfig = (configService: ConfigService) => {
-  return process.env.APP_ENV === 'local'
-    ? {
-        host: configService.get<string>('redis.host'),
-        port: configService.get<number>('redis.port'),
-      }
-    : {
-        url: configService.get<string>('redis.url'),
-      };
-};
-
 @Global()
 @Module({
   imports: [
@@ -26,8 +15,8 @@ const redisConfig = (configService: ConfigService) => {
           socket: {
             host: configService.get<string>('redis.host'),
             port: configService.get<number>('redis.port'),
-            password: configService.get<string | undefined>('redis.password'),
           },
+          password: configService.get<string | undefined>('redis.password'),
         }),
       }),
     }),
