@@ -6,15 +6,21 @@ import { GraphqlModule } from './modules/common/graphql/graphql.module';
 import configs from './config';
 import { ResourceModule } from './modules/resources/resource.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import type { ClientOpts } from 'redis';
+
+const redisStore = require('cache-manager-redis-store').redisStore;
 
 @Module({
   imports: [
-    CacheModule.register({
-      isGlobal: true,
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       load: configs,
+    }),
+    CacheModule.register<ClientOpts>({
+      isGlobal: true,
+      store: redisStore,
+      host: process.env.REDIS_HOST ?? '127.0.0.1',
+      port: Number(process.env.REDIS_PORT ?? 6379),
     }),
     ScheduleModule.forRoot(),
     CommonModule,
