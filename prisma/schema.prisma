@@ -30,7 +30,7 @@ model User {
   partnerBonuses     ReferralBonus[]      @relation("partner")
   refferalBonuses    ReferralBonus[]      @relation("referral")
   deposits           Deposit[]
-  packages           PackageUser[]
+  userPackages       PackageUser[]
 
   @@index(referrer_id)
   @@map("users")
@@ -39,15 +39,15 @@ model User {
 model Package {
   id Int @id @default(autoincrement())
 
-  type          PackageType
+  type          String   @default("monthly")
   name          String
   credits       Int
-  price         Decimal     @default(0) @db.Decimal(10, 2)
-  old_price     Decimal?    @db.Decimal(10, 2)
-  is_active     Boolean     @default(false)
-  is_bestseller Boolean     @default(false)
+  price         Decimal  @default(0) @db.Decimal(10, 2)
+  old_price     Decimal? @db.Decimal(10, 2)
+  is_active     Boolean  @default(false)
+  is_bestseller Boolean  @default(false)
   advantages    Json?
-  sort_order    Int?        @default(0) @db.SmallInt
+  sort_order    Int?     @default(0) @db.SmallInt
 
   created_at DateTime      @default(now())
   updated_at DateTime?     @updatedAt
@@ -56,11 +56,6 @@ model Package {
 
   @@unique([type, name])
   @@map("packages")
-}
-
-enum PackageType {
-  MONTHLY
-  ANNUALLY
 }
 
 model PackageUser {
@@ -358,7 +353,7 @@ model Deposit {
   amount            Decimal @db.Decimal(10, 2)
   status            String  @db.VarChar()
   payment_id        String? @db.VarChar()
-  error             String  @db.Text
+  error             String? @db.Text
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt

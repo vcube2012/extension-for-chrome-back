@@ -19,13 +19,4 @@ export class PackageService {
       },
     });
   }
-
-  async findActiveOne(id: number) {
-    return this.db.package.findUnique({
-      where: {
-        is_active: true,
-        id: id,
-      },
-    });
-  }
 }

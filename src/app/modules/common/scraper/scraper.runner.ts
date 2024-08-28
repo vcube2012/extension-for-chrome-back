@@ -1,11 +1,11 @@
 import * as puppeteer from 'puppeteer';
 import ScraperService from './scraper.service';
-import { DatabaseService } from '../../globals/database/database.service';
-import { SeederInterface } from '../../../../../prisma/seeds/seeders/interfaces/seeder.interface';
-import MetropolitanSeeder from '../../../../../prisma/seeds/seeders/metropolitan.seeder';
-import StateSeeder from '../../../../../prisma/seeds/seeders/state.seeder';
-import CountySeeder from '../../../../../prisma/seeds/seeders/county.seeder';
-import ZipCodeSeeder from '../../../../../prisma/seeds/seeders/zip-code.seeder';
+import { SeederInterface } from '@/prisma/seeds/seeders/interfaces/seeder.interface';
+import MetropolitanSeeder from '@/prisma/seeds/seeders/metropolitan.seeder';
+import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
+import StateSeeder from '@/prisma/seeds/seeders/state.seeder';
+import CountySeeder from '@/prisma/seeds/seeders/county.seeder';
+import ZipCodeSeeder from '@/prisma/seeds/seeders/zip-code.seeder';
 
 export class ScraperRunner {
   private readonly db;

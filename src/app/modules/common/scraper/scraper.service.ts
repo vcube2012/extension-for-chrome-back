@@ -1,5 +1,5 @@
 import { Browser, Page } from 'puppeteer';
-import { sleep } from '../../../../../helpers/helpers';
+import { sleep } from '@/src/helpers/helpers';
 import { Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DomSelectorEnum } from './enums/dom-selector.enum';

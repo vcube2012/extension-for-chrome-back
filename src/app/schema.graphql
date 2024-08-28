@@ -180,19 +180,30 @@ type PaginatedReferralBonuses {
   meta: PaginationMeta!
 }
 
-type UserEntity {
-  id: Int!
-  first_name: String!
-  last_name: String!
-  email: String!
-  password: String!
-  avatar: String
-  credits: Float!
-  package_available_to: DateTime
+type DepositEntity {
+  id: ID!
+  type: DepositType!
+  amount: Float!
+  status: DepositStatus!
+  payment_id: String
+  error: String
   created_at: DateTime!
-  setting: SettingEntity
-  referrer: PartnerEntity
-  referrals: [ReferralEntity!]!
+}
+
+enum DepositType {
+  NEW
+  RENEW
+}
+
+enum DepositStatus {
+  SUCCESS
+  WAITING
+  FAILED
+}
+
+type PaginatedDeposits {
+  data: [DepositEntity!]!
+  meta: PaginationMeta!
 }
 
 type PackageEntity {
@@ -211,6 +222,34 @@ type PackageEntity {
 enum PackageType {
   MONTHLY
   ANNUALLY
+}
+
+type PackageUserEntity {
+  id: ID!
+  package_id: Int!
+  user_id: Int!
+  is_active: Boolean!
+  credits: Int!
+  package: PackageEntity!
+  user: UserEntity!
+}
+
+type UserEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  avatar: String
+  credits: Float!
+  package_available_to: DateTime
+  created_at: DateTime!
+  setting: SettingEntity
+  referrer: PartnerEntity
+  referrals: [ReferralEntity!]!
+  deposits: [DepositEntity!]!
+  currentPackage: PackageEntity
+  userPackages: [PackageUserEntity!]!
 }
 
 type StaticPageEntity {
@@ -261,21 +300,6 @@ type PartnerBonusEntity {
   key: String!
   created_at: DateTime!
   value: Int!
-}
-
-type DepositEntity {
-  id: ID!
-  type: String!
-  amount: Float!
-  status: String!
-  payment_id: String
-  error: String
-  created_at: DateTime!
-}
-
-type PaginatedDeposits {
-  data: [DepositEntity!]!
-  meta: PaginationMeta!
 }
 
 type PaymentSystemEntity {

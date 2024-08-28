@@ -1,17 +1,37 @@
-import { Field, Float, ID, InterfaceType } from '@nestjs/graphql';
+import {
+  Field,
+  Float,
+  ID,
+  InterfaceType,
+  registerEnumType,
+} from '@nestjs/graphql';
+
+export enum DepositType {
+  NEW = 'new',
+  RENEW = 'renewal',
+}
+
+export enum DepositStatus {
+  SUCCESS = 'success',
+  WAITING = 'waiting',
+  FAILED = 'failed',
+}
+
+registerEnumType(DepositType, { name: 'DepositType' });
+registerEnumType(DepositStatus, { name: 'DepositStatus' });
 
 @InterfaceType()
 export class DepositRepoInterface {
   @Field(() => ID)
   id: number;
 
-  @Field()
+  @Field(() => DepositType)
   type: string;
 
   @Field(() => Float)
   amount: number;
 
-  @Field()
+  @Field(() => DepositStatus)
   status: string;
 
   @Field({ nullable: true })
@@ -21,7 +41,7 @@ export class DepositRepoInterface {
   error?: string;
 
   @Field()
-  created_at: Date;
+  created_at?: Date;
 
   @Field({ nullable: true })
   updated_at?: Date;

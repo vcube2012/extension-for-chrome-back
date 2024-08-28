@@ -1,7 +1,7 @@
 import { SeederInterface } from './interfaces/seeder.interface';
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
-import { getRandomInt } from '../../../helpers/helpers';
+import { getRandomInt } from '@/src/helpers/helpers';
 import * as lodash from 'lodash';
 
 export default class BlogSeeder implements SeederInterface {

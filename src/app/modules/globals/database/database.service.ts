@@ -4,7 +4,7 @@ import {
   PaginationOptions,
   WithPagination,
   PER_PAGE,
-} from '../../../repositories/common/pagination/pagination.interface';
+} from '@/src/app/repositories/common/pagination/pagination.interface';
 
 @Injectable()
 export class DatabaseService

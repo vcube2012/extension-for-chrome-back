@@ -1,4 +1,5 @@
 import { Field, Float, ID, Int, InterfaceType } from '@nestjs/graphql';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @InterfaceType()
 export class PaymentSystemRepoInterface {
@@ -12,7 +13,7 @@ export class PaymentSystemRepoInterface {
   merchant: string;
 
   @Field(() => Float, { defaultValue: 0 })
-  min_deposit: number;
+  min_deposit: Decimal;
 
   @Field()
   is_active: boolean;

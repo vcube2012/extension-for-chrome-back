@@ -1,6 +1,6 @@
 import { ObjectType, OmitType } from '@nestjs/graphql';
-import { DepositRepoInterface } from '../../../../repositories/deposit/deposit-repo.interface';
-import { Paginated } from '../../../../repositories/common/pagination/pagination.entity';
+import { DepositRepoInterface } from '@/src/app/repositories/deposit/deposit-repo.interface';
+import { Paginated } from '@/src/app/repositories/common/pagination/pagination.entity';
 
 @ObjectType()
 export class DepositEntity extends OmitType(

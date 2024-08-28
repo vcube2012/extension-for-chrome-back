@@ -15,13 +15,4 @@ export class PaymentSystemService {
       },
     });
   }
-
-  async findActiveOne(id: number) {
-    return this.db.paymentSystem.findUnique({
-      where: {
-        id: id,
-        is_active: true,
-      },
-    });
-  }
 }
