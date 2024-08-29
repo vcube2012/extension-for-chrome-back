@@ -18,6 +18,9 @@ export class PaymentSystemRepoInterface {
   @Field()
   is_active: boolean;
 
+  @Field()
+  is_card?: boolean;
+
   @Field(() => Int)
   sort_order: number;
 

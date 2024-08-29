@@ -308,6 +308,7 @@ type PaymentSystemEntity {
   merchant: String!
   min_deposit: Float!
   is_active: Boolean!
+  is_card: Boolean!
   sort_order: Int!
   created_at: DateTime!
 }
@@ -384,7 +385,8 @@ input PaginationInput {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
-  payWithUrl(input: MakeDepositInput!): PaymentUrlResponseEntity!
+  payWithPaymentPage(input: MakeDepositInput!): PaymentUrlResponseEntity!
+  payWithBankCard: String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
   updateSetting(input: UpdateSettingInput!): SettingEntity!

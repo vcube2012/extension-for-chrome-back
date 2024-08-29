@@ -3,7 +3,7 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { PaymentService } from './payment.service';
 import { IContextServer } from '../graphql/graphql.module';
-import { MakeDepositInput } from './input/make-deposit.input';
+import { MakeDepositInput } from '@/src/app/modules/common/payment/inputs/make-deposit.input';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { PaymentUrlResponseEntity } from './entity/payment-url-response.entity';
 
@@ -14,10 +14,16 @@ export class PaymentResolver {
 
   @Mutation(() => PaymentUrlResponseEntity)
   @ExceptionHandlerDecorator()
-  async payWithUrl(
+  async payWithPaymentPage(
     @Args('input') input: MakeDepositInput,
     @Context() ctx: IContextServer,
   ) {
-    return this.paymentService.payWithUrl(ctx.req.user.id, input);
+    return this.paymentService.payWithPaymentPage(ctx.req.user.id, input);
+  }
+
+  @Mutation(() => String)
+  @ExceptionHandlerDecorator()
+  async payWithBankCard(@Context() ctx: IContextServer) {
+    return this.paymentService.payWithCard(ctx.req.user.id);
   }
 }
