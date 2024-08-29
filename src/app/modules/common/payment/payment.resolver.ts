@@ -6,6 +6,7 @@ import { IContextServer } from '../graphql/graphql.module';
 import { MakeDepositInput } from '@/src/app/modules/common/payment/inputs/make-deposit.input';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { PaymentUrlResponseEntity } from './entity/payment-url-response.entity';
+import { MakeDepositUsingCardInput } from '@/src/app/modules/common/payment/inputs/make-deposit-using-card.input';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -17,13 +18,16 @@ export class PaymentResolver {
   async payWithPaymentPage(
     @Args('input') input: MakeDepositInput,
     @Context() ctx: IContextServer,
-  ) {
+  ): Promise<PaymentUrlResponseEntity> {
     return this.paymentService.payWithPaymentPage(ctx.req.user.id, input);
   }
 
   @Mutation(() => String)
   @ExceptionHandlerDecorator()
-  async payWithBankCard(@Context() ctx: IContextServer) {
-    return this.paymentService.payWithCard(ctx.req.user.id);
+  async payWithBankCard(
+    @Args('input') input: MakeDepositUsingCardInput,
+    @Context() ctx: IContextServer,
+  ) {
+    return this.paymentService.payWithCard(ctx.req.user.id, input);
   }
 }

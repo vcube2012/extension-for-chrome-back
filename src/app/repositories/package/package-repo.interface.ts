@@ -6,7 +6,6 @@ import {
   InterfaceType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { Decimal } from '@prisma/client/runtime/library';
 
 export enum PackageType {
   MONTHLY = 'monthly',
@@ -30,10 +29,10 @@ export class PackageRepoInterface {
   credits: number;
 
   @Field(() => Float)
-  price: Decimal;
+  price: any;
 
   @Field(() => Float, { nullable: true })
-  old_price?: Decimal;
+  old_price?: any;
 
   @Field({ defaultValue: false })
   is_active?: boolean;

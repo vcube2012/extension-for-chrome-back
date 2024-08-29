@@ -23,13 +23,13 @@ registerEnumType(DepositStatus, { name: 'DepositStatus' });
 @InterfaceType()
 export class DepositRepoInterface {
   @Field(() => ID)
-  id: number;
+  id: any;
 
   @Field(() => DepositType)
   type: string;
 
   @Field(() => Float)
-  amount: number;
+  amount: any;
 
   @Field(() => DepositStatus)
   status: string;

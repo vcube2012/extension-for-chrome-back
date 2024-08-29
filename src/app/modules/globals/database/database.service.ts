@@ -5,6 +5,7 @@ import {
   WithPagination,
   PER_PAGE,
 } from '@/src/app/repositories/common/pagination/pagination.interface';
+import { Decimal } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class DatabaseService
@@ -21,20 +22,24 @@ export class DatabaseService
       const result = await next(params);
 
       // Recursive function to serialize BigInt fields
-      const serializeBigIntFields = (data: any): any => {
+      const serializeFields = (data: any): any => {
         if (data && typeof data === 'object') {
+          if (data instanceof Decimal) {
+            return data.toNumber();
+          }
+
           for (const key in data) {
             if (typeof data[key] === 'bigint') {
               data[key] = Number(data[key].toString());
             } else if (typeof data[key] === 'object') {
-              data[key] = serializeBigIntFields(data[key]);
+              data[key] = serializeFields(data[key]);
             }
           }
         }
         return data;
       };
 
-      return serializeBigIntFields(result);
+      return serializeFields(result);
     });
   }
 

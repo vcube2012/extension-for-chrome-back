@@ -386,7 +386,7 @@ input PaginationInput {
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
   payWithPaymentPage(input: MakeDepositInput!): PaymentUrlResponseEntity!
-  payWithBankCard: String!
+  payWithBankCard(input: MakeDepositUsingCardInput!): String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
   updateSetting(input: UpdateSettingInput!): SettingEntity!
@@ -407,6 +407,16 @@ enum SocialAuthType {
 input MakeDepositInput {
   payment_system_id: Int!
   package_id: Int!
+}
+
+input MakeDepositUsingCardInput {
+  payment_system_id: Int!
+  package_id: Int!
+  holder: String!
+  pan: String!
+  expMonth: String!
+  expYear: Float!
+  cvv: Float!
 }
 
 input AddToFavoriteInput {

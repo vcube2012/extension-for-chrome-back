@@ -1,12 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Stripe } from '@/src/app/integrations/stripe/stripe';
+import { StripeDriver } from '@/src/app/integrations/stripe/stripe.driver';
+import { WithCardPayment } from '@/src/app/modules/common/payment/interfaces/with-card-payment.interface';
+import { WithPagePayment } from '@/src/app/modules/common/payment/interfaces/with-page-payment.interface';
 
 @Injectable()
 export class PaymentManager {
-  private drivers: string[] = [];
+  private drivers: (WithPagePayment | WithCardPayment)[] = [];
 
   // Отримати instance системи оплати
-  driver(driver: string) {
+  driver(driver: string): WithPagePayment | WithCardPayment {
     if (!this.drivers[driver]) {
       this.drivers.push(this.createDriver(driver));
     }
@@ -14,7 +16,7 @@ export class PaymentManager {
     return this.drivers[driver];
   }
 
-  createDriver(driver: string) {
+  createDriver(driver: string): WithPagePayment | WithCardPayment {
     const method = this.generateMethodFromDriver(driver);
 
     if (method in this) {
@@ -30,7 +32,7 @@ export class PaymentManager {
     );
   }
 
-  private createStripeDriver() {
-    return new Stripe();
+  private createStripeDriver(): StripeDriver {
+    return new StripeDriver(process.env.STRIPE_SECRET);
   }
 }
