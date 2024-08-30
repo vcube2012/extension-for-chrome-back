@@ -23,8 +23,6 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
   async socialSignIn(input: SocialSignInInput): Promise<string> {
-    console.log(input.code);
-
     const socialUser = await this.socialAuthService.getUser(
       input.code,
       input.type,
