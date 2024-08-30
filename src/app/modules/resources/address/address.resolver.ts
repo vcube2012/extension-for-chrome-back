@@ -8,9 +8,9 @@ import {
   FavoriteAddressEntity,
   PaginatedFavoriteAddresses,
 } from './entity/favorite-address.entity';
-import { AddToFavoriteInput } from './input/add-to-favorite.input';
-import { GetFavoritesInput } from './input/get-favorites.input';
-import { RemoveFromFavoritesInput } from './input/remove-from-favorites.input';
+import { AddToFavoriteInput } from '@/src/app/modules/resources/address/inputs/add-to-favorite.input';
+import { GetFavoritesInput } from '@/src/app/modules/resources/address/inputs/get-favorites.input';
+import { RemoveFromFavoritesInput } from '@/src/app/modules/resources/address/inputs/remove-from-favorites.input';
 
 @UseGuards(AuthGuard)
 @Resolver()

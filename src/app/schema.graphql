@@ -337,7 +337,12 @@ type Query {
 }
 
 input ZipCodesInput {
-  codes: [String!]!
+  data: [ZipCodeHouseCodeInput!]!
+}
+
+input ZipCodeHouseCodeInput {
+  zipCode: String!
+  houseCode: String!
 }
 
 input ZipCodeInput {

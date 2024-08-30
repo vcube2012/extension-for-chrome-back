@@ -1,7 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { ZipCodeInput } from './input/zip-code.input';
-import { ZipCodesInput } from './input/zip-codes.input';
+import { ZipCodeInput } from '@/src/app/modules/resources/zip-code/inputs/zip-code.input';
+import {
+  ZipCodeHouseCodeInput,
+  ZipCodesInput,
+} from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
 import { Prisma } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
@@ -29,13 +32,17 @@ export class ZipCodeService {
     user: object,
     fields: Prisma.ZipCodeSelect,
   ) {
+    const zipCodes = input.data.map(
+      (item: ZipCodeHouseCodeInput) => item.zipCode,
+    );
+
     const where: Prisma.ZipCodeWhereInput = {
       code: {
-        in: input.codes,
+        in: zipCodes,
       },
     };
 
-    if (!input.codes?.length) {
+    if (!input.data?.length) {
       throw new BadRequestException('At least one zip code must be specified');
     }
 
@@ -45,38 +52,34 @@ export class ZipCodeService {
     });
 
     if (results.length > 0) {
-      await this.calculateCredits(user, results);
+      await this.calculateCredits(user, input.data);
     }
 
     return results;
   }
 
   // обрахування зняття кредитів з користувача
-  private async calculateCredits(user: any, zipCodes: any[]) {
-    const newZipCodesForUser = [];
+  private async calculateCredits(user: any, data: ZipCodeHouseCodeInput[]) {
+    const newItemsForUser = [];
 
-    for (const zipCode of zipCodes) {
+    for (const item of data) {
       const alreadyCached = await this.cacheService.get(
-        this.getCacheKey(user.id, zipCode.code),
+        this.getCacheKey(user.id, item),
       );
 
       if (alreadyCached) {
         continue;
       }
 
-      newZipCodesForUser.push(zipCode);
+      newItemsForUser.push(item);
     }
 
-    if (newZipCodesForUser.length > 0 && user.credits <= 0) {
+    if (newItemsForUser.length > 0 && user.credits <= 0) {
       throw new BadRequestException('Insufficient number of credits');
     }
 
-    for (const zipCode of newZipCodesForUser) {
-      await this.cacheService.set(
-        this.getCacheKey(user.id, zipCode.code),
-        1,
-        0,
-      );
+    for (const item of newItemsForUser) {
+      await this.cacheService.set(this.getCacheKey(user.id, item), 1, 0);
     }
 
     return this.db.user.update({
@@ -85,13 +88,13 @@ export class ZipCodeService {
       },
       data: {
         credits: {
-          decrement: newZipCodesForUser.length,
+          decrement: newItemsForUser.length,
         },
       },
     });
   }
 
-  private getCacheKey(userId: number, zipCode: string): string {
-    return `${userId}_${zipCode}`;
+  private getCacheKey(userId: number, item: ZipCodeHouseCodeInput): string {
+    return `${userId}_${item.houseCode}_${item.zipCode}`;
   }
 }

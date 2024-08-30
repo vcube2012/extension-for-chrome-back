@@ -5,12 +5,12 @@ import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
 import {
   AddressInput,
   AddToFavoriteInput,
-} from './input/add-to-favorite.input';
+} from '@/src/app/modules/resources/address/inputs/add-to-favorite.input';
 import {
   GetFavoritesInput,
   GetFavoritesSorting,
   GetFavoritesSortingColumn,
-} from './input/get-favorites.input';
+} from '@/src/app/modules/resources/address/inputs/get-favorites.input';
 
 @Injectable()
 export class AddressService {

@@ -1,8 +1,8 @@
 import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { ZipCodeService } from './zip-code.service';
 import { ZipCodeEntity } from './entity/zip-code.entity';
-import { ZipCodeInput } from './input/zip-code.input';
-import { ZipCodesInput } from './input/zip-codes.input';
+import { ZipCodeInput } from '@/src/app/modules/resources/zip-code/inputs/zip-code.input';
+import { ZipCodesInput } from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
 import { RequestedFieldsDecorator } from '../../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';

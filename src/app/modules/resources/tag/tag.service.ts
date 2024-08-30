@@ -1,6 +1,6 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { SaveTagsInput } from './input/save-tags.input';
+import { SaveTagsInput } from '@/src/app/modules/resources/tag/inputs/save-tags.input';
 import { AddressService } from '../address/address.service';
 import { Prisma } from '@prisma/client';
 
