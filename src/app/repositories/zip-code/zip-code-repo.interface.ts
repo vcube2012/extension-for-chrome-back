@@ -9,11 +9,11 @@ export class ZipCodeRepoInterface {
   code: string;
 
   @Field(() => Float)
-  price: number;
+  price: any;
 
-  @Field()
-  readonly created_at: Date;
+  @Field({ nullable: true })
+  created_at?: Date;
 
-  @Field()
-  readonly updated_at: Date;
+  @Field({ nullable: true })
+  updated_at?: Date;
 }

@@ -1,5 +1,4 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../globals/database/database.service';
 import {
   ZipCodeHouseCodeInput,
   ZipCodesInput,
@@ -7,6 +6,9 @@ import {
 import { Prisma } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { ZipCodeEntity } from '@/src/app/modules/resources/zip-code/entity/zip-code.entity';
+import { UserEntity } from '@/src/app/modules/resources/user/entity/user.entity';
+import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
 
 @Injectable()
 export class ZipCodeService {
@@ -19,7 +21,7 @@ export class ZipCodeService {
     input: ZipCodesInput,
     user: object,
     fields: Prisma.ZipCodeSelect,
-  ) {
+  ): Promise<ZipCodeEntity[]> {
     const zipCodes = input.data.map(
       (item: ZipCodeHouseCodeInput) => item.zipCode,
     );
@@ -47,7 +49,10 @@ export class ZipCodeService {
   }
 
   // обрахування зняття кредитів з користувача
-  private async calculateCredits(user: any, data: ZipCodeHouseCodeInput[]) {
+  private async calculateCredits(
+    user: any,
+    data: ZipCodeHouseCodeInput[],
+  ): Promise<UserEntity> {
     const newItemsForUser = [];
 
     for (const item of data) {

@@ -2,12 +2,12 @@ import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { ZipCodeService } from './zip-code.service';
 import { ZipCodeEntity } from './entity/zip-code.entity';
 import { ZipCodesInput } from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
-import { RequestedFieldsDecorator } from '../../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
-import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../../common/auth/guard/auth.guard';
-import { IContextServer } from '../../common/graphql/graphql.module';
+import { AuthGuard } from '@/src/app/modules/common/auth/guard/auth.guard';
+import { ExceptionHandlerDecorator } from '@/src/app/decorators/exception-handler.decorator';
+import { IContextServer } from '@/src/app/modules/common/graphql/graphql.module';
+import { RequestedFieldsDecorator } from '@/src/app/decorators/requested-fields.decorator';
 
 @UseGuards(AuthGuard)
 @Resolver()

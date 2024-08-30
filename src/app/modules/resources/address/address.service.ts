@@ -1,7 +1,9 @@
-import { DatabaseService } from '../../globals/database/database.service';
 import { Injectable } from '@nestjs/common';
 import { AddressEntity } from './entity/address.entity';
-import { PaginatedFavoriteAddresses } from './entity/favorite-address.entity';
+import {
+  FavoriteAddressEntity,
+  PaginatedFavoriteAddresses,
+} from './entity/favorite-address.entity';
 import {
   AddressInput,
   AddToFavoriteInput,
@@ -11,6 +13,8 @@ import {
   GetFavoritesSorting,
   GetFavoritesSortingColumn,
 } from '@/src/app/modules/resources/address/inputs/get-favorites.input';
+import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AddressService {
@@ -80,7 +84,9 @@ export class AddressService {
       limit: input.perPage,
     });
 
-    const data = this.transformEntity(paginatedRecords.data);
+    const data = paginatedRecords.data.map((item: FavoriteAddressEntity) =>
+      this.transformEntity(item),
+    );
 
     return {
       data: data,
@@ -88,13 +94,46 @@ export class AddressService {
     } as PaginatedFavoriteAddresses;
   }
 
-  async findOneFavoriteAddress(userId: number, addressId: number) {
-    return this.db.favoriteAddress.findFirst({
+  async findOneFavoriteAddress(
+    userId: number,
+    addressId: number,
+    fields: Prisma.FavoriteAddressSelect = null,
+  ): Promise<FavoriteAddressEntity> {
+    const query = {
       where: {
         user_id: userId,
         address_id: addressId,
       },
-    });
+    };
+
+    if (!!fields) {
+      query['select'] = {
+        ...fields,
+        address: true,
+        tags: {
+          select: {
+            tag: true,
+          },
+        },
+      };
+    } else {
+      query['include'] = {
+        address: true,
+        tags: {
+          select: {
+            tag: true,
+          },
+        },
+      };
+    }
+
+    const favoriteAddress = await this.db.favoriteAddress.findFirst(query);
+
+    if (!favoriteAddress) {
+      return null;
+    }
+
+    return this.transformEntity(favoriteAddress);
   }
 
   async findOne(zipCodeId: number, address: string) {
@@ -228,19 +267,13 @@ export class AddressService {
     });
   }
 
-  private transformEntity(favoriteAddresses) {
-    const transformer = (favoriteAddress) => ({
+  private transformEntity(favoriteAddresses: FavoriteAddressEntity) {
+    const transformer = (favoriteAddress): FavoriteAddressEntity => ({
       ...favoriteAddress,
       tags: favoriteAddress.tags.map(
         (tagFavoriteAddress) => tagFavoriteAddress.tag,
       ),
     });
-
-    if (Array.isArray(favoriteAddresses)) {
-      return favoriteAddresses.map((favoriteAddress) =>
-        transformer(favoriteAddress),
-      );
-    }
 
     return transformer(favoriteAddresses);
   }

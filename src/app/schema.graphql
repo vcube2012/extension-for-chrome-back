@@ -42,7 +42,7 @@ type ZipCodeEntity {
   id: ID!
   code: String!
   price: Float!
-  created_at: DateTime!
+  created_at: DateTime
 }
 
 """
@@ -82,6 +82,7 @@ type TagEntity {
 }
 
 type FavoriteAddressEntity {
+  address_id: Int!
   created_at: DateTime!
   updated_at: DateTime
   asking: Float!
@@ -319,6 +320,7 @@ type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
+  getOneFavorite(input: FindOneFavoriteInput!): FavoriteAddressEntity
   getProfile: UserEntity
   getTags: [TagEntity!]!
   findAllPackages: [PackageEntity!]!
@@ -369,6 +371,10 @@ enum GetFavoritesSortingColumn {
 enum SortingEnum {
   ASC
   DESC
+}
+
+input FindOneFavoriteInput {
+  addressId: Int!
 }
 
 input PaginateBlogsInput {

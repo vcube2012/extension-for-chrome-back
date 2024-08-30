@@ -1,5 +1,5 @@
 import { ObjectType, OmitType } from '@nestjs/graphql';
-import { TagRepoInterface } from '../../../../repositories/tag/tag-repo.interface';
+import { TagRepoInterface } from '@/src/app/repositories/tag/tag-repo.interface';
 
 @ObjectType()
 export class TagEntity extends OmitType(
