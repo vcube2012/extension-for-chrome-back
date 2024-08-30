@@ -223,6 +223,7 @@ export class AddressService {
             id: findAddress.id,
           },
           data: {
+            home_code: input.homeCode,
             info: input.info,
             updated_at: new Date(),
           },
