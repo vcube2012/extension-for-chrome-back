@@ -3,8 +3,8 @@ import {
   AddressRepoInfoInterface,
   AddressRepoInterface,
   FavoriteAddressInfoRepoInterface,
-} from '../../../../repositories/address/address-repo.interface';
-import { IsNotEmpty } from 'class-validator';
+} from '@/src/app/repositories/address/address-repo.interface';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Prisma } from '@prisma/client';
 
 @InputType()
@@ -20,6 +20,11 @@ export class AddressInput extends PickType(
   ['address', 'link'],
   InputType,
 ) {
+  @Field()
+  @IsNotEmpty()
+  @IsString()
+  homeCode: string;
+
   @Field()
   @IsNotEmpty()
   zipCode: string;

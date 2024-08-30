@@ -55,6 +55,9 @@ export class AddressRepoInterface {
   @Field(() => Int)
   zip_code_id: number;
 
+  @Field(() => String, { nullable: true })
+  home_code?: string;
+
   @Field()
   @IsNotEmpty()
   address: string;

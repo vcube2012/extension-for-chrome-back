@@ -1,10 +1,15 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
 export class FindOneFavoriteInput {
-  @Field(() => Int)
+  @Field(() => String)
   @IsNotEmpty()
-  @IsInt()
-  addressId: number;
+  @IsString()
+  homeCode: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  zipCode: string;
 }

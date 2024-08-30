@@ -18,5 +18,5 @@ export class AddressEntity extends OmitType(
   ObjectType,
 ) {
   @Field(() => AddressEntityInfo)
-  info: AddressEntityInfo;
+  info: any;
 }

@@ -173,6 +173,7 @@ model Address {
   id Int @id @default(autoincrement())
 
   zip_code_id Int
+  home_code   String?
   address     String
   link        String
   info        Json?
@@ -184,6 +185,7 @@ model Address {
   favoriteAddresses  FavoriteAddress[]
   tagFavoriteAddress TagFavoriteAddress[]
 
+  @@unique([home_code, zip_code_id])
   @@map("addresses")
 }
 

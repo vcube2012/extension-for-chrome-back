@@ -96,13 +96,19 @@ export class AddressService {
 
   async findOneFavoriteAddress(
     userId: number,
-    addressId: number,
+    homeCode: string,
+    zipCode: string,
     fields: Prisma.FavoriteAddressSelect = null,
   ): Promise<FavoriteAddressEntity> {
     const query = {
       where: {
         user_id: userId,
-        address_id: addressId,
+        address: {
+          home_code: homeCode,
+          zipCode: {
+            code: zipCode,
+          },
+        },
       },
     };
 
@@ -196,7 +202,7 @@ export class AddressService {
 
     const [favoriteAddress] = updatedUser.favoriteAddresses;
 
-    return favoriteAddress;
+    return this.transformEntity(favoriteAddress);
   }
 
   async createOrUpdate(input: AddressInput): Promise<AddressEntity> {
@@ -224,6 +230,7 @@ export class AddressService {
       } else {
         address = await this.db.address.create({
           data: {
+            home_code: input.homeCode,
             zip_code_id: findZipCode.id,
             address: input.address,
             info: input.info,
@@ -237,10 +244,12 @@ export class AddressService {
   }
 
   async removeFromFavorites(userId: number, addressId: number) {
-    const favoriteAddress = await this.findOneFavoriteAddress(
-      userId,
-      addressId,
-    );
+    const favoriteAddress = await this.db.favoriteAddress.findFirst({
+      where: {
+        user_id: userId,
+        address_id: addressId,
+      },
+    });
 
     if (!favoriteAddress) return null;
 
@@ -270,9 +279,10 @@ export class AddressService {
   private transformEntity(favoriteAddresses: FavoriteAddressEntity) {
     const transformer = (favoriteAddress): FavoriteAddressEntity => ({
       ...favoriteAddress,
-      tags: favoriteAddress.tags.map(
-        (tagFavoriteAddress) => tagFavoriteAddress.tag,
-      ),
+      tags:
+        favoriteAddress.tags?.map(
+          (tagFavoriteAddress) => tagFavoriteAddress.tag,
+        ) ?? [],
     });
 
     return transformer(favoriteAddresses);

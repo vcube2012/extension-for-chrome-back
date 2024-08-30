@@ -68,6 +68,7 @@ type AddressEntityInfo {
 type AddressEntity {
   id: ID!
   zip_code_id: Int!
+  home_code: String
   address: String!
   link: String!
   created_at: DateTime!
@@ -374,7 +375,8 @@ enum SortingEnum {
 }
 
 input FindOneFavoriteInput {
-  addressId: Int!
+  homeCode: String!
+  zipCode: String!
 }
 
 input PaginateBlogsInput {
@@ -435,6 +437,7 @@ input AddToFavoriteInput {
 input AddressInput {
   address: String!
   link: String!
+  homeCode: String!
   zipCode: String!
   info: AddressInputInfo!
 }

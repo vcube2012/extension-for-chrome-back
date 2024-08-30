@@ -22,7 +22,6 @@ import {
 } from '@/src/app/modules/resources/address/entity/favorite-address.entity';
 import { AddressService } from '@/src/app/modules/resources/address/address.service';
 import { Prisma } from '@prisma/client';
-import { TagEntity } from '@/src/app/modules/resources/tag/entity/tag.entity';
 
 @UseGuards(AuthGuard)
 @Resolver(() => FavoriteAddressEntity)
@@ -48,7 +47,8 @@ export class AddressResolver {
   ): Promise<FavoriteAddressEntity | null> {
     return this.addressService.findOneFavoriteAddress(
       ctx.req.user.id,
-      input.addressId,
+      input.homeCode,
+      input.zipCode,
       fields,
     );
   }
