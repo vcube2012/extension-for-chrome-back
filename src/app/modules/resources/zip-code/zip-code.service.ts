@@ -1,6 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { ZipCodeInput } from '@/src/app/modules/resources/zip-code/inputs/zip-code.input';
 import {
   ZipCodeHouseCodeInput,
   ZipCodesInput,
@@ -15,17 +14,6 @@ export class ZipCodeService {
     private readonly db: DatabaseService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
   ) {}
-
-  async findOneByCode(input: ZipCodeInput, fields: Prisma.ZipCodeSelect) {
-    return this.db.zipCode.findUnique({
-      where: {
-        code: input.code,
-      },
-      select: {
-        ...fields,
-      },
-    });
-  }
 
   async findManyByCodes(
     input: ZipCodesInput,

@@ -2,7 +2,7 @@ import { Field, ObjectType, OmitType, PickType } from '@nestjs/graphql';
 import {
   AddressRepoInfoInterface,
   AddressRepoInterface,
-} from '../../../../repositories/address/address-repo.interface';
+} from '@/src/app/repositories/address/address-repo.interface';
 
 @ObjectType()
 class AddressEntityInfo extends PickType(

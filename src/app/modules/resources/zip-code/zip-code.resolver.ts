@@ -1,7 +1,6 @@
 import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { ZipCodeService } from './zip-code.service';
 import { ZipCodeEntity } from './entity/zip-code.entity';
-import { ZipCodeInput } from '@/src/app/modules/resources/zip-code/inputs/zip-code.input';
 import { ZipCodesInput } from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
 import { RequestedFieldsDecorator } from '../../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
@@ -23,14 +22,5 @@ export class ZipCodeResolver {
     @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
   ) {
     return this.zipCodeService.findManyByCodes(input, ctx.req.user, fields);
-  }
-
-  @Query(() => ZipCodeEntity, { nullable: true })
-  @ExceptionHandlerDecorator()
-  async findOneZipCode(
-    @Args('input') input: ZipCodeInput,
-    @RequestedFieldsDecorator() fields: Prisma.ZipCodeSelect,
-  ) {
-    return this.zipCodeService.findOneByCode(input, fields);
   }
 }

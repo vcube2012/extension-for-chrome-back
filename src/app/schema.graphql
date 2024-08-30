@@ -318,7 +318,6 @@ type PaymentSystemEntity {
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
-  findOneZipCode(input: ZipCodeInput!): ZipCodeEntity
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getProfile: UserEntity
   getTags: [TagEntity!]!
@@ -343,10 +342,6 @@ input ZipCodesInput {
 input ZipCodeHouseCodeInput {
   zipCode: String!
   houseCode: String!
-}
-
-input ZipCodeInput {
-  code: String!
 }
 
 input GetFavoritesInput {
