@@ -19,4 +19,15 @@ export class PackageService {
       },
     });
   }
+
+  async getStripeId(packagedId: number) {
+    const stripeEntity = await this.db.stripe.findFirst({
+      where: {
+        model_type: 'package',
+        model_id: packagedId,
+      },
+    });
+
+    return stripeEntity?.stripe_id;
+  }
 }

@@ -371,7 +371,7 @@ model Admin {
   id Int @id @default(autoincrement())
 
   name           String  @db.VarChar(255)
-  email          String  @unique
+  email          String  @unique @db.VarChar(255)
   password       String  @db.VarChar(255)
   remember_token String? @db.VarChar(100)
 
@@ -379,4 +379,18 @@ model Admin {
   updated_at DateTime? @updatedAt
 
   @@map("admins")
+}
+
+model Stripe {
+  id String @id @default(uuid())
+
+  stripe_id  String @db.VarChar()
+  model_type String @db.VarChar(255)
+  model_id   Int
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@unique([model_type, model_id])
+  @@map("stripe")
 }

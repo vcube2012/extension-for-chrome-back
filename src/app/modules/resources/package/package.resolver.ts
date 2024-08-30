@@ -12,7 +12,8 @@ export class PackageResolver {
   @Query(() => [PackageEntity])
   @ExceptionHandlerDecorator()
   async findAllPackages(
-    @RequestedFieldsDecorator() fields: Prisma.PackageSelect,
+    @RequestedFieldsDecorator()
+    fields: Prisma.PackageSelect,
   ) {
     return this.packageService.findAll(fields);
   }

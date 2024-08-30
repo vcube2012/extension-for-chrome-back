@@ -35,7 +35,7 @@ type TokenResponse {
 
 type PaymentUrlResponseEntity {
   url: String!
-  txid: String
+  payment_id: String
 }
 
 type ZipCodeEntity {
@@ -180,32 +180,6 @@ type PaginatedReferralBonuses {
   meta: PaginationMeta!
 }
 
-type DepositEntity {
-  id: ID!
-  type: DepositType!
-  amount: Float!
-  status: DepositStatus!
-  payment_id: String
-  error: String
-  created_at: DateTime!
-}
-
-enum DepositType {
-  NEW
-  RENEW
-}
-
-enum DepositStatus {
-  SUCCESS
-  WAITING
-  FAILED
-}
-
-type PaginatedDeposits {
-  data: [DepositEntity!]!
-  meta: PaginationMeta!
-}
-
 type PackageEntity {
   id: ID!
   type: PackageType!
@@ -232,6 +206,34 @@ type PackageUserEntity {
   credits: Int!
   package: PackageEntity!
   user: UserEntity!
+}
+
+type DepositEntity {
+  id: ID!
+  type: DepositType!
+  amount: Float!
+  status: DepositStatus!
+  payment_id: String
+  error: String
+  created_at: DateTime!
+  user: UserEntity
+  package: PackageEntity
+}
+
+enum DepositType {
+  NEW
+  RENEWAL
+}
+
+enum DepositStatus {
+  SUCCESS
+  WAITING
+  FAILED
+}
+
+type PaginatedDeposits {
+  data: [DepositEntity!]!
+  meta: PaginationMeta!
 }
 
 type UserEntity {

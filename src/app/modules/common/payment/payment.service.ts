@@ -17,7 +17,6 @@ import { Decimal } from '@prisma/client/runtime/library';
 import { WithPagePayment } from '@/src/app/modules/common/payment/interfaces/with-page-payment.interface';
 import { WithCardPayment } from '@/src/app/modules/common/payment/interfaces/with-card-payment.interface';
 import { PaymentUrlResponseEntity } from '@/src/app/modules/common/payment/entity/payment-url-response.entity';
-import { StripeDriver } from '@/src/app/integrations/stripe/stripe.driver';
 
 interface IPaymentDataOptions {
   package: PackageEntity;
@@ -61,6 +60,7 @@ export class PaymentService {
 
       return paymentDriver.payWithPaymentPage({
         deposit: deposit,
+        user: options.user,
       });
     };
 
@@ -72,8 +72,8 @@ export class PaymentService {
     callback: (
       d: WithPagePayment | WithCardPayment,
       opts: IPaymentDataOptions,
-    ) => any,
-  ) {
+    ) => Promise<any>,
+  ): Promise<any> {
     const packageEntity = await this.findPackage(data.input.package_id);
 
     if (!packageEntity) {
@@ -166,15 +166,26 @@ export class PaymentService {
     user: UserEntity,
     packageEntity: PackageRepoInterface,
   ): Promise<DepositEntity> {
-    return this.db.deposit.create({
+    let type = DepositType.NEW;
+
+    if (user.currentPackage?.id === packageEntity.id) {
+      type = DepositType.RENEWAL;
+    }
+
+    const deposit: DepositEntity = await this.db.deposit.create({
       data: {
         user_id: user.id,
         package_id: packageEntity.id,
         payment_system_id: this.paymentSystemEntity.id,
         amount: packageEntity.price,
-        type: DepositType.NEW,
+        type: type,
         status: DepositStatus.WAITING,
       },
     });
+
+    deposit['user'] = user;
+    deposit['package'] = packageEntity;
+
+    return deposit;
   }
 }

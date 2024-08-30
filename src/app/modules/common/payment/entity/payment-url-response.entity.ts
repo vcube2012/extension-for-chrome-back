@@ -6,5 +6,5 @@ export class PaymentUrlResponseEntity {
   url: string;
 
   @Field({ nullable: true })
-  txid: string;
+  payment_id: string;
 }

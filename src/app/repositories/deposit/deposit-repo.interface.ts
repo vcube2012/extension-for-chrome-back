@@ -8,7 +8,7 @@ import {
 
 export enum DepositType {
   NEW = 'new',
-  RENEW = 'renewal',
+  RENEWAL = 'renewal',
 }
 
 export enum DepositStatus {
