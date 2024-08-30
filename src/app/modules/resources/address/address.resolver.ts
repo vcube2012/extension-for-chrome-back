@@ -1,12 +1,4 @@
-import {
-  Args,
-  Context,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-} from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { AddToFavoriteInput } from '@/src/app/modules/resources/address/inputs/add-to-favorite.input';
 import { GetFavoritesInput } from '@/src/app/modules/resources/address/inputs/get-favorites.input';
@@ -62,7 +54,7 @@ export class AddressResolver {
     return this.addressService.addToFavorite(ctx.req.user.id, input);
   }
 
-  @Mutation(() => FavoriteAddressEntity, { nullable: true })
+  @Mutation(() => Boolean)
   @ExceptionHandlerDecorator()
   async removeFromFavorites(
     @Context() ctx: IContextServer,

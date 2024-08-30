@@ -398,7 +398,7 @@ type Mutation {
   payWithPaymentPage(input: MakeDepositInput!): PaymentUrlResponseEntity!
   payWithBankCard(input: MakeDepositUsingCardInput!): String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
-  removeFromFavorites(input: RemoveFromFavoritesInput!): FavoriteAddressEntity
+  removeFromFavorites(input: RemoveFromFavoritesInput!): Boolean!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
   likeBlog(input: FindBlogInput!): Int

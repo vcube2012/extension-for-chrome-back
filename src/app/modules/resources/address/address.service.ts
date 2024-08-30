@@ -244,7 +244,10 @@ export class AddressService {
     });
   }
 
-  async removeFromFavorites(userId: number, addressId: number) {
+  async removeFromFavorites(
+    userId: number,
+    addressId: number,
+  ): Promise<boolean> {
     const favoriteAddress = await this.db.favoriteAddress.findFirst({
       where: {
         user_id: userId,
@@ -252,13 +255,16 @@ export class AddressService {
       },
     });
 
-    if (!favoriteAddress) return null;
+    if (!favoriteAddress) return false;
 
     return this.deleteOneFavoriteAddress(userId, addressId);
   }
 
-  async deleteOneFavoriteAddress(userId: number, addressId: number) {
-    return this.db.$transaction(async () => {
+  async deleteOneFavoriteAddress(
+    userId: number,
+    addressId: number,
+  ): Promise<boolean> {
+    const favoriteAddress = await this.db.$transaction(async () => {
       await this.db.tagFavoriteAddress.deleteMany({
         where: {
           user_id: userId,
@@ -273,8 +279,18 @@ export class AddressService {
             user_id: userId,
           },
         },
+        include: {
+          address: true,
+          tags: {
+            select: {
+              tag: true,
+            },
+          },
+        },
       });
     });
+
+    return !!favoriteAddress;
   }
 
   private transformEntity(favoriteAddresses: FavoriteAddressEntity) {
