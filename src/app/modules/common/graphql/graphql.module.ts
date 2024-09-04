@@ -5,7 +5,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { UserRepoInterface } from '@/src/app/repositories/user/user-repo.interface';
+import { UserRepoInterface } from '../../../repositories/user/user-repo.interface';
 
 interface IUser {
   user?: UserRepoInterface;

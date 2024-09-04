@@ -13,7 +13,7 @@ import { UserEntity } from './entity/user.entity';
 import { RequestedFieldsDecorator } from '../../../decorators/requested-fields.decorator';
 import { Prisma } from '@prisma/client';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
-import { UserRepoService } from '@/src/app/repositories/user/user-repo.service';
+import { UserRepoService } from '../../../repositories/user/user-repo.service';
 
 @Resolver(() => UserEntity)
 export class UserResolver {

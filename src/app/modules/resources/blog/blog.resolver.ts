@@ -1,9 +1,9 @@
 import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
-import { PaginateBlogsInput } from '@/src/app/modules/resources/blog/inputs/paginate-blogs.input';
-import { FindBlogInput } from '@/src/app/modules/resources/blog/inputs/find-blog.input';
 import { BlogEntity, PaginatedBlogs } from './entity/blog.entity';
+import { PaginateBlogsInput } from './inputs/paginate-blogs.input';
+import { FindBlogInput } from './inputs/find-blog.input';
 
 @Resolver()
 export class BlogResolver {

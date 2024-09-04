@@ -1,10 +1,10 @@
-import { WithPagePayment } from '@/src/app/modules/common/payment/interfaces/with-page-payment.interface';
 import Stripe from 'stripe';
-import { PaymentOptions } from '@/src/app/modules/common/payment/interfaces/payment-options.interface';
-import { PaymentUrlResponseEntity } from '@/src/app/modules/common/payment/entity/payment-url-response.entity';
-import { DepositEntity } from '@/src/app/modules/resources/deposit/entity/deposit.entity';
-import { StripeProductDto } from '@/src/app/integrations/stripe/dto/stripe-product.dto';
-import { StripeRepoService } from '@/src/app/repositories/stripe/stripe-repo.service';
+import { StripeRepoService } from '../../repositories/stripe/stripe-repo.service';
+import { WithPagePayment } from '../../modules/common/payment/interfaces/with-page-payment.interface';
+import { DepositEntity } from '../../modules/resources/deposit/entity/deposit.entity';
+import { StripeProductDto } from './dto/stripe-product.dto';
+import { PaymentOptions } from '../../modules/common/payment/interfaces/payment-options.interface';
+import { PaymentUrlResponseEntity } from '../../modules/common/payment/entity/payment-url-response.entity';
 
 export class StripeDriver implements WithPagePayment {
   constructor(

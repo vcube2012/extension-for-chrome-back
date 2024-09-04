@@ -1,8 +1,8 @@
 import { Field, Float, ObjectType, OmitType } from '@nestjs/graphql';
-import { FavoriteAddressRepoInterface } from '@/src/app/repositories/address/address-repo.interface';
-import { Paginated } from '@/src/app/repositories/common/pagination/pagination.entity';
-import { AddressEntity } from '@/src/app/modules/resources/address/entity/address.entity';
-import { TagEntity } from '@/src/app/modules/resources/tag/entity/tag.entity';
+import { FavoriteAddressRepoInterface } from '../../../../repositories/address/address-repo.interface';
+import { AddressEntity } from './address.entity';
+import { TagEntity } from '../../tag/entity/tag.entity';
+import { Paginated } from '../../../../repositories/common/pagination/pagination.entity';
 
 @ObjectType()
 export class FavoriteAddressEntity extends OmitType(

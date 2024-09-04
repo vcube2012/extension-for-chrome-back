@@ -4,17 +4,17 @@ import {
   FavoriteAddressEntity,
   PaginatedFavoriteAddresses,
 } from './entity/favorite-address.entity';
-import {
-  AddressInput,
-  AddToFavoriteInput,
-} from '@/src/app/modules/resources/address/inputs/add-to-favorite.input';
+import { Prisma } from '@prisma/client';
+import { DatabaseService } from '../../globals/database/database.service';
 import {
   GetFavoritesInput,
   GetFavoritesSorting,
   GetFavoritesSortingColumn,
-} from '@/src/app/modules/resources/address/inputs/get-favorites.input';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
-import { Prisma } from '@prisma/client';
+} from './inputs/get-favorites.input';
+import {
+  AddressInput,
+  AddToFavoriteInput,
+} from './inputs/add-to-favorite.input';
 
 @Injectable()
 export class AddressService {

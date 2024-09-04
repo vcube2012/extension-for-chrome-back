@@ -1,13 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import {
-  ZipCodeHouseCodeInput,
-  ZipCodesInput,
-} from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { ZipCodesWithCredits } from '@/src/app/modules/resources/zip-code/entity/zip-code.entity';
-import { UserEntity } from '@/src/app/modules/resources/user/entity/user.entity';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
+import { DatabaseService } from '../../globals/database/database.service';
+import { ZipCodeHouseCodeInput, ZipCodesInput } from './inputs/zip-codes.input';
+import { UserEntity } from '../user/entity/user.entity';
+import { ZipCodesWithCredits } from './entity/zip-code.entity';
 
 @Injectable()
 export class ZipCodeService {

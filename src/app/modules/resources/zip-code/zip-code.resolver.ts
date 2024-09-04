@@ -1,11 +1,11 @@
 import { Resolver, Query, Args, Context } from '@nestjs/graphql';
 import { ZipCodeService } from './zip-code.service';
-import { ZipCodesInput } from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@/src/app/modules/common/auth/guard/auth.guard';
-import { ExceptionHandlerDecorator } from '@/src/app/decorators/exception-handler.decorator';
-import { IContextServer } from '@/src/app/modules/common/graphql/graphql.module';
-import { ZipCodesWithCredits } from '@/src/app/modules/resources/zip-code/entity/zip-code.entity';
+import { AuthGuard } from '../../common/auth/guard/auth.guard';
+import { ZipCodesWithCredits } from './entity/zip-code.entity';
+import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
+import { ZipCodesInput } from './inputs/zip-codes.input';
+import { IContextServer } from '../../common/graphql/graphql.module';
 
 @UseGuards(AuthGuard)
 @Resolver()

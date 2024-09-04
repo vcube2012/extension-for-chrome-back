@@ -1,11 +1,11 @@
 import { Field, InputType, PickType } from '@nestjs/graphql';
+import { IsNotEmpty, IsString } from 'class-validator';
+import { Prisma } from '@prisma/client';
 import {
   AddressRepoInfoInterface,
   AddressRepoInterface,
   FavoriteAddressInfoRepoInterface,
-} from '@/src/app/repositories/address/address-repo.interface';
-import { IsNotEmpty, IsString } from 'class-validator';
-import { Prisma } from '@prisma/client';
+} from '../../../../repositories/address/address-repo.interface';
 
 @InputType()
 class AddressInputInfo extends PickType(

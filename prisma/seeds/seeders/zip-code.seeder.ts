@@ -69,7 +69,7 @@ export default class ZipCodeSeeder implements SeederInterface {
   }
 
   async getZipCodeIds(
-    zipCodes: { code: string; price: number }[],
+    zipCodes: { code: string; prices: any }[],
     db: DatabaseService,
   ) {
     const data = [];
@@ -83,17 +83,17 @@ export default class ZipCodeSeeder implements SeederInterface {
     return data;
   }
 
-  async createZipCode(zipCode: { code; price }, db: DatabaseService) {
+  async createZipCode(zipCode: { code; prices }, db: DatabaseService) {
     return db.zipCode.upsert({
       where: {
         code: zipCode.code,
       },
       update: {
-        price: zipCode.price,
+        prices: zipCode.prices,
       },
       create: {
         code: zipCode.code,
-        price: zipCode.price,
+        prices: zipCode.prices,
       },
     });
   }

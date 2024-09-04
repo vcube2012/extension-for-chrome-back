@@ -38,10 +38,17 @@ type PaymentUrlResponseEntity {
   payment_id: String
 }
 
+type ZipCodeInterfacePrices {
+  one_bedroom: Float!
+  two_bedroom: Float!
+  three_bedroom: Float!
+  four_bedroom: Float!
+}
+
 type ZipCodeEntity {
   id: ID!
   code: String!
-  price: Float!
+  prices: ZipCodeInterfacePrices!
   created_at: DateTime
 }
 
@@ -53,15 +60,6 @@ scalar DateTime
 type ZipCodesWithCredits {
   zipCodes: [ZipCodeEntity!]!
   credits: Int!
-}
-
-type PaginationMeta {
-  currentPage: Int!
-  lastPage: Int!
-  total: Int!
-  perPage: Int!
-  count: Int!
-  hasMorePages: Boolean!
 }
 
 type AddressEntityInfo {
@@ -85,6 +83,15 @@ type TagEntity {
   id: ID!
   name: String!
   created_at: DateTime!
+}
+
+type PaginationMeta {
+  currentPage: Int!
+  lastPage: Int!
+  total: Int!
+  perPage: Int!
+  count: Int!
+  hasMorePages: Boolean!
 }
 
 type FavoriteAddressEntity {

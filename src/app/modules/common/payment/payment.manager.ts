@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { StripeDriver } from '@/src/app/integrations/stripe/stripe.driver';
-import { WithCardPayment } from '@/src/app/modules/common/payment/interfaces/with-card-payment.interface';
-import { WithPagePayment } from '@/src/app/modules/common/payment/interfaces/with-page-payment.interface';
-import { StripeRepoService } from '@/src/app/repositories/stripe/stripe-repo.service';
 import Stripe from 'stripe';
+import { StripeRepoService } from '../../../repositories/stripe/stripe-repo.service';
+import { WithCardPayment } from './interfaces/with-card-payment.interface';
+import { WithPagePayment } from './interfaces/with-page-payment.interface';
+import { StripeDriver } from '../../../integrations/stripe/stripe.driver';
 
 @Injectable()
 export class PaymentManager {

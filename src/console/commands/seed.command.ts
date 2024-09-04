@@ -2,9 +2,9 @@ import { Command, CommandRunner } from 'nest-commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { DatabaseService } from '../../app/modules/globals/database/database.service';
-import { seeders } from '@/prisma/seeds/seeders';
 import { ScraperRunner } from '../../app/modules/common/scraper/scraper.runner';
-import { loadDefaultClassFromFile } from '@/src/helpers/helpers';
+import { loadDefaultClassFromFile } from '../../helpers/helpers';
+import { seeders } from '../../../prisma/seeds/seeders';
 
 @Command({
   name: 'db:seed',

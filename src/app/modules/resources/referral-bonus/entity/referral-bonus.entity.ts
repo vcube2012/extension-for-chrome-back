@@ -1,7 +1,7 @@
 import { Field, Float, Int, ObjectType, OmitType } from '@nestjs/graphql';
-import { ReferralBonusRepoInterface } from '@/src/app/repositories/referral-bonus/referral-bonus-repo.interface';
-import { Paginated } from '@/src/app/repositories/common/pagination/pagination.entity';
-import { UserRepoInterface } from '@/src/app/repositories/user/user-repo.interface';
+import { UserRepoInterface } from '../../../../repositories/user/user-repo.interface';
+import { ReferralBonusRepoInterface } from '../../../../repositories/referral-bonus/referral-bonus-repo.interface';
+import { Paginated } from '../../../../repositories/common/pagination/pagination.entity';
 
 @ObjectType()
 export class ReferralEntity extends OmitType(

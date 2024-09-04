@@ -1,6 +1,6 @@
 import { SeederInterface } from './interfaces/seeder.interface';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
-import ScraperService from '@/src/app/modules/common/scraper/scraper.service';
+import ScraperService from '../../../src/app/modules/common/scraper/scraper.service';
+import { DatabaseService } from '../../../src/app/modules/globals/database/database.service';
 
 export default class MetropolitanSeeder implements SeederInterface {
   constructor(private readonly scraperService: ScraperService) {}

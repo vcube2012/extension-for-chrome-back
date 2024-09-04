@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { Decimal } from '@prisma/client/runtime/library';
 import {
   PaginationOptions,
-  WithPagination,
   PER_PAGE,
-} from '@/src/app/repositories/common/pagination/pagination.interface';
-import { Decimal } from '@prisma/client/runtime/library';
+  WithPagination,
+} from '../../../repositories/common/pagination/pagination.interface';
 
 @Injectable()
 export class DatabaseService

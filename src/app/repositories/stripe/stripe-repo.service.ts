@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
+import { DatabaseService } from '../../modules/globals/database/database.service';
 
 @Injectable()
 export class StripeRepoService {

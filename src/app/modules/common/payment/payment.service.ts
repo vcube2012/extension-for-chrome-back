@@ -1,22 +1,22 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PackageEntity } from '@/src/app/modules/resources/package/entity/package.entity';
-import { UserEntity } from '@/src/app/modules/resources/user/entity/user.entity';
-import { PaymentSystemEntity } from '@/src/app/modules/resources/payment-system/entity/payment-system.entity';
-import { UserRepoService } from '@/src/app/repositories/user/user-repo.service';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
-import { MakeDepositInput } from '@/src/app/modules/common/payment/inputs/make-deposit.input';
-import { PackageRepoInterface } from '@/src/app/repositories/package/package-repo.interface';
+import { Decimal } from '@prisma/client/runtime/library';
+import { PackageEntity } from '../../resources/package/entity/package.entity';
+import { UserEntity } from '../../resources/user/entity/user.entity';
+import { MakeDepositInput } from './inputs/make-deposit.input';
+import { MakeDepositUsingCardInput } from './inputs/make-deposit-using-card.input';
+import { PaymentSystemEntity } from '../../resources/payment-system/entity/payment-system.entity';
+import { DatabaseService } from '../../globals/database/database.service';
+import { UserRepoService } from '../../../repositories/user/user-repo.service';
+import { PaymentManager } from './payment.manager';
+import { PaymentUrlResponseEntity } from './entity/payment-url-response.entity';
+import { WithPagePayment } from './interfaces/with-page-payment.interface';
+import { WithCardPayment } from './interfaces/with-card-payment.interface';
+import { PackageRepoInterface } from '../../../repositories/package/package-repo.interface';
+import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
 import {
   DepositStatus,
   DepositType,
-} from '@/src/app/repositories/deposit/deposit-repo.interface';
-import { PaymentManager } from '@/src/app/modules/common/payment/payment.manager';
-import { MakeDepositUsingCardInput } from '@/src/app/modules/common/payment/inputs/make-deposit-using-card.input';
-import { DepositEntity } from '@/src/app/modules/resources/deposit/entity/deposit.entity';
-import { Decimal } from '@prisma/client/runtime/library';
-import { WithPagePayment } from '@/src/app/modules/common/payment/interfaces/with-page-payment.interface';
-import { WithCardPayment } from '@/src/app/modules/common/payment/interfaces/with-card-payment.interface';
-import { PaymentUrlResponseEntity } from '@/src/app/modules/common/payment/entity/payment-url-response.entity';
+} from '../../../repositories/deposit/deposit-repo.interface';
 
 interface IPaymentDataOptions {
   package: PackageEntity;
@@ -83,16 +83,16 @@ export class PaymentService {
     const user = await this.findAuthUserWithLastPackage(data.userId);
 
     // Отримання сервісу платіжної системи
-    const paymentInstance = await this.resolvePaymentSystem(
-      data.input.payment_system_id,
-      packageEntity.price,
-    );
+    // const paymentInstance = await this.resolvePaymentSystem(
+    //   data.input.payment_system_id,
+    //   packageEntity.prices,
+    // );
 
-    return callback(paymentInstance, {
-      user: user,
-      package: packageEntity,
-      data: data.input,
-    });
+    // return callback(paymentInstance, {
+    //   user: user,
+    //   package: packageEntity,
+    //   data: data.input,
+    // });
   }
 
   private async findPaymentSystem(id: number): Promise<PaymentSystemEntity> {

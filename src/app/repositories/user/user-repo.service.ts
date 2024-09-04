@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
+import { DatabaseService } from '../../modules/globals/database/database.service';
 import {
   PackageEntity,
   PackageUserEntity,
-} from '@/src/app/modules/resources/package/entity/package.entity';
+} from '../../modules/resources/package/entity/package.entity';
 
 @Injectable()
 export class UserRepoService {

@@ -1,6 +1,6 @@
 import { Field, ID, Int, ObjectType, OmitType } from '@nestjs/graphql';
-import { PackageRepoInterface } from '@/src/app/repositories/package/package-repo.interface';
-import { UserEntity } from '@/src/app/modules/resources/user/entity/user.entity';
+import { PackageRepoInterface } from '../../../../repositories/package/package-repo.interface';
+import { UserEntity } from '../../user/entity/user.entity';
 
 @ObjectType()
 export class PackageEntity extends OmitType(

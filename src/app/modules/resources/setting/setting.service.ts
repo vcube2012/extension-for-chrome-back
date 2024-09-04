@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { UpdateSettingInput } from '@/src/app/modules/resources/setting/inputs/update-setting.input';
+import { UpdateSettingInput } from './inputs/update-setting.input';
 
 @Injectable()
 export class SettingService {

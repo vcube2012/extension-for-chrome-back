@@ -3,10 +3,10 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guard/auth.guard';
 import { PaymentService } from './payment.service';
 import { IContextServer } from '../graphql/graphql.module';
-import { MakeDepositInput } from '@/src/app/modules/common/payment/inputs/make-deposit.input';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { PaymentUrlResponseEntity } from './entity/payment-url-response.entity';
-import { MakeDepositUsingCardInput } from '@/src/app/modules/common/payment/inputs/make-deposit-using-card.input';
+import { MakeDepositInput } from './inputs/make-deposit.input';
+import { MakeDepositUsingCardInput } from './inputs/make-deposit-using-card.input';
 
 @UseGuards(AuthGuard)
 @Resolver()

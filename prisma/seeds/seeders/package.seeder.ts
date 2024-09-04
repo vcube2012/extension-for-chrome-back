@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { SeederInterface } from './interfaces/seeder.interface';
-import { PackageType } from '@/src/app/repositories/package/package-repo.interface';
+import { PackageType } from '../../../src/app/repositories/package/package-repo.interface';
 
 export default class PackageSeeder implements SeederInterface {
   async run(prisma: PrismaClient) {

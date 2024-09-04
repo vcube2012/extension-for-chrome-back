@@ -1,10 +1,10 @@
 import { Browser, Page } from 'puppeteer';
-import { sleep } from '@/src/helpers/helpers';
 import { Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { DomSelectorEnum } from './enums/dom-selector.enum';
 import { ScraperRunner } from './scraper.runner';
 import * as lodash from 'lodash';
+import { sleep } from '../../../../helpers/helpers';
 
 const url =
   'https://www.huduser.gov/portal/datasets/fmr/fmrs/FY2024_code/select_Geography_sa.odn';
@@ -79,7 +79,7 @@ export default class ScraperService {
   async getZipCodesForCounty(
     stateCode: string,
     countyCode: string,
-  ): Promise<{ code: string; price: number }[]> {
+  ): Promise<{ code: string; prices: object }[]> {
     try {
       const page = await this.goToPage();
 
@@ -108,7 +108,7 @@ export default class ScraperService {
 
   async getZipCodesForMetropolitan(
     metroCode: string,
-  ): Promise<{ code: string; price: number }[]> {
+  ): Promise<{ code: string; prices: object }[]> {
     try {
       const page = await this.goToPage();
 
@@ -135,7 +135,7 @@ export default class ScraperService {
   // Парсинг зіп-кодів з таблиці
   private async parseZipCodes(
     page: Page,
-  ): Promise<{ code: string; price: number }[]> {
+  ): Promise<{ code: string; prices: object }[]> {
     const headings = await page.$$eval('table > thead > tr', (elements) => {
       const arr = Array.from(elements).map((element) => {
         return Array.from(element.children).map((item) => item.textContent);
@@ -153,18 +153,19 @@ export default class ScraperService {
     const items = [];
 
     data.forEach((arr) => {
+      const prices = {};
       items.push(
         headings.reduce((obj, key, index) => {
           const snakeCaseKey = lodash.snakeCase(key);
 
           if (snakeCaseKey === 'zip_code') {
             obj['code'] = arr[index];
+          } else if (snakeCaseKey !== 'efficiency') {
+            const cleanedValue = arr[index].replace(/[^0-9.-]+/g, '');
+            prices[snakeCaseKey] = parseFloat(cleanedValue);
           }
 
-          if (snakeCaseKey === 'one_bedroom') {
-            const cleanedValue = arr[index].replace(/[^0-9.-]+/g, '');
-            obj['price'] = parseFloat(cleanedValue);
-          }
+          obj['prices'] = prices;
 
           return obj;
         }, {}),
