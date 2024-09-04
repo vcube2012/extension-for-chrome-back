@@ -3,10 +3,9 @@ import {
   ZipCodeHouseCodeInput,
   ZipCodesInput,
 } from '@/src/app/modules/resources/zip-code/inputs/zip-codes.input';
-import { Prisma } from '@prisma/client';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import { ZipCodeEntity } from '@/src/app/modules/resources/zip-code/entity/zip-code.entity';
+import { ZipCodesWithCredits } from '@/src/app/modules/resources/zip-code/entity/zip-code.entity';
 import { UserEntity } from '@/src/app/modules/resources/user/entity/user.entity';
 import { DatabaseService } from '@/src/app/modules/globals/database/database.service';
 
@@ -19,40 +18,41 @@ export class ZipCodeService {
 
   async findManyByCodes(
     input: ZipCodesInput,
-    user: object,
-    fields: Prisma.ZipCodeSelect,
-  ): Promise<ZipCodeEntity[]> {
+    user: UserEntity,
+  ): Promise<ZipCodesWithCredits> {
     const zipCodes = input.data.map(
       (item: ZipCodeHouseCodeInput) => item.zipCode,
     );
-
-    const where: Prisma.ZipCodeWhereInput = {
-      code: {
-        in: zipCodes,
-      },
-    };
 
     if (!input.data?.length) {
       throw new BadRequestException('At least one zip code must be specified');
     }
 
     const results = await this.db.zipCode.findMany({
-      where,
-      select: { ...fields },
+      where: {
+        code: {
+          in: zipCodes,
+        },
+      },
     });
 
+    let credits = user.credits;
+
     if (results.length > 0) {
-      await this.calculateCredits(user, input.data);
+      credits = await this.calculateCredits(user, input.data);
     }
 
-    return results;
+    return {
+      zipCodes: results,
+      credits: credits,
+    };
   }
 
   // обрахування зняття кредитів з користувача
   private async calculateCredits(
-    user: any,
+    user: UserEntity,
     data: ZipCodeHouseCodeInput[],
-  ): Promise<UserEntity> {
+  ): Promise<number> {
     const newItemsForUser = [];
 
     for (const item of data) {
@@ -75,7 +75,7 @@ export class ZipCodeService {
       await this.cacheService.set(this.getCacheKey(user.id, item), 1, 0);
     }
 
-    return this.db.user.update({
+    const updatedUser = await this.db.user.update({
       where: {
         id: user.id,
       },
@@ -85,6 +85,8 @@ export class ZipCodeService {
         },
       },
     });
+
+    return updatedUser.credits;
   }
 
   private getCacheKey(userId: number, item: ZipCodeHouseCodeInput): string {

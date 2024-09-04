@@ -50,6 +50,11 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type ZipCodesWithCredits {
+  zipCodes: [ZipCodeEntity!]!
+  credits: Int!
+}
+
 type PaginationMeta {
   currentPage: Int!
   lastPage: Int!
@@ -319,7 +324,7 @@ type PaymentSystemEntity {
 
 type Query {
   getGoogleAuthUrl: String!
-  findManyZipCodes(input: ZipCodesInput!): [ZipCodeEntity!]!
+  findManyZipCodes(input: ZipCodesInput!): ZipCodesWithCredits!
   getFavorites(input: GetFavoritesInput!): PaginatedFavoriteAddresses!
   getOneFavorite(input: FindOneFavoriteInput!): FavoriteAddressEntity
   getProfile: UserEntity

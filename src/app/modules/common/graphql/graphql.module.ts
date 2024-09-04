@@ -5,16 +5,10 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { FastifyReply, FastifyRequest } from 'fastify';
-
-export interface ICookieToken {
-  id: number;
-  email: string;
-  iat?: number;
-  exp?: number;
-}
+import { UserRepoInterface } from '@/src/app/repositories/user/user-repo.interface';
 
 interface IUser {
-  user?: ICookieToken;
+  user?: UserRepoInterface;
 }
 
 interface IContext {
