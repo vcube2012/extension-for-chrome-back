@@ -16,10 +16,24 @@ export class ScraperRunner {
 
   async run() {
     const callback = async (scraper: ScraperService) => {
+      await this.callOne(new ZipCodeSeeder(scraper));
+    };
+
+    await this.runBrowser(callback);
+  }
+
+  async scrapeMetropolitans() {
+    const callback = async (scraper: ScraperService) => {
       await this.callOne(new MetropolitanSeeder(scraper));
+    };
+
+    await this.runBrowser(callback);
+  }
+
+  async scrapeStatesAndMetropolitans() {
+    const callback = async (scraper: ScraperService) => {
       await this.callOne(new StateSeeder(scraper));
       await this.callOne(new CountySeeder(scraper));
-      await this.callOne(new ZipCodeSeeder(scraper));
     };
 
     await this.runBrowser(callback);

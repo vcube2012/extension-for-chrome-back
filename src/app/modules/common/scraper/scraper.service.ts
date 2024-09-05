@@ -21,6 +21,14 @@ export default class ScraperService {
     await new ScraperRunner().run();
   }
 
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
+  async scrapeMetropolitansAndCounties() {
+    const scrapeRunner = new ScraperRunner();
+
+    await scrapeRunner.scrapeMetropolitans();
+    await scrapeRunner.scrapeStatesAndMetropolitans();
+  }
+
   async getMetropolitans() {
     try {
       const page = await this.goToPage();

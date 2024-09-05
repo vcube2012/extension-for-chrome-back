@@ -1,6 +1,7 @@
 import { SeederInterface } from './interfaces/seeder.interface';
 import { DatabaseService } from '../../../src/app/modules/globals/database/database.service';
 import ScraperService from '../../../src/app/modules/common/scraper/scraper.service';
+import { sleep } from '../../../src/helpers/helpers';
 
 export default class ZipCodeSeeder implements SeederInterface {
   constructor(private readonly scraperService: ScraperService) {}
@@ -13,25 +14,25 @@ export default class ZipCodeSeeder implements SeederInterface {
         metro.code,
       );
 
-      await db.$transaction(async () => {
-        const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
+      const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        for (const zipCodeId of zipCodeIds) {
-          await db.zipCodesOnMetropolitans.upsert({
-            where: {
-              zip_code_id_metropolitan_id: {
-                zip_code_id: zipCodeId,
-                metropolitan_id: metro.id,
-              },
-            },
-            update: {},
-            create: {
+      for (const zipCodeId of zipCodeIds) {
+        await db.zipCodesOnMetropolitans.upsert({
+          where: {
+            zip_code_id_metropolitan_id: {
               zip_code_id: zipCodeId,
               metropolitan_id: metro.id,
             },
-          });
-        }
-      });
+          },
+          update: {},
+          create: {
+            zip_code_id: zipCodeId,
+            metropolitan_id: metro.id,
+          },
+        });
+      }
+
+      sleep(1);
     }
 
     const counties = await db.county.findMany({
@@ -46,25 +47,25 @@ export default class ZipCodeSeeder implements SeederInterface {
         county.code,
       );
 
-      await db.$transaction(async () => {
-        const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
+      const zipCodeIds = await this.getZipCodeIds(zipCodes, db);
 
-        for (const zipCodeId of zipCodeIds) {
-          await db.zipCodesOnCounties.upsert({
-            where: {
-              zip_code_id_county_id: {
-                zip_code_id: zipCodeId,
-                county_id: county.id,
-              },
-            },
-            update: {},
-            create: {
+      for (const zipCodeId of zipCodeIds) {
+        await db.zipCodesOnCounties.upsert({
+          where: {
+            zip_code_id_county_id: {
               zip_code_id: zipCodeId,
               county_id: county.id,
             },
-          });
-        }
-      });
+          },
+          update: {},
+          create: {
+            zip_code_id: zipCodeId,
+            county_id: county.id,
+          },
+        });
+      }
+
+      sleep(1);
     }
   }
 
