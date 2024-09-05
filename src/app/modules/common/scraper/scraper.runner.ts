@@ -15,20 +15,75 @@ export class ScraperRunner {
   }
 
   async run() {
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox'],
-    });
-    const scraper = new ScraperService(browser);
+    const callback = async (scraper: ScraperService) => {
+      await this.callOne(new MetropolitanSeeder(scraper));
+      await this.callOne(new StateSeeder(scraper));
+      await this.callOne(new CountySeeder(scraper));
+      await this.callOne(new ZipCodeSeeder(scraper));
+    };
 
-    await this.callOne(new MetropolitanSeeder(scraper));
-    await this.callOne(new StateSeeder(scraper));
-    await this.callOne(new CountySeeder(scraper));
-    await this.callOne(new ZipCodeSeeder(scraper));
+    await this.runBrowser(callback);
+  }
 
-    await browser.close();
+  async runForCounty(countyId: number) {
+    const callback = async (scraper: ScraperService) => {
+      const county = await this.db.county.findUnique({
+        where: {
+          id: Number(countyId),
+        },
+        include: {
+          state: true,
+        },
+      });
+
+      if (!county) {
+        throw new Error(`Undefined county with id - ${countyId}`);
+      }
+
+      const zipCodes = await scraper.getZipCodesForCounty(
+        county.state.code,
+        county.code,
+      );
+
+      const zipCodeSeeder = new ZipCodeSeeder(scraper);
+
+      await this.db.$transaction(async () => {
+        const zipCodeIds = await zipCodeSeeder.getZipCodeIds(zipCodes, this.db);
+
+        for (const zipCodeId of zipCodeIds) {
+          await this.db.zipCodesOnCounties.upsert({
+            where: {
+              zip_code_id_county_id: {
+                zip_code_id: zipCodeId,
+                county_id: county.id,
+              },
+            },
+            update: {},
+            create: {
+              zip_code_id: zipCodeId,
+              county_id: county.id,
+            },
+          });
+        }
+      });
+    };
+
+    await this.runBrowser(callback);
   }
 
   async callOne(seeder: SeederInterface) {
     await seeder.run(this.db);
+  }
+
+  private async runBrowser(callback: (scraper: ScraperService) => any) {
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox'],
+    });
+
+    const scraper = new ScraperService(browser);
+
+    await callback(scraper);
+
+    await browser.close();
   }
 }
