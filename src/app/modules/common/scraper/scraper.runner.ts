@@ -47,25 +47,33 @@ export class ScraperRunner {
 
       const zipCodeSeeder = new ZipCodeSeeder(scraper);
 
-      await this.db.$transaction(async () => {
-        const zipCodeIds = await zipCodeSeeder.getZipCodeIds(zipCodes, this.db);
+      await this.db.$transaction(
+        async () => {
+          const zipCodeIds = await zipCodeSeeder.getZipCodeIds(
+            zipCodes,
+            this.db,
+          );
 
-        for (const zipCodeId of zipCodeIds) {
-          await this.db.zipCodesOnCounties.upsert({
-            where: {
-              zip_code_id_county_id: {
+          for (const zipCodeId of zipCodeIds) {
+            await this.db.zipCodesOnCounties.upsert({
+              where: {
+                zip_code_id_county_id: {
+                  zip_code_id: zipCodeId,
+                  county_id: county.id,
+                },
+              },
+              update: {},
+              create: {
                 zip_code_id: zipCodeId,
                 county_id: county.id,
               },
-            },
-            update: {},
-            create: {
-              zip_code_id: zipCodeId,
-              county_id: county.id,
-            },
-          });
-        }
-      });
+            });
+          }
+        },
+        {
+          timeout: 20000,
+        },
+      );
     };
 
     await this.runBrowser(callback);
