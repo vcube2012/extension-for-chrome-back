@@ -131,8 +131,6 @@ export class StripeDriver implements WithPagePayment {
       },
     });
 
-    console.log(paymentLink);
-
     return {
       url: paymentLink.url,
     };

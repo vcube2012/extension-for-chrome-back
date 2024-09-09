@@ -31,11 +31,17 @@ export class StripeProductFactory {
       const productParams = {
         name: product.name,
         active: product.active,
-        default_price_data: {
-          currency: priceData.currency,
-          unit_amount: priceData.unit_amount,
-        },
       };
+
+      if (options.default_price_data.unit_amount !== priceData.unit_amount) {
+        const newPriceData = await this.client.prices.create({
+          product: product.id,
+          currency: options.default_price_data.currency,
+          unit_amount: options.default_price_data.unit_amount,
+        });
+
+        productParams['default_price'] = newPriceData.id;
+      }
 
       return this.client.products.update(product.id, productParams);
     }
