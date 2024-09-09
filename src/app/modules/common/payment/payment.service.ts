@@ -43,6 +43,7 @@ export class PaymentService {
     return 'Payment with card. User id - ' + userId;
   }
 
+  // Pay using payment link from payment system
   async payWithPaymentPage(
     userId: number,
     input: MakeDepositInput,
@@ -83,16 +84,16 @@ export class PaymentService {
     const user = await this.findAuthUserWithLastPackage(data.userId);
 
     // Отримання сервісу платіжної системи
-    // const paymentInstance = await this.resolvePaymentSystem(
-    //   data.input.payment_system_id,
-    //   packageEntity.prices,
-    // );
+    const paymentInstance = await this.resolvePaymentSystem(
+      data.input.payment_system_id,
+      packageEntity.price,
+    );
 
-    // return callback(paymentInstance, {
-    //   user: user,
-    //   package: packageEntity,
-    //   data: data.input,
-    // });
+    return callback(paymentInstance, {
+      user: user,
+      package: packageEntity,
+      data: data.input,
+    });
   }
 
   private async findPaymentSystem(id: number): Promise<PaymentSystemEntity> {

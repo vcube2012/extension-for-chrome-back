@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
-import { SocialAuthUserEntity } from '../../modules/common/auth/entity/social-auth-user.entity';
+import { SocialAuthUserEntity } from '../../common/auth/entity/social-auth-user.entity';
 
 @Injectable()
 export class GoogleService {

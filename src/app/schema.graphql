@@ -35,7 +35,6 @@ type TokenResponse {
 
 type PaymentUrlResponseEntity {
   url: String!
-  payment_id: String
 }
 
 type ZipCodeInterfacePrices {

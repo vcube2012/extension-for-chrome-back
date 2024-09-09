@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { GoogleService } from '../../../integrations/google/google.service';
+import { GoogleService } from '../../integrations/google/google.service';
 import { SocialSignInInput } from './dto/social-sign-in.input';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { TokenResponse } from './entity/social-auth-user.entity';

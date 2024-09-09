@@ -4,7 +4,4 @@ import { Field, ObjectType } from '@nestjs/graphql';
 export class PaymentUrlResponseEntity {
   @Field()
   url: string;
-
-  @Field({ nullable: true })
-  payment_id: string;
 }

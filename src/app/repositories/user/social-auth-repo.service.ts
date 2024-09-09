@@ -1,5 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { GoogleService } from '../../integrations/google/google.service';
+import { GoogleService } from '../../modules/integrations/google/google.service';
 import { SocialAuthType } from './user-repo.interface';
 import { SocialAuthUserEntity } from '../../modules/common/auth/entity/social-auth-user.entity';
 

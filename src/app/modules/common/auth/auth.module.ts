@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleService } from '../../../integrations/google/google.service';
+import { GoogleService } from '../../integrations/google/google.service';
 import { SocialAuthRepoService } from '../../../repositories/user/social-auth-repo.service';
 
 @Module({
