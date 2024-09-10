@@ -195,6 +195,11 @@ export class AddressService {
           },
           include: {
             address: true,
+            tags: {
+              include: {
+                tag: true,
+              },
+            },
           },
         },
       },
@@ -293,7 +298,7 @@ export class AddressService {
     return !!favoriteAddress;
   }
 
-  private transformEntity(favoriteAddresses: FavoriteAddressEntity) {
+  private transformEntity(favoriteAddress: any) {
     const transformer = (favoriteAddress): FavoriteAddressEntity => ({
       ...favoriteAddress,
       tags:
@@ -302,7 +307,7 @@ export class AddressService {
         ) ?? [],
     });
 
-    return transformer(favoriteAddresses);
+    return transformer(favoriteAddress);
   }
 
   private makeOrderByConstraint(input: GetFavoritesSorting) {
