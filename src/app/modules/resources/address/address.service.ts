@@ -37,6 +37,7 @@ export class AddressService {
               address: {
                 address: {
                   contains: input.search,
+                  mode: 'insensitive',
                 },
               },
             },
@@ -46,6 +47,7 @@ export class AddressService {
                   tag: {
                     name: {
                       contains: input.search,
+                      mode: 'insensitive',
                     },
                   },
                 },
