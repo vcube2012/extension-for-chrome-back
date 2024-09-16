@@ -3,8 +3,8 @@
 # ------------------------------------------------------
 
 interface AddressRepoInfoInterface {
-  beds: Int
-  baths: Int
+  beds: Float
+  baths: Float
   square: Float
 }
 
@@ -62,8 +62,8 @@ type ZipCodesWithCredits {
 }
 
 type AddressEntityInfo {
-  beds: Int
-  baths: Int
+  beds: Float
+  baths: Float
   square: Float
 }
 
@@ -454,8 +454,8 @@ input AddressInput {
 }
 
 input AddressInputInfo {
-  beds: Int = null
-  baths: Int = null
+  beds: Float = null
+  baths: Float = null
   square: Float = null
 }
 

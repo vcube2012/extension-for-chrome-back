@@ -37,10 +37,10 @@ export class FavoriteAddressRepoInterface {
 
 @InterfaceType()
 export class AddressRepoInfoInterface {
-  @Field(() => Int, { nullable: true, defaultValue: null })
+  @Field(() => Float, { nullable: true, defaultValue: null })
   beds?: number;
 
-  @Field(() => Int, { nullable: true, defaultValue: null })
+  @Field(() => Float, { nullable: true, defaultValue: null })
   baths?: number;
 
   @Field(() => Float, { nullable: true, defaultValue: null })
