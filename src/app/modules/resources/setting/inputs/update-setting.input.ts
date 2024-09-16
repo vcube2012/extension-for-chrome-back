@@ -52,3 +52,6 @@ export class UpdateSettingInput {
   @Field(() => UpdateSettingData)
   data: Prisma.JsonNullValueInput | Prisma.InputJsonValue;
 }
+
+@InputType()
+export class UpdateFmrInput extends PickType(SettingData, ['fmr'], InputType) {}

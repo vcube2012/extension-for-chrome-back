@@ -134,6 +134,7 @@ type SettingDataPurchaseRange {
 
 type EntitySettingData {
   use_loan: Boolean!
+  fmr: Float!
   purchase_range: SettingDataPurchaseRange!
   mortgage: SettingDataMortgage!
   expenses: SettingDataExpenses!
@@ -411,6 +412,7 @@ type Mutation {
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): Boolean!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
+  updateFmr(input: UpdateFmrInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
   likeBlog(input: FindBlogInput!): Int
   unlikeBlog(input: FindBlogInput!): Int
@@ -501,6 +503,10 @@ input UpdateSettingDataExpenses {
   management: Float = null
   maintenance: Float = null
   vacancy: Float = null
+}
+
+input UpdateFmrInput {
+  fmr: Float! = 100
 }
 
 input SaveTagsInput {

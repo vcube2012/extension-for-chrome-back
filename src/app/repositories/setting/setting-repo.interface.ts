@@ -1,5 +1,5 @@
 import { Field, Float, InterfaceType } from '@nestjs/graphql';
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsOptional, Max, Min } from 'class-validator';
 
 @InterfaceType()
 export class PurchaseRange {
@@ -71,4 +71,10 @@ export class SettingData {
 
   @Field(() => Expenses)
   expenses: Expenses;
+
+  @Field(() => Float, { nullable: null, defaultValue: 100 })
+  @IsOptional()
+  @Min(50)
+  @Max(200)
+  fmr?: number;
 }

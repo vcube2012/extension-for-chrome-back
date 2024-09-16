@@ -37,7 +37,7 @@ class SettingDataPurchaseRange extends PickType(
 @ObjectType()
 class EntitySettingData extends PickType(
   SettingData,
-  ['use_loan'],
+  ['use_loan', 'fmr'],
   ObjectType,
 ) {
   @Field(() => SettingDataPurchaseRange)
