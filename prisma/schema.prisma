@@ -336,7 +336,7 @@ model PaymentSystem {
   min_deposit Decimal @default(0) @db.Decimal(10, 2)
   is_active   Boolean @default(true)
   is_card     Boolean @default(false)
-  sort_order  Int     @db.SmallInt
+  sort_order  Int     @default(0) @db.SmallInt
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
