@@ -4,8 +4,9 @@ import { PaymentUrlResponseEntity } from '../../common/payment/entity/payment-ur
 import axios from 'axios';
 import { CentAppOptions } from './cent-app-options.interface';
 import { DatabaseService } from '../../globals/database/database.service';
+import { HasWebhook } from '../../common/payment/interfaces/has-webhook.interface';
 
-export class CentAppDriver implements WithPagePayment {
+export class CentAppDriver implements HasWebhook, WithPagePayment {
   private readonly baseUrl = 'https://cent.app';
   private readonly currency = 'USD';
   private readonly payersPayCommission = true;
@@ -56,6 +57,10 @@ export class CentAppDriver implements WithPagePayment {
 
       throw new Error(message || 'Payment error');
     }
+  }
+
+  async handleWebhook(data: any) {
+    console.log(data);
   }
 
   private async setPaymentIdForDeposit(depositId: number, paymentId: string) {
