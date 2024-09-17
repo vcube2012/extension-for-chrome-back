@@ -162,7 +162,7 @@ export class PaymentService {
     return this.paymentManager.driver(this.paymentSystemEntity.merchant);
   }
 
-  // Створення депозиту з статусом 'Очікується'
+  // Створення депозиту з статусом 'Тимчасовий'
   private async createDeposit(
     user: UserEntity,
     packageEntity: PackageRepoInterface,
@@ -180,7 +180,7 @@ export class PaymentService {
         payment_system_id: this.paymentSystemEntity.id,
         amount: packageEntity.price,
         type: type,
-        status: DepositStatus.WAITING,
+        status: DepositStatus.TEMP,
       },
     });
 

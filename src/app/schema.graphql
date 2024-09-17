@@ -243,6 +243,7 @@ enum DepositStatus {
   SUCCESS
   WAITING
   FAILED
+  TEMP
 }
 
 type PaginatedDeposits {

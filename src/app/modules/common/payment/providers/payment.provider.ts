@@ -1,6 +1,5 @@
 import { ConfigService } from '@nestjs/config';
 import { PaymentManager } from '../payment.manager';
-import { StripeDriver } from '../../../integrations/stripe/stripe.driver';
 import { DatabaseService } from '../../../globals/database/database.service';
 import { CentAppDriver } from '../../../integrations/cent-app/cent-app.driver';
 

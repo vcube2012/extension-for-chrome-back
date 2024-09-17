@@ -383,16 +383,16 @@ model Admin {
   @@map("admins")
 }
 
-model Stripe {
-  id String @id @default(uuid())
-
-  stripe_id   String @unique @db.VarChar()
-  stripe_type String @db.VarChar(255)
-  model_type  String @db.VarChar(255)
-  model_id    Int
-
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
-
-  @@map("stripe")
-}
+// model Stripe {
+//   id String @id @default(uuid())
+//
+//   stripe_id   String @unique @db.VarChar()
+//   stripe_type String @db.VarChar(255)
+//   model_type  String @db.VarChar(255)
+//   model_id    Int
+//
+//   created_at DateTime  @default(now())
+//   updated_at DateTime? @updatedAt
+//
+//   @@map("stripe")
+// }

@@ -4,9 +4,15 @@ import { PaymentUrlResponseEntity } from '../../common/payment/entity/payment-ur
 import axios from 'axios';
 import { CentAppOptions } from './cent-app-options.interface';
 import { DatabaseService } from '../../globals/database/database.service';
+import { PaymentDriver } from '../../common/payment/payment.driver';
+import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
+import md5 from 'md5';
 import { HasWebhook } from '../../common/payment/interfaces/has-webhook.interface';
 
-export class CentAppDriver implements HasWebhook, WithPagePayment {
+export class CentAppDriver
+  extends PaymentDriver
+  implements HasWebhook, WithPagePayment
+{
   private readonly baseUrl = 'https://cent.app';
   private readonly currency = 'USD';
   private readonly payersPayCommission = true;
@@ -15,8 +21,10 @@ export class CentAppDriver implements HasWebhook, WithPagePayment {
   constructor(
     private readonly secret: string,
     private readonly shopId: string,
-    private readonly db: DatabaseService,
-  ) {}
+    protected readonly db: DatabaseService,
+  ) {
+    super(db);
+  }
 
   async payWithPaymentPage(
     options: PaymentOptions,
@@ -34,10 +42,7 @@ export class CentAppDriver implements HasWebhook, WithPagePayment {
       const response = await this.sendRequest('/api/v1/bill/create', params);
 
       if (response.data?.success) {
-        await this.setPaymentIdForDeposit(
-          options.deposit.id,
-          response.data.bill_id,
-        );
+        await this.depositWaiting(options.deposit, response.data.bill_id);
 
         return {
           url: response.data.link_page_url,
@@ -60,18 +65,26 @@ export class CentAppDriver implements HasWebhook, WithPagePayment {
   }
 
   async handleWebhook(data: any) {
-    console.log(data);
-  }
-
-  private async setPaymentIdForDeposit(depositId: number, paymentId: string) {
-    return this.db.deposit.update({
+    const orderId = data.InvId;
+    const deposit: DepositEntity = await this.db.deposit.findUniqueOrThrow({
       where: {
-        id: depositId,
-      },
-      data: {
-        payment_id: paymentId,
+        id: orderId,
       },
     });
+
+    const signature = md5(`${data.OutSum}:${orderId}:${this.secret}`)
+      .toString()
+      .toUpperCase();
+
+    if (signature !== data.SignatureValue) {
+      return this.depositFailed(deposit, 'Signature value does not match');
+    }
+
+    if (data.Status !== 'SUCCESS') {
+      return this.depositFailed(deposit, 'Payment status is not success');
+    }
+
+    return this.depositSuccess(deposit);
   }
 
   private async setErrorForDeposit(depositId: number, errors: string | object) {

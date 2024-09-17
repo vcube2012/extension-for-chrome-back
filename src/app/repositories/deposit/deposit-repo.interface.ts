@@ -15,6 +15,7 @@ export enum DepositStatus {
   SUCCESS = 'success',
   WAITING = 'waiting',
   FAILED = 'failed',
+  TEMP = 'temp',
 }
 
 registerEnumType(DepositType, { name: 'DepositType' });
