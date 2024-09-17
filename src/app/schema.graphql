@@ -224,6 +224,7 @@ type PackageUserEntity {
 
 type DepositEntity {
   id: ID!
+  user_id: Int!
   type: DepositType!
   amount: Float!
   status: DepositStatus!

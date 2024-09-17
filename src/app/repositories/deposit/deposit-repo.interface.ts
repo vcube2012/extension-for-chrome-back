@@ -2,6 +2,7 @@ import {
   Field,
   Float,
   ID,
+  Int,
   InterfaceType,
   registerEnumType,
 } from '@nestjs/graphql';
@@ -25,6 +26,9 @@ registerEnumType(DepositStatus, { name: 'DepositStatus' });
 export class DepositRepoInterface {
   @Field(() => ID)
   id: any;
+
+  @Field(() => Int)
+  user_id: number;
 
   @Field(() => DepositType)
   type: string;
