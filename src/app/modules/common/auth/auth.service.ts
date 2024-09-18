@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SocialAuthRepoService } from '../../../repositories/user/social-auth-repo.service';
-import { SocialSignInInput } from './dto/social-sign-in.input';
 import { SocialAuthUserEntity } from './entity/social-auth-user.entity';
 import { DatabaseService } from '../../globals/database/database.service';
 import { compareSync, hashSync } from 'bcrypt';
+import { SocialAuthType } from '../../../repositories/user/user-repo.interface';
 
 interface JwtPayloadInterface {
   id: number | string;
@@ -22,11 +22,8 @@ export class AuthService {
     private readonly db: DatabaseService,
     private jwtService: JwtService,
   ) {}
-  async socialSignIn(input: SocialSignInInput): Promise<string> {
-    const socialUser = await this.socialAuthService.getUser(
-      input.code,
-      input.type,
-    );
+  async socialSignIn(code: string, type: SocialAuthType): Promise<string> {
+    const socialUser = await this.socialAuthService.getUser(code, type);
 
     if (!socialUser) {
       throw new InternalServerErrorException(

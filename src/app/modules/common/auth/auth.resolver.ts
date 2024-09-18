@@ -23,7 +23,7 @@ export class AuthResolver {
   async socialSignIn(
     @Args('input') input: SocialSignInInput,
   ): Promise<TokenResponse> {
-    const token = await this.authService.socialSignIn(input);
+    const token = await this.authService.socialSignIn(input.code, input.type);
 
     return {
       token: token,

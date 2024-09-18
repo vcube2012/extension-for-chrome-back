@@ -3,8 +3,9 @@ import { AuthService } from './auth.service';
 import { AuthResolver } from './auth.resolver';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleService } from '../../integrations/google/google.service';
 import { SocialAuthRepoService } from '../../../repositories/user/social-auth-repo.service';
+import { AuthController } from './auth.controller';
+import { GoogleService } from '../../integrations/google/google.service';
 
 @Module({
   imports: [
@@ -15,6 +16,8 @@ import { SocialAuthRepoService } from '../../../repositories/user/social-auth-re
       signOptions: { expiresIn: '30d' },
     }),
   ],
+  controllers: [AuthController],
   providers: [AuthService, GoogleService, SocialAuthRepoService, AuthResolver],
+  exports: [AuthService, GoogleService],
 })
 export class AuthModule {}
