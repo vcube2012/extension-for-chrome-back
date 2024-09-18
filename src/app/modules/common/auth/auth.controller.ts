@@ -34,6 +34,8 @@ export class AuthController {
       SocialAuthType.GOOGLE,
     );
 
+    console.log(token);
+
     return {
       token: token,
     };
