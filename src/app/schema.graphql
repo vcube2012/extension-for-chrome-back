@@ -203,6 +203,7 @@ type PackageEntity {
   old_price: Float
   is_active: Boolean!
   is_bestseller: Boolean!
+  is_trial: Boolean!
   advantages: [String!]!
   created_at: DateTime!
 }
@@ -217,6 +218,7 @@ type PackageUserEntity {
   package_id: Int!
   user_id: Int!
   is_active: Boolean!
+  is_trial: Boolean!
   credits: Int!
   package: PackageEntity!
   user: UserEntity!
