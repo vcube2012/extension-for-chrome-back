@@ -17,7 +17,7 @@ export class DepositResolver {
   async getPaymentsHistory(
     @Args('input') input: PaginationInput,
     @Context() ctx: IContextServer,
-  ) {
+  ): Promise<PaginatedDeposits> {
     return this.depositService.paginateDeposits(
       ctx.req.user.id,
       input.page,
