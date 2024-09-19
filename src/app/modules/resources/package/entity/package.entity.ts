@@ -23,6 +23,9 @@ export class PackageUserEntity {
   @Field()
   is_active?: boolean;
 
+  @Field()
+  is_trial?: boolean;
+
   @Field(() => Int)
   credits?: number;
 
