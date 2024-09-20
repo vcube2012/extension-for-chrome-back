@@ -1,4 +1,4 @@
-import { Field, ID, InterfaceType } from '@nestjs/graphql';
+import { Field, ID, Int, InterfaceType } from '@nestjs/graphql';
 
 @InterfaceType()
 export class ReviewRepoInterface {
@@ -10,6 +10,9 @@ export class ReviewRepoInterface {
 
   @Field()
   text: string;
+
+  @Field(() => Int)
+  rating: number;
 
   @Field(() => ID)
   sort_order: number;
