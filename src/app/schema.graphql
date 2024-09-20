@@ -29,6 +29,23 @@ interface Expenses {
   vacancy: Float
 }
 
+type VideoMainPageEntity {
+  key: String!
+  created_at: DateTime!
+  value: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PartnerBonusEntity {
+  key: String!
+  created_at: DateTime!
+  value: Int!
+}
+
 type TokenResponse {
   token: String!
 }
@@ -50,11 +67,6 @@ type ZipCodeEntity {
   prices: ZipCodeInterfacePrices!
   created_at: DateTime
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type ZipCodesWithCredits {
   zipCodes: [ZipCodeEntity!]!
@@ -153,6 +165,8 @@ type ReferralEntity {
   avatar: String
   credits: Float!
   package_available_to: DateTime
+  username: String
+  partner_percent: Int
   created_at: DateTime!
 }
 
@@ -165,6 +179,8 @@ type PartnerEntity {
   avatar: String
   credits: Float!
   package_available_to: DateTime
+  username: String
+  partner_percent: Int
   created_at: DateTime!
 }
 
@@ -183,10 +199,21 @@ enum ReferralBonusType {
   WITHDRAWAL
 }
 
+type PartnerInfoEntity {
+  partnerPercent: Int!
+  username: String!
+}
+
 type PartnerStatisticsEntity {
   balance: Float!
   totalEarnings: Float!
   referralsCount: Int!
+}
+
+type ReferralBonusesInfo {
+  results: PaginatedReferralBonuses!
+  statistics: PartnerStatisticsEntity!
+  partnerInfo: PartnerInfoEntity!
 }
 
 type PaginatedReferralBonuses {
@@ -263,6 +290,8 @@ type UserEntity {
   avatar: String
   credits: Float!
   package_available_to: DateTime
+  username: String
+  partner_percent: Int
   created_at: DateTime!
   setting: SettingEntity
   referrer: PartnerEntity
@@ -307,19 +336,8 @@ type ReviewEntity {
   id: ID!
   author: String!
   text: String!
+  rating: Int!
   created_at: DateTime!
-}
-
-type VideoMainPageEntity {
-  key: String!
-  created_at: DateTime!
-  value: String!
-}
-
-type PartnerBonusEntity {
-  key: String!
-  created_at: DateTime!
-  value: Int!
 }
 
 type PaymentSystemEntity {
@@ -348,8 +366,7 @@ type Query {
   findReviews: [ReviewEntity!]!
   getMainPageVideo: VideoMainPageEntity
   getPartnerBonus: PartnerBonusEntity
-  getReferralBonuses(input: PaginationInput!): PaginatedReferralBonuses!
-  getPartnerStatistics: PartnerStatisticsEntity!
+  getReferralBonuses(input: PaginationInput!): ReferralBonusesInfo!
   getPaymentsHistory(input: PaginationInput!): PaginatedDeposits!
   getAllPaymentSystems: [PaymentSystemEntity!]!
 }

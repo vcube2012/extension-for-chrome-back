@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { SocialAuthRepoService } from '../../../repositories/user/social-auth-repo.service';
 import { GoogleService } from '../../integrations/google/google.service';
+import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 
 @Module({
   imports: [
@@ -15,7 +16,13 @@ import { GoogleService } from '../../integrations/google/google.service';
       signOptions: { expiresIn: '30d' },
     }),
   ],
-  providers: [AuthService, GoogleService, SocialAuthRepoService, AuthResolver],
+  providers: [
+    AuthService,
+    GoogleService,
+    SocialAuthRepoService,
+    AuthResolver,
+    SiteSettingRepoService,
+  ],
   exports: [AuthService, GoogleService],
 })
 export class AuthModule {}

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from '../../globals/database/database.service';
-import { SiteSettingKey } from './entity/site-setting.entity';
+import { SiteSettingKey } from '../../modules/resources/site-setting/entity/site-setting.entity';
+import { DatabaseService } from '../../modules/globals/database/database.service';
 
 @Injectable()
-export class SiteSettingService {
+export class SiteSettingRepoService {
   constructor(private readonly db: DatabaseService) {}
 
   async findOne(key: SiteSettingKey) {

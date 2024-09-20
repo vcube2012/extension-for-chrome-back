@@ -18,9 +18,10 @@ model User {
   referrer_id          Int?
   credits              Int       @default(0)
   package_available_to DateTime?
-
-  created_at DateTime  @default(now())
-  updated_at DateTime? @updatedAt
+  username             String?   @unique @db.VarChar(255)
+  partner_percent      Int?      @db.SmallInt
+  created_at           DateTime  @default(now())
+  updated_at           DateTime? @updatedAt
 
   setting            Setting?
   favoriteAddresses  FavoriteAddress[]

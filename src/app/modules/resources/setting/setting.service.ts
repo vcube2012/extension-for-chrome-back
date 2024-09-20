@@ -71,7 +71,5 @@ export class SettingService {
         data: settingData,
       },
     });
-
-    // return data;
   }
 }

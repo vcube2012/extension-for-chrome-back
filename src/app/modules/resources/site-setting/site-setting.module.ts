@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SiteSettingResolver } from './site-setting.resolver';
-import { SiteSettingService } from './site-setting.service';
+import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 
 @Module({
-  providers: [SiteSettingResolver, SiteSettingService],
+  providers: [SiteSettingResolver, SiteSettingRepoService],
+  exports: [SiteSettingRepoService],
 })
 export class SiteSettingModule {}

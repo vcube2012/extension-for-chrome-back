@@ -1,15 +1,15 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { SiteSettingService } from './site-setting.service';
 import {
   VideoMainPageEntity,
   SiteSettingKey,
   PartnerBonusEntity,
 } from './entity/site-setting.entity';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
+import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 
 @Resolver()
 export class SiteSettingResolver {
-  constructor(private readonly siteSettingService: SiteSettingService) {}
+  constructor(private readonly siteSettingService: SiteSettingRepoService) {}
 
   @Query(() => VideoMainPageEntity, { nullable: true })
   @ExceptionHandlerDecorator()

@@ -31,6 +31,15 @@ export class ReferralBonusEntity extends OmitType(
 }
 
 @ObjectType()
+export class PartnerInfoEntity {
+  @Field(() => Int)
+  partnerPercent: number;
+
+  @Field(() => String)
+  username: string;
+}
+
+@ObjectType()
 export class PartnerStatisticsEntity {
   @Field(() => Float)
   balance: number;
@@ -40,6 +49,18 @@ export class PartnerStatisticsEntity {
 
   @Field(() => Int)
   referralsCount: number;
+}
+
+@ObjectType()
+export class ReferralBonusesInfo {
+  @Field(() => PaginatedReferralBonuses)
+  results: any;
+
+  @Field(() => PartnerStatisticsEntity)
+  statistics: any;
+
+  @Field(() => PartnerInfoEntity)
+  partnerInfo: any;
 }
 
 @ObjectType()

@@ -9,6 +9,12 @@ import { SocialAuthUserEntity } from './entity/social-auth-user.entity';
 import { DatabaseService } from '../../globals/database/database.service';
 import { compareSync, hashSync } from 'bcrypt';
 import { SocialAuthType } from '../../../repositories/user/user-repo.interface';
+import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
+import {
+  PartnerBonusEntity,
+  SiteSettingKey,
+} from '../../resources/site-setting/entity/site-setting.entity';
+import { faker } from '@faker-js/faker';
 
 interface JwtPayloadInterface {
   id: number | string;
@@ -21,6 +27,7 @@ export class AuthService {
     private readonly socialAuthService: SocialAuthRepoService,
     private readonly db: DatabaseService,
     private jwtService: JwtService,
+    private readonly settingService: SiteSettingRepoService,
   ) {}
   async socialSignIn(code: string, type: SocialAuthType): Promise<string> {
     const socialUser = await this.socialAuthService.getUser(code, type);
@@ -61,6 +68,9 @@ export class AuthService {
   }
 
   private async createSocialUser(socialAuthUserEntity: SocialAuthUserEntity) {
+    const partnerPercent: PartnerBonusEntity =
+      await this.settingService.findOne(SiteSettingKey.PARTNER_BONUS);
+
     return this.db.user.create({
       data: {
         email: socialAuthUserEntity.email,
@@ -68,6 +78,8 @@ export class AuthService {
         last_name: socialAuthUserEntity.last_name,
         password: hashSync(socialAuthUserEntity.password, 10),
         avatar: socialAuthUserEntity.avatar,
+        username: faker.string.uuid(),
+        partner_percent: partnerPercent?.value,
       },
     });
   }
