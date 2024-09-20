@@ -17,6 +17,7 @@ import {
   DepositStatus,
   DepositType,
 } from '../../../repositories/deposit/deposit-repo.interface';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 interface IPaymentDataOptions {
   package: PackageEntity;
@@ -38,6 +39,55 @@ export class PaymentService {
     private readonly userRepoService: UserRepoService,
     private readonly paymentManager: PaymentManager,
   ) {}
+
+  async activateTrialPeriod(userId: number, packageId: number) {
+    const user: UserEntity = await this.findAuthUserWithLastPackage(userId);
+
+    if (user.currentPackage) {
+      if (user.currentPackage.is_trial) {
+        throw new BadRequestException(
+          'You already have a trial plan activated',
+        );
+      }
+
+      throw new BadRequestException(
+        'Cannot activate the trial plan because you already have an active plan',
+      );
+    }
+
+    const subscribePlan = await this.db.package.findUniqueOrThrow({
+      where: {
+        id: packageId,
+        is_active: true,
+      },
+    });
+
+    if (!subscribePlan.is_trial) {
+      throw new BadRequestException('Current subscribe plan is not trial');
+    }
+
+    await this.db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        userPackages: {
+          create: {
+            is_active: true,
+            is_trial: true,
+            credits: subscribePlan.credits,
+            package: {
+              connect: {
+                id: subscribePlan.id,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return 'Trial plan activated';
+  }
 
   async payWithCard(userId: number, input: MakeDepositUsingCardInput) {
     return 'Payment with card. User id - ' + userId;

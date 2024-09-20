@@ -42,7 +42,7 @@ export class CentAppDriver
       const response = await this.sendRequest('/api/v1/bill/create', params);
 
       if (response.data?.success) {
-        await this.depositSuccess(options.deposit);
+        await this.depositWaiting(options.deposit);
 
         return {
           url: response.data.link_page_url,

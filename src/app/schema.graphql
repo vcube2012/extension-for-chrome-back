@@ -411,6 +411,7 @@ input PaginationInput {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
+  activateTrialPeriod(input: ActivateTrialInput!): String!
   payWithPaymentPage(input: MakeDepositInput!): PaymentUrlResponseEntity!
   payWithBankCard(input: MakeDepositUsingCardInput!): String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
@@ -429,6 +430,10 @@ input SocialSignInInput {
 
 enum SocialAuthType {
   GOOGLE
+}
+
+input ActivateTrialInput {
+  package_id: Int!
 }
 
 input MakeDepositInput {
