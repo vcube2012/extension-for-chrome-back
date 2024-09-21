@@ -8,6 +8,7 @@ import { PaymentDriver } from '../../common/payment/payment.driver';
 import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
 import md5 from 'md5';
 import { HasWebhook } from '../../common/payment/interfaces/has-webhook.interface';
+import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
 
 export class CentAppDriver
   extends PaymentDriver
@@ -22,8 +23,9 @@ export class CentAppDriver
     private readonly secret: string,
     private readonly shopId: string,
     protected readonly db: DatabaseService,
+    protected readonly referralSystem: ReferralCommissionService,
   ) {
-    super(db);
+    super(db, referralSystem);
   }
 
   async payWithPaymentPage(
@@ -42,7 +44,7 @@ export class CentAppDriver
       const response = await this.sendRequest('/api/v1/bill/create', params);
 
       if (response.data?.success) {
-        await this.depositWaiting(options.deposit);
+        await this.depositSuccess(options.deposit);
 
         return {
           url: response.data.link_page_url,

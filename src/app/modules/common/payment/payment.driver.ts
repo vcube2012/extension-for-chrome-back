@@ -8,9 +8,13 @@ import {
 import { UserEntity } from '../../resources/user/entity/user.entity';
 import * as moment from 'moment';
 import { PackageType } from '../../../repositories/package/package-repo.interface';
+import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
 
 export abstract class PaymentDriver {
-  protected constructor(protected readonly db: DatabaseService) {}
+  protected constructor(
+    protected readonly db: DatabaseService,
+    protected readonly referralSystem: ReferralCommissionService,
+  ) {}
 
   async depositSuccess(deposit: DepositEntity): Promise<DepositEntity> {
     const updatedDeposit: DepositEntity = await this.db.deposit.update({
@@ -27,6 +31,14 @@ export abstract class PaymentDriver {
     });
 
     await this.setNewPackageForUser(deposit.package, deposit.user);
+
+    if (deposit.user?.referrer_id) {
+      await this.referralSystem.calculateReferralCommission(
+        deposit.user.referrer_id,
+        deposit.user.id,
+        deposit.amount,
+      );
+    }
 
     return updatedDeposit;
   }
@@ -64,7 +76,7 @@ export abstract class PaymentDriver {
   private async setNewPackageForUser(
     subscribePlan: PackageEntity,
     user: UserEntity,
-  ) {
+  ): Promise<UserEntity> {
     return this.db.$transaction(async (tx) => {
       const packageUser: PackageUserEntity = await tx.packageUser.create({
         data: {

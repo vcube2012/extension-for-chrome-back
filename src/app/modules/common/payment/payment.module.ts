@@ -7,17 +7,23 @@ import { UserRepoService } from '../../../repositories/user/user-repo.service';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../../globals/database/database.service';
 import { paymentProvider } from './providers/payment.provider';
+import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
 
 @Module({
   providers: [
     PaymentResolver,
     PaymentService,
     UserRepoService,
+    ReferralCommissionService,
     {
       provide: PaymentManager,
-      inject: [ConfigService, DatabaseService],
-      useFactory: (configService: ConfigService, db: DatabaseService) => {
-        return paymentProvider(configService, db);
+      inject: [ConfigService, DatabaseService, ReferralCommissionService],
+      useFactory: (
+        configService: ConfigService,
+        db: DatabaseService,
+        referralSystem: ReferralCommissionService,
+      ) => {
+        return paymentProvider(configService, db, referralSystem);
       },
     },
   ],

@@ -15,6 +15,7 @@ import {
   SiteSettingKey,
 } from '../../resources/site-setting/entity/site-setting.entity';
 import { faker } from '@faker-js/faker';
+import { UserEntity } from '../../resources/user/entity/user.entity';
 
 interface JwtPayloadInterface {
   id: number | string;
@@ -29,7 +30,12 @@ export class AuthService {
     private jwtService: JwtService,
     private readonly settingService: SiteSettingRepoService,
   ) {}
-  async socialSignIn(code: string, type: SocialAuthType): Promise<string> {
+
+  async socialSignIn(
+    code: string,
+    type: SocialAuthType,
+    referralToken: string | null = null,
+  ): Promise<string> {
     const socialUser = await this.socialAuthService.getUser(code, type);
 
     if (!socialUser) {
@@ -38,7 +44,7 @@ export class AuthService {
       );
     }
 
-    let userExists = await this.checkIfUserExists(socialUser.email);
+    let userExists = await this.findUserByEmail(socialUser.email);
 
     if (userExists) {
       const isMatch = compareSync(socialUser.password, userExists.password);
@@ -58,7 +64,7 @@ export class AuthService {
         },
       });
     } else {
-      userExists = await this.createSocialUser(socialUser);
+      userExists = await this.createSocialUser(socialUser, referralToken);
     }
 
     return this.createToken({
@@ -67,9 +73,26 @@ export class AuthService {
     });
   }
 
-  private async createSocialUser(socialAuthUserEntity: SocialAuthUserEntity) {
+  private async createSocialUser(
+    socialAuthUserEntity: SocialAuthUserEntity,
+    referralToken?: string,
+  ): Promise<UserEntity> {
     const partnerPercent: PartnerBonusEntity =
       await this.settingService.findOne(SiteSettingKey.PARTNER_BONUS);
+
+    let referrerId = null;
+
+    if (!!referralToken) {
+      const referrer: UserEntity = await this.db.user.findUnique({
+        where: {
+          username: referralToken,
+        },
+      });
+
+      if (!!referrer?.id) {
+        referrerId = referrer.id;
+      }
+    }
 
     return this.db.user.create({
       data: {
@@ -80,6 +103,7 @@ export class AuthService {
         avatar: socialAuthUserEntity.avatar,
         username: faker.string.uuid(),
         partner_percent: partnerPercent?.value,
+        referrer_id: referrerId,
       },
     });
   }
@@ -88,7 +112,7 @@ export class AuthService {
     return this.jwtService.signAsync(payload);
   }
 
-  private async checkIfUserExists(email: string) {
+  private async findUserByEmail(email: string): Promise<UserEntity> {
     return this.db.user.findUnique({
       where: {
         email: email,

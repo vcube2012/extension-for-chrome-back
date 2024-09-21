@@ -10,4 +10,7 @@ export class SocialSignInInput {
   @Field(() => SocialAuthType, { defaultValue: SocialAuthType.GOOGLE })
   @IsOptional()
   type?: SocialAuthType;
+
+  @Field(() => String, { nullable: true })
+  referralToken?: string;
 }

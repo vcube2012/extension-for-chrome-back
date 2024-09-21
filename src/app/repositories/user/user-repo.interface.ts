@@ -65,6 +65,9 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
   @Min(0)
   partner_percent?: number;
 
+  @Field(() => Int, { nullable: true })
+  referrer_id?: number;
+
   @Field()
   created_at: Date;
 

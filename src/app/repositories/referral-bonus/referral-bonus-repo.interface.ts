@@ -17,7 +17,7 @@ registerEnumType(ReferralBonusType, { name: 'ReferralBonusType' });
 @InterfaceType()
 export class ReferralBonusRepoInterface {
   @Field(() => ID)
-  id: number;
+  id: any;
 
   @Field(() => ReferralBonusType)
   type: string;
@@ -26,7 +26,7 @@ export class ReferralBonusRepoInterface {
   percent: number;
 
   @Field(() => Float)
-  amount: number;
+  amount: any;
 
   @Field()
   created_at: Date;

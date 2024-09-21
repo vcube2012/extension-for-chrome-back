@@ -24,7 +24,7 @@ export class ReferralBonusEntity extends OmitType(
   ObjectType,
 ) {
   @Field(() => PartnerEntity)
-  partner: PartnerEntity;
+  partner?: PartnerEntity;
 
   @Field(() => ReferralEntity, { nullable: true })
   referral?: ReferralEntity;
