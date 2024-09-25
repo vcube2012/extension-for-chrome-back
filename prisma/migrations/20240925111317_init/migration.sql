@@ -5,4 +5,4 @@
 
 */
 -- AlterTable
-ADD COLUMN     "name" VARCHAR(255) NOT NULL;
+ALTER TABLE "blocks" ADD COLUMN  "name" VARCHAR(255) NOT NULL;

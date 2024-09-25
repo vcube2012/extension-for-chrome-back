@@ -405,11 +405,13 @@ model Block {
   id Int @id @default(autoincrement())
 
   active  Boolean @default(true)
+  page    String  @db.VarChar(255)
   name    String  @db.VarChar(255)
   content Json
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
+  @@index(page)
   @@map("blocks")
 }
