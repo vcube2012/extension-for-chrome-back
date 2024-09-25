@@ -61,13 +61,13 @@ model Package {
 }
 
 model PackageUser {
-  id         BigInt  @id @default(autoincrement())
-  package_id Int
-  user_id    Int
-  is_active  Boolean @default(true)
-  is_trial   Boolean @default(false)
-  credits    Int
-  // available_to DateTime
+  id           BigInt   @id @default(autoincrement())
+  package_id   Int
+  user_id      Int
+  is_active    Boolean  @default(true)
+  is_trial     Boolean  @default(false)
+  credits      Int
+  available_to DateTime
 
   user    User    @relation(fields: [user_id], references: [id])
   package Package @relation(fields: [package_id], references: [id])
@@ -399,4 +399,17 @@ model Stripe {
   updated_at DateTime? @updatedAt
 
   @@map("stripe")
+}
+
+model Block {
+  id Int @id @default(autoincrement())
+
+  active  Boolean @default(true)
+  name    String  @db.VarChar(255)
+  content Json
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("blocks")
 }

@@ -87,8 +87,7 @@ export abstract class PaymentDriver {
           package_id: subscribePlan.id,
           is_active: true,
           credits: subscribePlan.credits,
-
-          // available_to: moment().add(1, unit).toDate(),
+          available_to: moment().add(1, unit).toDate(),
         },
       });
 

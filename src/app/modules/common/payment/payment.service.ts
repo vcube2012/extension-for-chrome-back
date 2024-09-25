@@ -81,7 +81,7 @@ export class PaymentService {
             is_active: true,
             is_trial: true,
             credits: subscribePlan.credits,
-            // available_to: moment().add(1, unit).toDate(),
+            available_to: moment().add(1, unit).toDate(),
             package: {
               connect: {
                 id: subscribePlan.id,
