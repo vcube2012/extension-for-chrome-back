@@ -67,6 +67,7 @@ model PackageUser {
   is_active  Boolean @default(true)
   is_trial   Boolean @default(false)
   credits    Int
+  // available_to DateTime
 
   user    User    @relation(fields: [user_id], references: [id])
   package Package @relation(fields: [package_id], references: [id])
@@ -386,16 +387,16 @@ model Admin {
   @@map("admins")
 }
 
-// model Stripe {
-//   id String @id @default(uuid())
-//
-//   stripe_id   String @unique @db.VarChar()
-//   stripe_type String @db.VarChar(255)
-//   model_type  String @db.VarChar(255)
-//   model_id    Int
-//
-//   created_at DateTime  @default(now())
-//   updated_at DateTime? @updatedAt
-//
-//   @@map("stripe")
-// }
+model Stripe {
+  id String @id @default(uuid())
+
+  stripe_id   String @unique @db.VarChar()
+  stripe_type String @db.VarChar(255)
+  model_type  String @db.VarChar(255)
+  model_id    Int
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("stripe")
+}

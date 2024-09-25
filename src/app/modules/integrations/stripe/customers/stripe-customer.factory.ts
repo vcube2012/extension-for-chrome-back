@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { StripeCustomerInterface } from './stripe-customer.interface';
+import { StripeCustomerInterface } from './interfaces/stripe-customer.interface';
 
 export class StripeCustomerFactory {
   constructor(private readonly client: Stripe) {}

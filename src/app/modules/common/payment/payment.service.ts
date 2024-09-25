@@ -11,13 +11,15 @@ import { PaymentManager } from './payment.manager';
 import { PaymentUrlResponseEntity } from './entity/payment-url-response.entity';
 import { WithPagePayment } from './interfaces/with-page-payment.interface';
 import { WithCardPayment } from './interfaces/with-card-payment.interface';
-import { PackageRepoInterface } from '../../../repositories/package/package-repo.interface';
+import {
+  PackageRepoInterface,
+  PackageType,
+} from '../../../repositories/package/package-repo.interface';
 import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
 import {
   DepositStatus,
   DepositType,
 } from '../../../repositories/deposit/deposit-repo.interface';
-import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 interface IPaymentDataOptions {
   package: PackageEntity;
@@ -55,16 +57,19 @@ export class PaymentService {
       );
     }
 
-    const subscribePlan = await this.db.package.findUniqueOrThrow({
-      where: {
-        id: packageId,
-        is_active: true,
-      },
-    });
+    const subscribePlan: PackageEntity =
+      await this.db.package.findUniqueOrThrow({
+        where: {
+          id: packageId,
+          is_active: true,
+        },
+      });
 
     if (!subscribePlan.is_trial) {
       throw new BadRequestException('Current subscribe plan is not trial');
     }
+
+    const unit = subscribePlan.type === PackageType.MONTHLY ? 'month' : 'year';
 
     await this.db.user.update({
       where: {
@@ -76,6 +81,7 @@ export class PaymentService {
             is_active: true,
             is_trial: true,
             credits: subscribePlan.credits,
+            // available_to: moment().add(1, unit).toDate(),
             package: {
               connect: {
                 id: subscribePlan.id,

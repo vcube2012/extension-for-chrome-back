@@ -1,11 +1,14 @@
 import Stripe from 'stripe';
-import { StripeProductInterface } from './stripe-product.interface';
+import { PackageEntity } from '../../../resources/package/entity/package.entity';
+import { Currency } from '../../../common/payment/enums/currency.enum';
+import { SubscriptionInterval } from './enums/subscription-interval.enum';
+import { PackageType } from '../../../../repositories/package/package-repo.interface';
 
 export class StripeProductFactory {
   constructor(private readonly client: Stripe) {}
 
   async create(
-    options: StripeProductInterface,
+    subscription: PackageEntity,
     productId?: string,
   ): Promise<Stripe.Product> {
     let product = null;
@@ -14,12 +17,15 @@ export class StripeProductFactory {
       product = await this.client.products.retrieve(productId);
     }
 
+    const amount = subscription.price * 100;
+    const currency = Currency.USD;
+
     const params = {
-      name: options.name,
-      active: options.active,
+      name: subscription.name,
+      active: subscription.is_active,
       default_price_data: {
-        currency: options.default_price_data.currency,
-        unit_amount: options.default_price_data.unit_amount,
+        currency: currency,
+        unit_amount: amount,
       },
     };
 
@@ -33,11 +39,19 @@ export class StripeProductFactory {
         active: product.active,
       };
 
-      if (options.default_price_data.unit_amount !== priceData.unit_amount) {
+      if (amount !== priceData?.unit_amount) {
+        const recurringInterval =
+          subscription.type == PackageType.MONTHLY
+            ? SubscriptionInterval.MONTH
+            : SubscriptionInterval.YEAR;
+
         const newPriceData = await this.client.prices.create({
           product: product.id,
-          currency: options.default_price_data.currency,
-          unit_amount: options.default_price_data.unit_amount,
+          currency: currency,
+          unit_amount: amount,
+          recurring: {
+            interval: recurringInterval,
+          },
         });
 
         productParams['default_price'] = newPriceData.id;
@@ -49,7 +63,7 @@ export class StripeProductFactory {
 
   async findPriceFromProduct(product: Stripe.Product) {
     if (!product.default_price) {
-      throw new Error('Stripe product does not have default price');
+      return null;
     }
 
     const priceId =

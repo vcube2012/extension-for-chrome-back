@@ -77,13 +77,18 @@ export abstract class PaymentDriver {
     subscribePlan: PackageEntity,
     user: UserEntity,
   ): Promise<UserEntity> {
-    return this.db.$transaction(async (tx) => {
+    return this.db.$transaction(async (tx): Promise<UserEntity> => {
+      const unit =
+        subscribePlan.type === PackageType.MONTHLY ? 'month' : 'year';
+
       const packageUser: PackageUserEntity = await tx.packageUser.create({
         data: {
           user_id: user.id,
           package_id: subscribePlan.id,
           is_active: true,
           credits: subscribePlan.credits,
+
+          // available_to: moment().add(1, unit).toDate(),
         },
       });
 
