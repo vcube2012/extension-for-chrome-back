@@ -354,6 +354,88 @@ type PaymentSystemEntity {
   created_at: DateTime!
 }
 
+type BlockEntity {
+  id: ID!
+  active: Boolean!
+  name: String!
+  page: BlockPage!
+  type: String!
+  content: BlockContent!
+  created_at: DateTime!
+}
+
+enum BlockPage {
+  HOME
+}
+
+union BlockContent = HomeHeaderBlock | HomePartnersBlock | HomeHouseBlock | HomeAdvantagesBlock | HouseReviewsBlock
+
+type HomeHeaderBlock {
+  title: String!
+  animation_words: [AnimationWord!]!
+}
+
+type HomePartnersBlock {
+  text: String!
+  images: [Image!]!
+}
+
+type HomeHouseBlock {
+  text: String!
+  houses: [HouseInfo!]!
+  advantages: [Advantage!]!
+}
+
+type HomeAdvantagesBlock {
+  text: String!
+  blocks: [AdvantageBlock!]!
+}
+
+type HouseReviewsBlock {
+  title: String!
+  description: String!
+  reviews: [Review!]!
+}
+
+type Review {
+  author: String!
+  text: String!
+  rating: Int!
+}
+
+type AdvantageBlock {
+  text: String!
+  title: String!
+  advantages: [TextBlock!]!
+}
+
+type TextBlock {
+  text: String!
+}
+
+type Advantage {
+  styled_text: String!
+  text: String!
+}
+
+type HouseInfo {
+  beds: Float!
+  baths: Float!
+  square: Float!
+  down: Float!
+  cashflow: Float!
+  image: String!
+  sub_text: String!
+}
+
+type Image {
+  image: String!
+}
+
+type AnimationWord {
+  word: String!
+}
+
 type Query {
   getGoogleAuthUrl: String!
   findManyZipCodes(input: ZipCodesInput!): ZipCodesWithCredits!
@@ -372,6 +454,7 @@ type Query {
   getReferralBonuses(input: PaginationInput!): ReferralBonusesInfo!
   getPaymentsHistory(input: PaginationInput!): PaginatedDeposits!
   getAllPaymentSystems: [PaymentSystemEntity!]!
+  getHomeBlocks: [BlockEntity!]!
 }
 
 input ZipCodesInput {
