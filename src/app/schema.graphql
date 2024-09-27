@@ -377,11 +377,12 @@ type HomeHeaderBlock {
 
 type HomePartnersBlock {
   text: String!
-  images: [Image!]!
+  images: [ImageWithLink!]!
 }
 
 type HomeHouseBlock {
   text: String!
+  styled_text: String!
   houses: [HouseInfo!]!
   advantages: [Advantage!]!
 }
@@ -428,8 +429,9 @@ type HouseInfo {
   sub_text: String!
 }
 
-type Image {
+type ImageWithLink {
   image: String!
+  link: String!
 }
 
 type AnimationWord {

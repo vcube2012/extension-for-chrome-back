@@ -104,6 +104,9 @@ class HomeHouseBlock {
   @Field()
   text: string;
 
+  @Field()
+  styled_text: string;
+
   @Field(() => [HouseInfo])
   houses: HouseInfo[];
 
@@ -149,14 +152,17 @@ class HomePartnersBlock {
   @Field()
   text: string;
 
-  @Field(() => [Image])
-  images: Image[];
+  @Field(() => [ImageWithLink])
+  images: ImageWithLink[];
 }
 
 @ObjectType()
-class Image {
+class ImageWithLink {
   @Field()
   image: string;
+
+  @Field()
+  link: string;
 }
 
 @ObjectType()
