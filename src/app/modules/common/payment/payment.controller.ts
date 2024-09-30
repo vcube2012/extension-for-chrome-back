@@ -1,25 +1,27 @@
 import {
+  All,
   BadRequestException,
   Controller,
-  Get,
   Param,
-  Post,
   Req,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { PaymentManager } from './payment.manager';
+import { PaymentDriver } from './payment.driver';
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentManager: PaymentManager) {}
 
-  @Get('webhook/:paymentMethod')
-  @Post('webhook/:paymentMethod')
-  async handleWebhook(@Req() request: Request, @Param() params: any) {
-    const paymentDriver = this.paymentManager.driver(params.paymentMethod);
+  @All('subscription-created/:paymentMethod')
+  async handleSubscriptionCreated(@Req() request, @Param() params: any) {
+    const paymentDriver: PaymentDriver = this.paymentManager.driver(
+      params.paymentMethod,
+    );
 
-    if (!('handleWebhook' in paymentDriver)) {
-      throw new BadRequestException('Payment driver cannot handle webhook');
+    if (!('handleSubscription' in paymentDriver)) {
+      throw new BadRequestException(
+        'Payment driver cannot handle subscription',
+      );
     }
 
     let data = null;
@@ -30,6 +32,6 @@ export class PaymentController {
       data = request.body;
     }
 
-    return paymentDriver.handleWebhook(data);
+    return paymentDriver.handleSubscription(data);
   }
 }

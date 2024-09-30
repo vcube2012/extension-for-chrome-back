@@ -21,6 +21,7 @@ import {
   DepositType,
 } from '../../../repositories/deposit/deposit-repo.interface';
 import moment from 'moment';
+import { PaymentDriver } from './payment.driver';
 
 interface IPaymentDataOptions {
   package: PackageEntity;
@@ -96,8 +97,47 @@ export class PaymentService {
     return 'Trial plan activated';
   }
 
-  async payWithCard(userId: number, input: MakeDepositUsingCardInput) {
-    return 'Payment with card. User id - ' + userId;
+  // Unsubscribe from next recurring payment for current subscription
+  async unsubscribe(userId: number) {
+    const user: UserEntity = await this.findAuthUserWithLastPackage(userId);
+
+    if (user.unsubscribed) {
+      throw new BadRequestException('You have already unsubscribed!');
+    }
+
+    if (!user.currentPackage) {
+      throw new BadRequestException("You don't have any subscriptions!");
+    }
+
+    const deposit: DepositEntity = await this.db.deposit.findFirst({
+      where: {
+        user_id: user.id,
+        package_id: user.currentPackage.id,
+        status: DepositStatus.SUCCESS,
+      },
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    const paymentSystemEntity = await this.findPaymentSystem(
+      deposit.payment_system_id,
+    );
+
+    await this.paymentManager
+      .driver(paymentSystemEntity.merchant)
+      .unsubscribe(deposit.payment_id);
+
+    await this.db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        unsubscribed: true,
+      },
+    });
+
+    return 'You have successfully unsubscribed';
   }
 
   // Pay using payment link from payment system
@@ -111,7 +151,7 @@ export class PaymentService {
     };
 
     const paymentCallback = async (
-      paymentDriver: WithPagePayment,
+      paymentDriver: PaymentDriver & WithPagePayment,
       options: IPaymentDataOptions,
     ): Promise<PaymentUrlResponseEntity> => {
       const deposit = await this.createDeposit(options.user, options.package);
@@ -128,7 +168,7 @@ export class PaymentService {
   private async pay(
     data: IPaymentRequestOptions,
     callback: (
-      d: WithPagePayment | WithCardPayment,
+      d: PaymentDriver & (WithPagePayment | WithCardPayment),
       opts: IPaymentDataOptions,
     ) => Promise<any>,
   ): Promise<any> {
@@ -163,7 +203,7 @@ export class PaymentService {
   }
 
   private async findAuthUserWithLastPackage(id: number): Promise<UserEntity> {
-    const user = await this.db.user.findUnique({
+    const user: UserEntity = await this.db.user.findUnique({
       where: {
         id: id,
       },
@@ -199,7 +239,7 @@ export class PaymentService {
   private async resolvePaymentSystem(
     id: number,
     amount: Decimal | number,
-  ): Promise<WithPagePayment | WithCardPayment> {
+  ): Promise<PaymentDriver & (WithPagePayment | WithCardPayment)> {
     this.paymentSystemEntity = await this.findPaymentSystem(id);
 
     if (!this.paymentSystemEntity) {

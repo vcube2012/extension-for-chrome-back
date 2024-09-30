@@ -168,6 +168,7 @@ type ReferralEntity {
   username: String
   partner_percent: Int
   referrer_id: Int
+  unsubscribed: Boolean!
   created_at: DateTime!
 }
 
@@ -183,6 +184,7 @@ type PartnerEntity {
   username: String
   partner_percent: Int
   referrer_id: Int
+  unsubscribed: Boolean!
   created_at: DateTime!
 }
 
@@ -256,6 +258,7 @@ type PackageUserEntity {
 type DepositEntity {
   id: ID!
   user_id: Int!
+  payment_system_id: Int!
   type: DepositType!
   amount: Float!
   status: DepositStatus!
@@ -295,6 +298,7 @@ type UserEntity {
   username: String
   partner_percent: Int
   referrer_id: Int
+  unsubscribed: Boolean!
   created_at: DateTime!
   setting: SettingEntity
   referrer: PartnerEntity
@@ -516,9 +520,8 @@ input PaginationInput {
 
 type Mutation {
   socialSignIn(input: SocialSignInInput!): TokenResponse!
-  activateTrialPeriod(input: ActivateTrialInput!): String!
   payWithPaymentPage(input: MakeDepositInput!): PaymentUrlResponseEntity!
-  payWithBankCard(input: MakeDepositUsingCardInput!): String!
+  unsubscribe: String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): Boolean!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
@@ -538,23 +541,9 @@ enum SocialAuthType {
   GOOGLE
 }
 
-input ActivateTrialInput {
-  package_id: Int!
-}
-
 input MakeDepositInput {
   payment_system_id: Int!
   package_id: Int!
-}
-
-input MakeDepositUsingCardInput {
-  payment_system_id: Int!
-  package_id: Int!
-  holder: String!
-  pan: String!
-  expMonth: String!
-  expYear: Float!
-  cvv: Float!
 }
 
 input AddToFavoriteInput {

@@ -9,7 +9,7 @@ import {
 export class UserRepoService {
   constructor(private readonly db: DatabaseService) {}
 
-  async findCurrentPackage(userId: number): Promise<PackageEntity> {
+  async findCurrentPackage(userId: number): Promise<PackageEntity | null> {
     const userPackage: PackageUserEntity = await this.db.packageUser.findFirst({
       where: {
         is_active: true,

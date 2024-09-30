@@ -20,6 +20,7 @@ model User {
   package_available_to DateTime?
   username             String?   @unique @db.VarChar(255)
   partner_percent      Int?      @db.SmallInt
+  unsubscribed         Boolean   @default(true)
   created_at           DateTime  @default(now())
   updated_at           DateTime? @updatedAt
 

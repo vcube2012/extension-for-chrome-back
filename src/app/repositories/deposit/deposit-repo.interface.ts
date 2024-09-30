@@ -30,6 +30,9 @@ export class DepositRepoInterface {
   @Field(() => Int)
   user_id: number;
 
+  @Field(() => Int)
+  payment_system_id: number;
+
   @Field(() => DepositType)
   type: string;
 

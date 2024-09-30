@@ -16,6 +16,12 @@ export abstract class PaymentDriver {
     protected readonly referralSystem: ReferralCommissionService,
   ) {}
 
+  // Webhook for handling subscription
+  abstract handleSubscription(data: any);
+
+  // Unsubscribe user from current subscription
+  abstract unsubscribe(subscriptionId: any);
+
   async depositSuccess(deposit: DepositEntity): Promise<DepositEntity> {
     const updatedDeposit: DepositEntity = await this.db.deposit.update({
       where: {
@@ -30,7 +36,10 @@ export abstract class PaymentDriver {
       },
     });
 
-    await this.setNewPackageForUser(deposit.package, deposit.user);
+    await this.setNewPackageForUser(
+      updatedDeposit.package,
+      updatedDeposit.user,
+    );
 
     if (deposit.user?.referrer_id) {
       await this.referralSystem.calculateReferralCommission(
@@ -105,6 +114,10 @@ export abstract class PaymentDriver {
       let date = user.package_available_to;
 
       if (!!date) {
+        if (moment(date).toDate().getTime() < moment().toDate().getTime()) {
+          date = moment().toDate();
+        }
+
         if (subscribePlan.type === PackageType.MONTHLY) {
           date = moment(date).add(1, 'month').toDate();
         } else {
@@ -127,6 +140,7 @@ export abstract class PaymentDriver {
             increment: subscribePlan.credits,
           },
           package_available_to: date,
+          unsubscribed: false,
         },
       });
     });

@@ -11,7 +11,13 @@ export class StripeCustomerFactory {
     let customer = null;
 
     if (!!customerId) {
-      customer = await this.client.customers.retrieve(customerId);
+      try {
+        customer = await this.client.customers.retrieve(customerId);
+      } catch (error) {
+        if (error.statusCode !== 404) {
+          throw error;
+        }
+      }
     }
 
     if (!customer) {

@@ -19,6 +19,10 @@ export class StripeProductFactory {
 
     const amount = subscription.price * 100;
     const currency = Currency.USD;
+    const recurringInterval =
+      subscription.type == PackageType.MONTHLY
+        ? SubscriptionInterval.MONTH
+        : SubscriptionInterval.YEAR;
 
     const params = {
       name: subscription.name,
@@ -26,6 +30,9 @@ export class StripeProductFactory {
       default_price_data: {
         currency: currency,
         unit_amount: amount,
+        recurring: {
+          interval: recurringInterval,
+        },
       },
     };
 
@@ -40,11 +47,6 @@ export class StripeProductFactory {
       };
 
       if (amount !== priceData?.unit_amount) {
-        const recurringInterval =
-          subscription.type == PackageType.MONTHLY
-            ? SubscriptionInterval.MONTH
-            : SubscriptionInterval.YEAR;
-
         const newPriceData = await this.client.prices.create({
           product: product.id,
           currency: currency,

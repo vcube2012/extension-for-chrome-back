@@ -69,6 +69,9 @@ export class UserRepoInterface implements Prisma.UserUncheckedCreateInput {
   referrer_id?: number;
 
   @Field()
+  unsubscribed: boolean;
+
+  @Field()
   created_at: Date;
 
   @Field({ nullable: true })
