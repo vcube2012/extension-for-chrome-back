@@ -77,6 +77,9 @@ class HomeAdvantagesBlock {
   @Field()
   text: string;
 
+  @Field()
+  styled_text: string;
+
   @Field(() => [AdvantageBlock])
   blocks: AdvantageBlock[];
 }
