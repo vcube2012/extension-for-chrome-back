@@ -74,11 +74,7 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     );
 
     const lineItems = await this.makeLineItems(options.deposit.package);
-    const paymentLink = await paymentLinkFactory.create(
-      lineItems,
-      options.deposit.id,
-      options.user.id,
-    );
+    const paymentLink = await paymentLinkFactory.create(lineItems, options);
 
     await this.depositWaiting(options.deposit);
 
@@ -112,6 +108,7 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
       },
       include: {
         user: true,
+        package: true,
       },
     });
 
@@ -133,16 +130,9 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
       customerId,
     );
 
-    await this.depositSuccess(deposit);
+    const isTrial = !!subscription.trial_end;
 
-    await this.db.deposit.update({
-      where: {
-        id: deposit.id,
-      },
-      data: {
-        payment_id: subscription.id,
-      },
-    });
+    await this.depositSuccess(deposit, isTrial, subscription.id);
   }
 
   async unsubscribe(subscriptionId: any) {
@@ -162,13 +152,31 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     }
   }
 
+  async test() {
+    const activeResult = await this.client.subscriptions.search({
+      query: `status:'active' AND metadata['user_id']:'7'`,
+    });
+
+    const trialingResult = await this.client.subscriptions.search({
+      query: `status:'trialing' AND metadata['user_id']:'7'`,
+    });
+
+    return [...activeResult.data, ...trialingResult.data];
+  }
+
   async unsubscribeFromPreviousSubscriptions(userId: number) {
-    const searchResult = await this.client.subscriptions.search({
+    const activeResult = await this.client.subscriptions.search({
       query: `status:'active' AND metadata['user_id']:'${userId}'`,
     });
 
-    if (searchResult?.data?.length > 0) {
-      for (const subscription of searchResult.data) {
+    const trialingResult = await this.client.subscriptions.search({
+      query: `status:'trialing' AND metadata['user_id']:'${userId}'`,
+    });
+
+    const data = [...activeResult.data, ...trialingResult.data];
+
+    if (data.length > 0) {
+      for (const subscription of data) {
         await this.unsubscribe(subscription.id);
       }
     }

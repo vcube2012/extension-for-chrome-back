@@ -22,13 +22,18 @@ export abstract class PaymentDriver {
   // Unsubscribe user from current subscription
   abstract unsubscribe(subscriptionId: any);
 
-  async depositSuccess(deposit: DepositEntity): Promise<DepositEntity> {
+  async depositSuccess(
+    deposit: DepositEntity,
+    isTrial: boolean,
+    paymentId: string = null,
+  ): Promise<DepositEntity> {
     const updatedDeposit: DepositEntity = await this.db.deposit.update({
       where: {
         id: deposit.id,
       },
       data: {
         status: DepositStatus.SUCCESS,
+        payment_id: paymentId,
       },
       include: {
         package: true,
@@ -39,6 +44,7 @@ export abstract class PaymentDriver {
     await this.setNewPackageForUser(
       updatedDeposit.package,
       updatedDeposit.user,
+      isTrial,
     );
 
     if (deposit.user?.referrer_id) {
@@ -85,6 +91,7 @@ export abstract class PaymentDriver {
   private async setNewPackageForUser(
     subscribePlan: PackageEntity,
     user: UserEntity,
+    isTrial: boolean,
   ): Promise<UserEntity> {
     return this.db.$transaction(async (tx): Promise<UserEntity> => {
       const unit =
@@ -95,6 +102,7 @@ export abstract class PaymentDriver {
           user_id: user.id,
           package_id: subscribePlan.id,
           is_active: true,
+          is_trial: isTrial,
           credits: subscribePlan.credits,
           available_to: moment().add(1, unit).toDate(),
         },
