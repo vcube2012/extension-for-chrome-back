@@ -412,6 +412,7 @@ type Review {
 type AdvantageBlock {
   text: String!
   title: String!
+  page: String!
   advantages: [TextBlock!]!
 }
 

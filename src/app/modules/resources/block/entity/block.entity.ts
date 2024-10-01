@@ -5,8 +5,12 @@ import {
   Int,
   ObjectType,
   OmitType,
+  registerEnumType,
 } from '@nestjs/graphql';
 import { BlockInterface } from '../interfaces/block.interface';
+import { AdvantageBlockPage } from '../enums/advantage-block-page.enum';
+
+registerEnumType(AdvantageBlockPage, { name: 'AdvantageBlockPage' });
 
 export const BlockContent = createUnionType({
   name: 'BlockContent',
@@ -91,6 +95,9 @@ class AdvantageBlock {
 
   @Field()
   title: string;
+
+  @Field()
+  page: AdvantageBlockPage;
 
   @Field(() => [TextBlock])
   advantages: TextBlock[];
