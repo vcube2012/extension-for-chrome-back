@@ -429,7 +429,10 @@ type HouseInfo {
   square: Float!
   down: Float!
   cashflow: Float!
+  cap_rate: Float!
+  price: Float!
   image: String!
+  address: String!
   sub_text: String!
 }
 

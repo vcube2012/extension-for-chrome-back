@@ -80,7 +80,7 @@ export class ReferralBonusService {
       const partnerPercent: PartnerBonusEntity =
         await this.settingService.findOne(SiteSettingKey.PARTNER_BONUS);
 
-      data['partner_percent'] = partnerPercent.value;
+      data['partner_percent'] = partnerPercent?.value;
     }
 
     if (!user.username) {

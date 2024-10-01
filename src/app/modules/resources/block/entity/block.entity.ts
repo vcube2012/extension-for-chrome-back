@@ -140,8 +140,17 @@ class HouseInfo {
   @Field(() => Float)
   cashflow: number;
 
+  @Field(() => Float)
+  cap_rate: number;
+
+  @Field(() => Float)
+  price: number;
+
   @Field(() => String)
   image: string;
+
+  @Field()
+  address: string;
 
   @Field(() => String)
   sub_text: string;
