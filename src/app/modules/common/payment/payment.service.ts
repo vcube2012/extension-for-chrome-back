@@ -2,8 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { Decimal } from '@prisma/client/runtime/library';
 import { PackageEntity } from '../../resources/package/entity/package.entity';
 import { UserEntity } from '../../resources/user/entity/user.entity';
-import { MakeDepositInput } from './inputs/make-deposit.input';
-import { MakeDepositUsingCardInput } from './inputs/make-deposit-using-card.input';
 import { PaymentSystemEntity } from '../../resources/payment-system/entity/payment-system.entity';
 import { DatabaseService } from '../../globals/database/database.service';
 import { UserRepoService } from '../../../repositories/user/user-repo.service';
@@ -26,12 +24,18 @@ import { PaymentDriver } from './payment.driver';
 interface IPaymentDataOptions {
   package: PackageEntity;
   user: UserEntity;
-  data: MakeDepositInput | MakeDepositUsingCardInput;
+  data: IPaymentData;
+}
+
+interface IPaymentData {
+  paymentSystemId: number;
+  packageId: number;
 }
 
 interface IPaymentRequestOptions {
   userId: number;
-  input: MakeDepositInput | MakeDepositUsingCardInput;
+  paymentSystemId: number;
+  packageId: number;
 }
 
 @Injectable()
@@ -97,6 +101,20 @@ export class PaymentService {
     return 'Trial plan activated';
   }
 
+  async renewPackage(userId: number, paymentSystemId: number) {
+    const user: UserEntity = await this.findAuthUserWithLastPackage(userId);
+
+    if (!user.currentPackage) {
+      throw new BadRequestException("You don't have any active package!");
+    }
+
+    return this.payWithPaymentPage(
+      user.id,
+      paymentSystemId,
+      user.currentPackage.id,
+    );
+  }
+
   // Unsubscribe from next recurring payment for current subscription
   async unsubscribe(userId: number) {
     const user: UserEntity = await this.findAuthUserWithLastPackage(userId);
@@ -143,11 +161,13 @@ export class PaymentService {
   // Pay using payment link from payment system
   async payWithPaymentPage(
     userId: number,
-    input: MakeDepositInput,
+    paymentSystemId: number,
+    packageId: number,
   ): Promise<PaymentUrlResponseEntity> {
     const options: IPaymentRequestOptions = {
       userId: userId,
-      input: input,
+      paymentSystemId: paymentSystemId,
+      packageId: packageId,
     };
 
     const paymentCallback = async (
@@ -172,7 +192,7 @@ export class PaymentService {
       opts: IPaymentDataOptions,
     ) => Promise<any>,
   ): Promise<any> {
-    const packageEntity = await this.findPackage(data.input.package_id);
+    const packageEntity = await this.findPackage(data.packageId);
 
     if (!packageEntity) {
       throw new BadRequestException('Undefined package');
@@ -180,16 +200,19 @@ export class PaymentService {
 
     const user = await this.findAuthUserWithLastPackage(data.userId);
 
-    // Отримання сервісу платіжної системи
+    // Get payment system service
     const paymentInstance = await this.resolvePaymentSystem(
-      data.input.payment_system_id,
+      data.paymentSystemId,
       packageEntity.price,
     );
 
     return callback(paymentInstance, {
       user: user,
       package: packageEntity,
-      data: data.input,
+      data: {
+        paymentSystemId: data.paymentSystemId,
+        packageId: data.packageId,
+      },
     });
   }
 
@@ -235,7 +258,7 @@ export class PaymentService {
     });
   }
 
-  // Отримати драйвер платіжною системи, наприклад StripeDriver
+  // Retrieve payment system driver, for example StripeDriver
   private async resolvePaymentSystem(
     id: number,
     amount: Decimal | number,
@@ -259,7 +282,7 @@ export class PaymentService {
     return this.paymentManager.driver(this.paymentSystemEntity.merchant);
   }
 
-  // Створення депозиту з статусом 'Тимчасовий'
+  // Creating deposit with status 'Temp'
   private async createDeposit(
     user: UserEntity,
     packageEntity: PackageRepoInterface,

@@ -13,8 +13,6 @@ import { BadRequestException } from '@nestjs/common';
 import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
 import { StripePaymentLinkFactory } from './payment-links/stripe-payment-link.factory';
 import { LineItem } from './payment-links/interfaces/line-item.interface';
-import { UserEntity } from '../../resources/user/entity/user.entity';
-import { StripeCustomerFactory } from './customers/stripe-customer.factory';
 
 export class StripeDriver extends PaymentDriver implements WithPagePayment {
   private readonly client: Stripe;
@@ -30,43 +28,6 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
 
     this.client = new Stripe(secret);
     this.service = new StripeService(db);
-  }
-
-  async createCustomer(user: UserEntity) {
-    const stripeId = await this.service.findOne({
-      model_id: user.id,
-      model_type: 'user',
-      stripe_type: StripeType.CUSTOMERS,
-    });
-
-    const customerFactory = new StripeCustomerFactory(this.client);
-
-    const customer = await customerFactory.create(
-      {
-        name: `${user.first_name} ${user.last_name}`,
-        email: user.email,
-      },
-      stripeId,
-    );
-
-    if (!!stripeId && customer.id !== stripeId) {
-      await this.service.delete(stripeId);
-      await this.service.create({
-        stripe_id: stripeId,
-        stripe_type: StripeType.CUSTOMERS,
-        model_id: user.id,
-        model_type: 'user',
-      });
-    } else if (!stripeId) {
-      await this.service.create({
-        stripe_id: customer.id,
-        stripe_type: StripeType.CUSTOMERS,
-        model_id: user.id,
-        model_type: 'user',
-      });
-    }
-
-    return customer;
   }
 
   // Create stripe product (user plan)
@@ -116,6 +77,7 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     const paymentLink = await paymentLinkFactory.create(
       lineItems,
       options.deposit.id,
+      options.user.id,
     );
 
     await this.depositWaiting(options.deposit);
@@ -133,6 +95,16 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
         'Subscription cannot exists without deposit id',
       );
     }
+
+    if (!subscription.metadata.user_id) {
+      throw new BadRequestException(
+        'Subscription cannot exists without user id',
+      );
+    }
+
+    await this.unsubscribeFromPreviousSubscriptions(
+      Number(subscription.metadata.user_id),
+    );
 
     const deposit: DepositEntity = await this.db.deposit.findUniqueOrThrow({
       where: {
@@ -186,6 +158,18 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     } catch (error) {
       if (error.statusCode !== 404) {
         throw error;
+      }
+    }
+  }
+
+  async unsubscribeFromPreviousSubscriptions(userId: number) {
+    const searchResult = await this.client.subscriptions.search({
+      query: `status:'active' AND metadata['user_id']:'${userId}'`,
+    });
+
+    if (searchResult?.data?.length > 0) {
+      for (const subscription of searchResult.data) {
+        await this.unsubscribe(subscription.id);
       }
     }
   }

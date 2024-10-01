@@ -7,12 +7,13 @@ export class StripePaymentLinkFactory {
     private readonly redirectUri: string,
   ) {}
 
-  async create(lineItems: LineItem[], depositId: number) {
+  async create(lineItems: LineItem[], depositId: number, userId: number) {
     return this.client.paymentLinks.create({
       line_items: lineItems,
       subscription_data: {
         metadata: {
           deposit_id: depositId,
+          user_id: userId,
         },
       },
       after_completion: {

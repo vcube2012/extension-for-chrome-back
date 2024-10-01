@@ -111,24 +111,12 @@ export abstract class PaymentDriver {
         },
       });
 
-      let date = user.package_available_to;
+      let date: any = moment();
 
-      if (!!date) {
-        if (moment(date).toDate().getTime() < moment().toDate().getTime()) {
-          date = moment().toDate();
-        }
-
-        if (subscribePlan.type === PackageType.MONTHLY) {
-          date = moment(date).add(1, 'month').toDate();
-        } else {
-          date = moment(date).add(1, 'year').toDate();
-        }
+      if (subscribePlan.type === PackageType.MONTHLY) {
+        date = date.add(1, 'month').toDate();
       } else {
-        if (subscribePlan.type === PackageType.MONTHLY) {
-          date = moment().add(1, 'month').toDate();
-        } else {
-          date = moment().add(1, 'year').toDate();
-        }
+        date = date.add(1, 'year').toDate();
       }
 
       return tx.user.update({
