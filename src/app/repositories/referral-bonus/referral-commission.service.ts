@@ -5,10 +5,18 @@ import {
   ReferralBonusEntity,
 } from '../../modules/resources/referral-bonus/entity/referral-bonus.entity';
 import { ReferralBonusType } from './referral-bonus-repo.interface';
+import { SiteSettingRepoService } from '../site-setting/site-setting-repo.service';
+import {
+  PartnerBonusEntity,
+  SiteSettingKey,
+} from '../../modules/resources/site-setting/entity/site-setting.entity';
 
 @Injectable()
 export class ReferralCommissionService {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly settingService: SiteSettingRepoService,
+  ) {}
 
   async calculateReferralCommission(
     partnerId: number,
@@ -21,18 +29,28 @@ export class ReferralCommissionService {
       },
     });
 
-    if (!referrer || Number(referrer.partner_percent) <= 0 || amount <= 0) {
+    let referrerPercent = referrer.partner_percent;
+
+    if (!referrerPercent) {
+      const setting: PartnerBonusEntity = await this.settingService.findOne(
+        SiteSettingKey.PARTNER_BONUS,
+      );
+
+      referrerPercent = setting?.value ?? 0;
+    }
+
+    if (!referrer || referrerPercent <= 0 || amount <= 0) {
       return;
     }
 
-    const commission = amount * (referrer.partner_percent / 100);
+    const commission = amount * (referrerPercent / 100);
 
     return this.db.referralBonus.create({
       data: {
         type: ReferralBonusType.COMMISSION,
         partner_id: referrer.id,
         referral_id: referralId,
-        percent: referrer.partner_percent,
+        percent: referrerPercent,
         amount: commission,
       },
     });

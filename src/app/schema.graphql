@@ -29,6 +29,14 @@ interface Expenses {
   vacancy: Float
 }
 
+type TokenResponse {
+  token: String!
+}
+
+type PaymentUrlResponseEntity {
+  url: String!
+}
+
 type VideoMainPageEntity {
   key: String!
   created_at: DateTime!
@@ -44,14 +52,6 @@ type PartnerBonusEntity {
   key: String!
   created_at: DateTime!
   value: Int!
-}
-
-type TokenResponse {
-  token: String!
-}
-
-type PaymentUrlResponseEntity {
-  url: String!
 }
 
 type ZipCodeInterfacePrices {
@@ -193,6 +193,8 @@ type ReferralBonusEntity {
   type: ReferralBonusType!
   percent: Int!
   amount: Float!
+  credit_card: String
+  withdrawal_status: WithdrawalStatus
   created_at: DateTime!
   partner: PartnerEntity!
   referral: ReferralEntity
@@ -201,6 +203,11 @@ type ReferralBonusEntity {
 enum ReferralBonusType {
   COMMISSION
   WITHDRAWAL
+}
+
+enum WithdrawalStatus {
+  REQUESTED
+  DONE
 }
 
 type PartnerInfoEntity {
@@ -535,6 +542,7 @@ type Mutation {
   addTag(input: SaveTagsInput!): [TagEntity!]!
   likeBlog(input: FindBlogInput!): Int
   unlikeBlog(input: FindBlogInput!): Int
+  withdraw(input: WithdrawInput!): ReferralBonusEntity!
 }
 
 input SocialSignInInput {
@@ -626,4 +634,9 @@ input UpdateFmrInput {
 input SaveTagsInput {
   address_id: Int!
   tags: [String!]!
+}
+
+input WithdrawInput {
+  amount: Float!
+  credit_card: String!
 }

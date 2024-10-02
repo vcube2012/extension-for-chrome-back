@@ -316,11 +316,13 @@ model SiteSetting {
 model ReferralBonus {
   id BigInt @id @default(autoincrement())
 
-  type        String  @db.VarChar(255)
-  partner_id  Int
-  referral_id Int?
-  percent     Int     @db.SmallInt
-  amount      Decimal @db.Decimal(10, 4)
+  type              String  @db.VarChar(255)
+  partner_id        Int
+  referral_id       Int?
+  percent           Int     @db.SmallInt
+  amount            Decimal @db.Decimal(10, 4)
+  credit_card       String? @db.VarChar(100)
+  withdrawal_status String? @db.VarChar(50)
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt

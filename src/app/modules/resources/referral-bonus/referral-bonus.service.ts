@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
-import { ReferralBonusType } from '../../../repositories/referral-bonus/referral-bonus-repo.interface';
+import {
+  ReferralBonusType,
+  WithdrawalStatus,
+} from '../../../repositories/referral-bonus/referral-bonus-repo.interface';
 import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 import { UserEntity } from '../user/entity/user.entity';
 import {
@@ -12,6 +15,7 @@ import {
   PaginatedReferralBonuses,
   PartnerInfoEntity,
   PartnerStatisticsEntity,
+  ReferralBonusEntity,
 } from './entity/referral-bonus.entity';
 
 @Injectable()
@@ -20,6 +24,46 @@ export class ReferralBonusService {
     private readonly db: DatabaseService,
     private readonly settingService: SiteSettingRepoService,
   ) {}
+
+  async withdraw(
+    userId: number,
+    amount: number,
+    creditCard: string,
+  ): Promise<ReferralBonusEntity> {
+    const user: UserEntity = await this.db.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const queryResults = await this.db.$queryRaw`
+      SELECT 
+          COALESCE(SUM(CASE WHEN type = ${ReferralBonusType.COMMISSION} THEN amount ELSE -amount END), 0)
+              AS balance 
+      FROM referral_bonuses 
+      WHERE partner_id = ${userId}`;
+
+    const userBalance = queryResults[0]?.balance ?? 0;
+
+    if (userBalance <= amount) {
+      throw new BadRequestException(
+        'You do not have enough funds in your balance',
+      );
+    }
+
+    const partnerPercent = await this.getPartnerPercent(user);
+
+    return this.db.referralBonus.create({
+      data: {
+        type: ReferralBonusType.WITHDRAWAL,
+        partner_id: userId,
+        amount: amount,
+        credit_card: creditCard,
+        percent: partnerPercent,
+        withdrawal_status: WithdrawalStatus.REQUESTED,
+      },
+    });
+  }
 
   async paginatePartnerBonuses(
     userId: number,
@@ -76,13 +120,6 @@ export class ReferralBonusService {
 
     const data = {};
 
-    if (!user.partner_percent) {
-      const partnerPercent: PartnerBonusEntity =
-        await this.settingService.findOne(SiteSettingKey.PARTNER_BONUS);
-
-      data['partner_percent'] = partnerPercent?.value;
-    }
-
     if (!user.username) {
       data['username'] = faker.string.uuid();
     }
@@ -96,9 +133,22 @@ export class ReferralBonusService {
       },
     });
 
+    const partnerPercent = await this.getPartnerPercent(user);
+
     return {
-      partnerPercent: updatedUser.partner_percent,
+      partnerPercent: partnerPercent,
       username: updatedUser.username,
     };
+  }
+
+  async getPartnerPercent(user: UserEntity): Promise<number> {
+    if (!user.partner_percent) {
+      const setting: PartnerBonusEntity = await this.settingService.findOne(
+        SiteSettingKey.PARTNER_BONUS,
+      );
+      return setting?.value ?? 0;
+    }
+
+    return user.partner_percent;
   }
 }

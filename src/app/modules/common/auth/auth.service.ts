@@ -77,9 +77,6 @@ export class AuthService {
     socialAuthUserEntity: SocialAuthUserEntity,
     referralToken?: string,
   ): Promise<UserEntity> {
-    const partnerPercent: PartnerBonusEntity =
-      await this.settingService.findOne(SiteSettingKey.PARTNER_BONUS);
-
     let referrerId = null;
 
     if (!!referralToken) {
@@ -102,7 +99,6 @@ export class AuthService {
         password: hashSync(socialAuthUserEntity.password, 10),
         avatar: socialAuthUserEntity.avatar,
         username: faker.string.uuid(),
-        partner_percent: partnerPercent?.value,
         referrer_id: referrerId,
       },
     });

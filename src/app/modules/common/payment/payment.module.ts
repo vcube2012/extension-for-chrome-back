@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { DatabaseService } from '../../globals/database/database.service';
 import { paymentProvider } from './providers/payment.provider';
 import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
+import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 
 @Module({
   providers: [
@@ -15,6 +16,7 @@ import { ReferralCommissionService } from '../../../repositories/referral-bonus/
     PaymentService,
     UserRepoService,
     ReferralCommissionService,
+    SiteSettingRepoService,
     {
       provide: PaymentManager,
       inject: [ConfigService, DatabaseService, ReferralCommissionService],

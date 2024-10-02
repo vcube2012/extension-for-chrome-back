@@ -1,11 +1,16 @@
-import { Args, Context, Query, Resolver } from '@nestjs/graphql';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { ReferralBonusService } from './referral-bonus.service';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
 import { UseGuards } from '@nestjs/common';
 import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler.decorator';
 import { IContextServer } from '../../common/graphql/graphql.module';
-import { ReferralBonusesInfo } from './entity/referral-bonus.entity';
+import {
+  ReferralBonusEntity,
+  ReferralBonusesInfo,
+} from './entity/referral-bonus.entity';
 import { PaginationInput } from '../../../repositories/common/pagination/pagination.input';
+import { WithdrawInput } from './inputs/withdraw.input';
+import { lowerFirst } from 'lodash';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -37,5 +42,17 @@ export class ReferralBonusResolver {
       statistics: partnerStatistics,
       partnerInfo: partnerUserInfo,
     };
+  }
+
+  @Mutation(() => ReferralBonusEntity)
+  async withdraw(
+    @Context() ctx: IContextServer,
+    @Args('input') input: WithdrawInput,
+  ) {
+    return this.referralBonusService.withdraw(
+      ctx.req.user.id,
+      input.amount,
+      input.credit_card,
+    );
   }
 }
