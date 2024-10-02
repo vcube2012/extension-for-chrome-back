@@ -1,9 +1,42 @@
-import { Field, Int, ObjectType, OmitType } from '@nestjs/graphql';
+import {
+  Field,
+  Int,
+  ObjectType,
+  OmitType,
+  registerEnumType,
+} from '@nestjs/graphql';
 import { SiteSettingRepoInterface } from '../../../../repositories/site-setting/site-setting-repo.interface';
 
 export enum SiteSettingKey {
   VIDEO_MAIN_PAGE = 'video_main_page',
   PARTNER_BONUS = 'partner_bonus',
+  SOCIAL_MEDIA = 'social_media',
+}
+
+enum SocialMedia {
+  WHATSAPP = 'whatsapp',
+  TELEGRAM = 'telegram',
+}
+
+registerEnumType(SocialMedia, { name: 'SocialMedia' });
+
+@ObjectType()
+export class SocialMediaEntity extends OmitType(
+  SiteSettingRepoInterface,
+  ['updated_at'],
+  ObjectType,
+) {
+  @Field(() => [SocialMediaItem])
+  value: any;
+}
+
+@ObjectType()
+class SocialMediaItem {
+  @Field(() => SocialMedia)
+  social_media: any;
+
+  @Field()
+  link: string;
 }
 
 @ObjectType()
