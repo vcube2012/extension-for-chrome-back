@@ -386,13 +386,21 @@ type BlockEntity {
   active: Boolean!
   name: String!
   page: BlockPage!
-  type: String!
+  type: BlockType!
   content: BlockContent!
   created_at: DateTime!
 }
 
 enum BlockPage {
   HOME
+}
+
+enum BlockType {
+  MAIN_PAGE_TITLE_BLOCK
+  PARTNERS
+  HOUSES
+  ADVANTAGES
+  REVIEWS
 }
 
 union BlockContent = HomeHeaderBlock | HomePartnersBlock | HomeHouseBlock | HomeAdvantagesBlock | HouseReviewsBlock
@@ -490,6 +498,7 @@ type Query {
   getPaymentsHistory(input: PaginationInput!): PaginatedDeposits!
   getAllPaymentSystems: [PaymentSystemEntity!]!
   getHomeBlocks: [BlockEntity!]!
+  getPartnersBlock: BlockEntity
 }
 
 input ZipCodesInput {

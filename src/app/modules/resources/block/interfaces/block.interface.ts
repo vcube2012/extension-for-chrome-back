@@ -19,8 +19,8 @@ export class BlockInterface {
   @Field(() => BlockPage)
   page: string;
 
-  @Field()
-  type: BlockType;
+  @Field(() => BlockType)
+  type: any;
 
   @Field(() => String)
   content: any;

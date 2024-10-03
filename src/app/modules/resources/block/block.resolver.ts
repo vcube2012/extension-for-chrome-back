@@ -13,4 +13,10 @@ export class BlockResolver {
   async getHomeBlocks(): Promise<BlockEntity[]> {
     return this.blockService.findBlocksForPage(BlockPage.HOME);
   }
+
+  @Query(() => BlockEntity, { nullable: true })
+  @ExceptionHandlerDecorator()
+  async getPartnersBlock(): Promise<BlockEntity> {
+    return this.blockService.findBlock(BlockPage.HOME, 'partners');
+  }
 }
