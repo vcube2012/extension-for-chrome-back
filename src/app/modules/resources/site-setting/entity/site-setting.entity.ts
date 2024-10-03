@@ -33,7 +33,7 @@ export class SocialMediaEntity extends OmitType(
 @ObjectType()
 class SocialMediaItem {
   @Field(() => SocialMedia)
-  social_media: any;
+  name: string;
 
   @Field()
   link: string;

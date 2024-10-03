@@ -7,10 +7,29 @@ export class SiteSettingRepoService {
   constructor(private readonly db: DatabaseService) {}
 
   async findOne(key: SiteSettingKey) {
-    return this.db.siteSetting.findUnique({
+    const data = await this.db.siteSetting.findUnique({
       where: {
         key: key,
       },
     });
+
+    if (!!data) {
+      let value = null;
+
+      if (data.key === SiteSettingKey.SOCIAL_MEDIA) {
+        const arr: any = data.value ?? [];
+
+        value = arr.map((item) => item?.data);
+      } else {
+        value = data.value[0]?.data?.value;
+      }
+
+      return {
+        ...data,
+        value: value,
+      };
+    }
+
+    return null;
   }
 }
