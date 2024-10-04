@@ -6,6 +6,7 @@ import {
   SettingData,
 } from '../../../../repositories/setting/setting-repo.interface';
 import { Prisma } from '@prisma/client';
+import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 class UpdateSettingDataExpenses extends PickType(
@@ -38,18 +39,22 @@ class UpdateSettingDataPurchaseRange extends PickType(
 @InputType()
 class UpdateSettingData extends PickType(SettingData, ['use_loan'], InputType) {
   @Field(() => UpdateSettingDataPurchaseRange)
+  @IsNotEmpty()
   purchase_range: UpdateSettingDataPurchaseRange;
 
   @Field(() => UpdateSettingDataMortgage)
+  @IsNotEmpty()
   mortgage: UpdateSettingDataMortgage;
 
   @Field(() => UpdateSettingDataExpenses)
+  @IsNotEmpty()
   expenses: UpdateSettingDataExpenses;
 }
 
 @InputType()
 export class UpdateSettingInput {
   @Field(() => UpdateSettingData)
+  @IsNotEmpty()
   data: Prisma.JsonNullValueInput | Prisma.InputJsonValue;
 }
 

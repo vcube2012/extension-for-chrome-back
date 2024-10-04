@@ -4,7 +4,7 @@ import {
   FavoriteAddressEntity,
   PaginatedFavoriteAddresses,
 } from './entity/favorite-address.entity';
-import { Prisma } from '@prisma/client';
+import { Prisma, ZipCode } from '@prisma/client';
 import { DatabaseService } from '../../globals/database/database.service';
 import {
   GetFavoritesInput,
@@ -15,6 +15,7 @@ import {
   AddressInput,
   AddToFavoriteInput,
 } from './inputs/add-to-favorite.input';
+import { ZipCodeEntity } from '../zip-code/entity/zip-code.entity';
 
 @Injectable()
 export class AddressService {
@@ -214,11 +215,12 @@ export class AddressService {
 
   async createOrUpdate(input: AddressInput): Promise<AddressEntity> {
     return this.db.$transaction(async () => {
-      const findZipCode = await this.db.zipCode.findUniqueOrThrow({
-        where: {
-          code: input.zipCode,
-        },
-      });
+      const findZipCode: ZipCodeEntity =
+        await this.db.zipCode.findUniqueOrThrow({
+          where: {
+            code: input.zipCode,
+          },
+        });
 
       const findAddress = await this.findOne(findZipCode.id, input.address);
 

@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
 export class FindOneMetaTagInput {
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
   @IsString()
   url: string;

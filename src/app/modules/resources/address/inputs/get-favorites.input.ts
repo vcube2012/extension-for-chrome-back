@@ -1,5 +1,6 @@
 import { Field, InputType, PickType, registerEnumType } from '@nestjs/graphql';
 import { PaginationInput } from '../../../../repositories/common/pagination/pagination.input';
+import { IsOptional, IsString } from 'class-validator';
 
 export enum GetFavoritesSortingColumn {
   ADDRESS = 'address',
@@ -26,9 +27,11 @@ export class GetFavoritesSorting {
   @Field(() => GetFavoritesSortingColumn, {
     defaultValue: GetFavoritesSortingColumn.LATEST,
   })
+  @IsOptional()
   column?: GetFavoritesSortingColumn;
 
   @Field(() => SortingEnum, { defaultValue: SortingEnum.DESC })
+  @IsOptional()
   direction?: SortingEnum;
 }
 
@@ -38,9 +41,12 @@ export class GetFavoritesInput extends PickType(
   ['page', 'perPage'],
   InputType,
 ) {
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
   search?: string;
 
   @Field(() => GetFavoritesSorting, { nullable: true })
+  @IsOptional()
   sorting?: GetFavoritesSorting;
 }

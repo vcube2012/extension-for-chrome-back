@@ -1,5 +1,5 @@
 import { Field, InputType, PickType } from '@nestjs/graphql';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Prisma } from '@prisma/client';
 import {
   AddressRepoInfoInterface,
@@ -17,7 +17,7 @@ class AddressInputInfo extends PickType(
 @InputType()
 export class AddressInput extends PickType(
   AddressRepoInterface,
-  ['address', 'link', 'images'],
+  ['address', 'link'],
   InputType,
 ) {
   @Field()
@@ -27,9 +27,16 @@ export class AddressInput extends PickType(
 
   @Field()
   @IsNotEmpty()
+  @IsString()
   zipCode: string;
 
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @IsString({ each: true })
+  images?: string[];
+
   @Field(() => AddressInputInfo)
+  @IsOptional()
   info?: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue;
 }
 
@@ -42,9 +49,11 @@ export class FavoriteAddressPricesInput extends PickType(
 
 @InputType()
 export class AddToFavoriteInput {
-  @Field()
+  @IsNotEmpty()
+  @Field(() => AddressInput)
   address: AddressInput;
 
-  @Field()
+  @IsNotEmpty()
+  @Field(() => FavoriteAddressPricesInput)
   prices: FavoriteAddressPricesInput;
 }

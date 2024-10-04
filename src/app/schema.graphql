@@ -613,9 +613,9 @@ input AddToFavoriteInput {
 input AddressInput {
   address: String!
   link: String!
-  images: [String!]!
   homeCode: String!
   zipCode: String!
+  images: [String!]
   info: AddressInputInfo!
 }
 

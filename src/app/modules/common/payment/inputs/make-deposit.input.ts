@@ -5,6 +5,7 @@ import { IsInt, IsNotEmpty } from 'class-validator';
 export class MakeDepositInput {
   @Field(() => Int)
   @IsNotEmpty()
+  @IsInt()
   payment_system_id: number;
 
   @Field(() => Int)
