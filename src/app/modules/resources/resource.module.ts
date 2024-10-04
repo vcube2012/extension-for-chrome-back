@@ -14,6 +14,7 @@ import { ReferralBonusModule } from './referral-bonus/referral-bonus.module';
 import { DepositModule } from './deposit/deposit.module';
 import { PaymentSystemModule } from './payment-system/payment-system.module';
 import { BlockModule } from './block/block.module';
+import { MetaTagModule } from './meta-tag/meta-tag.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { BlockModule } from './block/block.module';
     DepositModule,
     PaymentSystemModule,
     BlockModule,
+    MetaTagModule,
   ],
 })
 export class ResourceModule {}

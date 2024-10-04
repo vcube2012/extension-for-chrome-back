@@ -418,3 +418,17 @@ model Block {
   @@index(page)
   @@map("blocks")
 }
+
+model MetaTag {
+  id Int @id @default(autoincrement())
+
+  name        String  @db.VarChar(255)
+  url         String  @unique @db.VarChar(500)
+  title       String? @db.VarChar(500)
+  description String? @db.VarChar(500)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("meta_tags")
+}
