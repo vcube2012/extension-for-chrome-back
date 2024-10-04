@@ -4,7 +4,7 @@ import {
   FavoriteAddressEntity,
   PaginatedFavoriteAddresses,
 } from './entity/favorite-address.entity';
-import { Prisma, ZipCode } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../../globals/database/database.service';
 import {
   GetFavoritesInput,

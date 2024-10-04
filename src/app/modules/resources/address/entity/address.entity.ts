@@ -19,7 +19,4 @@ export class AddressEntity extends OmitType(
 ) {
   @Field(() => AddressEntityInfo)
   info: any;
-
-  @Field(() => [String], { nullable: true })
-  images: string[];
 }

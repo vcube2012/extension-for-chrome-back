@@ -105,7 +105,7 @@ type AddressEntity {
   home_code: String
   address: String!
   link: String!
-  images: [String!]
+  images: [String!]!
   created_at: DateTime!
   updated_at: DateTime
   info: AddressEntityInfo!
@@ -578,6 +578,7 @@ type Mutation {
   unsubscribe: String!
   addAddressToFavorite(input: AddToFavoriteInput!): FavoriteAddressEntity!
   removeFromFavorites(input: RemoveFromFavoritesInput!): Boolean!
+  createPdf(input: CreateFavoriteAddressPdfInput!): String!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   updateFmr(input: UpdateFmrInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
@@ -637,6 +638,11 @@ input FavoriteAddressPricesInput {
 
 input RemoveFromFavoritesInput {
   address_id: Int!
+}
+
+input CreateFavoriteAddressPdfInput {
+  address_id: Int!
+  html: String!
 }
 
 input UpdateSettingInput {

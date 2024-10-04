@@ -1,5 +1,6 @@
 import { Field, Float, ID, Int, InterfaceType } from '@nestjs/graphql';
 import {
+  IsArray,
   IsDate,
   IsNotEmpty,
   IsNumber,
@@ -108,7 +109,9 @@ export class AddressRepoInterface {
 
   @Field(() => [String])
   @IsNotEmpty()
-  images: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue;
+  @IsArray()
+  @IsString({ each: true })
+  images: any;
 
   @Field()
   created_at?: Date;

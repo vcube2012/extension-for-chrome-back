@@ -14,11 +14,16 @@ import { FindOneFavoriteInput } from './inputs/find-one-favorite.input';
 import { RequestedFieldsDecorator } from '../../../decorators/requested-fields.decorator';
 import { AddToFavoriteInput } from './inputs/add-to-favorite.input';
 import { RemoveFromFavoritesInput } from './inputs/remove-from-favorites.input';
+import { CreateFavoriteAddressPdfInput } from './inputs/create-favorite-address-pdf.input';
+import { AddressPdfService } from './address-pdf.service';
 
 @UseGuards(AuthGuard)
 @Resolver(() => FavoriteAddressEntity)
 export class AddressResolver {
-  constructor(private readonly addressService: AddressService) {}
+  constructor(
+    private readonly addressService: AddressService,
+    private readonly pdfService: AddressPdfService,
+  ) {}
 
   @Query(() => PaginatedFavoriteAddresses)
   @ExceptionHandlerDecorator()
@@ -63,6 +68,19 @@ export class AddressResolver {
     return this.addressService.removeFromFavorites(
       ctx.req.user.id,
       input.address_id,
+    );
+  }
+
+  @Mutation(() => String)
+  @ExceptionHandlerDecorator()
+  async createPdf(
+    @Context() ctx: IContextServer,
+    @Args('input') input: CreateFavoriteAddressPdfInput,
+  ) {
+    return this.pdfService.makePdf(
+      ctx.req.user.id,
+      input.address_id,
+      input.html,
     );
   }
 }

@@ -1,0 +1,196 @@
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { PdfService } from '../../common/pdf/pdf.service';
+import { AddressEntity } from './entity/address.entity';
+import * as puppeteer from 'puppeteer';
+import { DatabaseService } from '../../globals/database/database.service';
+import { FavoriteAddressEntity } from './entity/favorite-address.entity';
+import { Browser } from 'puppeteer';
+import { v4 as uuidv4 } from 'uuid';
+import * as path from 'node:path';
+import * as fs from 'node:fs';
+
+const baseScreenshotsPath = 'screenshots';
+
+interface ITemplateUrl {
+  url: string | null;
+  title: string;
+}
+
+@Injectable()
+export class AddressPdfService {
+  constructor(
+    private readonly db: DatabaseService,
+    private readonly pdfService: PdfService,
+  ) {}
+
+  async makePdf(userId: number, addressId: number, html: string) {
+    const favoriteAddress = await this.findFavoriteAddress(userId, addressId);
+
+    if (!favoriteAddress || !favoriteAddress?.address) {
+      throw new InternalServerErrorException(
+        'User does not have this address in favorites',
+      );
+    }
+
+    const content = await this.makePdfContent(
+      favoriteAddress?.address,
+      userId,
+      html,
+    );
+
+    await this.pdfService.generatePDF(content);
+
+    return 'Pdf created';
+  }
+
+  private async findFavoriteAddress(
+    userId: number,
+    addressId: number,
+  ): Promise<FavoriteAddressEntity> {
+    return this.db.favoriteAddress.findUnique({
+      where: {
+        user_id_address_id: {
+          user_id: userId,
+          address_id: addressId,
+        },
+      },
+      include: {
+        address: true,
+      },
+    });
+  }
+
+  // Create html content for html body
+  private async makePdfContent(
+    address: AddressEntity,
+    userId: number,
+    html: string,
+  ) {
+    // Output html content passed from client
+    let content = `<div class="page">${html}</div>`;
+
+    // Make screenshots for urls using puppeteer, save them, transform to base64 and output in pdf content
+    if (!!address.info?.crime_url || !!address.info?.flood_zone_url) {
+      const dir = path.join(baseScreenshotsPath, `${userId}_${address.id}`);
+
+      const urls = [
+        {
+          url: address.info.crime_url ?? null,
+          title: 'Crime',
+        },
+        {
+          url: address.info.flood_zone_url ?? null,
+          title: 'Flood Zone',
+        },
+      ];
+
+      content += await this.getScreenshotsPdfContent(dir, urls);
+    }
+
+    // Output house images
+    if (Number(address.images?.length) > 0) {
+      content += this.getImagesPdfContent(address.images);
+    }
+
+    return content;
+  }
+
+  private async getScreenshotsPdfContent(
+    screenshotDir: string,
+    items: ITemplateUrl[],
+  ) {
+    let content = '<div class="page">';
+
+    const screenshots = [];
+
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    // Create directory if it does not exists
+    if (!fs.existsSync(screenshotDir)) {
+      fs.mkdirSync(screenshotDir, { recursive: true });
+    }
+
+    // Concat base64 images
+    for (const item of items) {
+      if (!!item.url) {
+        const { base64String, fileName } =
+          await this.getBase64StringFromScreenshot(
+            browser,
+            item.url,
+            screenshotDir,
+          );
+
+        screenshots.push(fileName);
+
+        content += `<h2>${item.title}</h2>`;
+        content += `<img src="data:image/jpg;base64,${base64String}" alt="${item.title}" width="90%"/>`;
+      }
+    }
+
+    content += '</div>';
+
+    await browser.close();
+
+    // Delete saved screenshots
+    if (screenshots.length > 0) {
+      await this.deleteScreenshots(screenshotDir, screenshots);
+    }
+
+    return content;
+  }
+
+  private getImagesPdfContent(images: string[]): string {
+    let imagesContent = '<div class="page">';
+    imagesContent += '<h3>Photos</h3>';
+
+    images.map(
+      (image) => (imagesContent += `<img src="${image}" width="50%"/>`),
+    );
+
+    imagesContent += '</div>';
+
+    return imagesContent;
+  }
+
+  private async deleteScreenshots(directory: string, screenshots: string[]) {
+    for (const screenshot of screenshots) {
+      const file = path.join(directory, screenshot);
+
+      fs.unlink(file, (err) => {
+        if (!!err) {
+          console.log(`Cannot delete file: ${file}. Error: \n`);
+          console.log(err);
+        }
+      });
+    }
+  }
+
+  private async getBase64StringFromScreenshot(
+    browser: Browser,
+    url: string,
+    directory: string,
+  ) {
+    try {
+      const page = await browser.newPage();
+
+      await page.goto(url);
+
+      const fileName = `${uuidv4()}.jpg`;
+      const screenshotPath = path.join(directory, fileName);
+
+      const buffer = await page.screenshot({
+        path: screenshotPath,
+      });
+
+      return {
+        base64String: buffer.toString('base64'),
+        fileName: fileName,
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
