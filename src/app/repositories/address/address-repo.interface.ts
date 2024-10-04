@@ -45,6 +45,12 @@ export class AddressRepoInfoInterface {
 
   @Field(() => Float, { nullable: true, defaultValue: null })
   square?: number;
+
+  @Field(() => String, { nullable: true })
+  crime_url?: string;
+
+  @Field(() => String, { nullable: true })
+  flood_zone_url?: string;
 }
 
 @InterfaceType()
@@ -69,6 +75,10 @@ export class AddressRepoInterface {
   @Field(() => AddressRepoInfoInterface)
   @IsNotEmpty()
   info: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue;
+
+  @Field(() => [String])
+  @IsNotEmpty()
+  images: Prisma.NullableJsonNullValueInput | Prisma.InputJsonValue;
 
   @Field()
   created_at?: Date;

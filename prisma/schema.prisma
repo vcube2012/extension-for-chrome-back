@@ -182,6 +182,7 @@ model Address {
   address     String  @db.VarChar(500)
   link        String  @db.VarChar(500)
   info        Json?
+  images      Json?
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt

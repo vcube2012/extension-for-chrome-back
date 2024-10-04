@@ -7,7 +7,7 @@ import {
 @ObjectType()
 class AddressEntityInfo extends PickType(
   AddressRepoInfoInterface,
-  ['beds', 'baths', 'square'],
+  ['beds', 'baths', 'square', 'crime_url', 'flood_zone_url'],
   ObjectType,
 ) {}
 
@@ -19,4 +19,7 @@ export class AddressEntity extends OmitType(
 ) {
   @Field(() => AddressEntityInfo)
   info: any;
+
+  @Field(() => [String], { nullable: true })
+  images: string[];
 }

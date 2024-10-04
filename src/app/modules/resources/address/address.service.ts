@@ -232,6 +232,7 @@ export class AddressService {
           data: {
             home_code: input.homeCode,
             info: input.info,
+            images: input.images ?? [],
             updated_at: new Date(),
           },
         });
@@ -243,6 +244,7 @@ export class AddressService {
             address: input.address,
             info: input.info,
             link: input.link,
+            images: input.images ?? [],
           },
         });
       }

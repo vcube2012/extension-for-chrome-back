@@ -10,14 +10,14 @@ import {
 @InputType()
 class AddressInputInfo extends PickType(
   AddressRepoInfoInterface,
-  ['beds', 'baths', 'square'],
+  ['beds', 'baths', 'square', 'crime_url', 'flood_zone_url'],
   InputType,
 ) {}
 
 @InputType()
 export class AddressInput extends PickType(
   AddressRepoInterface,
-  ['address', 'link'],
+  ['address', 'link', 'images'],
   InputType,
 ) {
   @Field()

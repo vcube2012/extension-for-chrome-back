@@ -6,6 +6,8 @@ interface AddressRepoInfoInterface {
   beds: Float
   baths: Float
   square: Float
+  crime_url: String
+  flood_zone_url: String
 }
 
 interface PurchaseRange {
@@ -93,6 +95,8 @@ type AddressEntityInfo {
   beds: Float
   baths: Float
   square: Float
+  crime_url: String
+  flood_zone_url: String
 }
 
 type AddressEntity {
@@ -101,6 +105,7 @@ type AddressEntity {
   home_code: String
   address: String!
   link: String!
+  images: [String!]
   created_at: DateTime!
   updated_at: DateTime
   info: AddressEntityInfo!
@@ -609,6 +614,7 @@ input AddToFavoriteInput {
 input AddressInput {
   address: String!
   link: String!
+  images: [String!]!
   homeCode: String!
   zipCode: String!
   info: AddressInputInfo!
@@ -618,6 +624,8 @@ input AddressInputInfo {
   beds: Float = null
   baths: Float = null
   square: Float = null
+  crime_url: String
+  flood_zone_url: String
 }
 
 input FavoriteAddressPricesInput {
