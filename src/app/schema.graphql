@@ -217,7 +217,6 @@ type ReferralBonusEntity {
   credit_card: String
   withdrawal_status: WithdrawalStatus
   created_at: DateTime!
-  partner: PartnerEntity!
   referral: ReferralEntity
 }
 

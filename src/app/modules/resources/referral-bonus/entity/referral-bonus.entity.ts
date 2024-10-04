@@ -23,9 +23,6 @@ export class ReferralBonusEntity extends OmitType(
   ['updated_at'],
   ObjectType,
 ) {
-  @Field(() => PartnerEntity)
-  partner?: PartnerEntity;
-
   @Field(() => ReferralEntity, { nullable: true })
   referral?: ReferralEntity;
 }

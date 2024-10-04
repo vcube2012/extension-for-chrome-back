@@ -113,7 +113,7 @@ export class ReferralBonusService {
 
     if (!!user.partner_percent && !!user.username) {
       return {
-        partnerPercent: user.partner_percent,
+        partnerPercent: Number(user.partner_percent),
         username: user.username,
       };
     }
@@ -146,9 +146,9 @@ export class ReferralBonusService {
       const setting: PartnerBonusEntity = await this.settingService.findOne(
         SiteSettingKey.PARTNER_BONUS,
       );
-      return setting?.value ?? 0;
+      return Number(setting?.value) ?? 0;
     }
 
-    return user.partner_percent;
+    return Number(user.partner_percent);
   }
 }
