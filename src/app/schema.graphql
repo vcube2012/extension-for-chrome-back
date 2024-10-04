@@ -672,7 +672,7 @@ input UpdateSettingDataExpenses {
 }
 
 input UpdateFmrInput {
-  fmr: Float! = 100
+  fmr: Float!
 }
 
 input SaveTagsInput {

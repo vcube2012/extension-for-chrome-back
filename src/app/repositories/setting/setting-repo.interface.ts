@@ -96,9 +96,8 @@ export class SettingData {
   @IsNotEmpty()
   expenses: Expenses;
 
-  @Field(() => Float, { nullable: null, defaultValue: 100 })
+  @Field(() => Float, { nullable: null })
   @IsOptional()
-  @Min(50)
-  @Max(200)
+  @IsNumber()
   fmr?: number;
 }
