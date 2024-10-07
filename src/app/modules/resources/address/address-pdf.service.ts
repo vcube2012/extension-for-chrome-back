@@ -8,13 +8,12 @@ import { Browser } from 'puppeteer';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
+import {
+  ScreenshotOptions,
+  TemplateUrl,
+} from './interfaces/address-pdf.interface';
 
 const baseScreenshotsPath = 'screenshots';
-
-interface ITemplateUrl {
-  url: string | null;
-  title: string;
-}
 
 @Injectable()
 export class AddressPdfService {
@@ -97,7 +96,7 @@ export class AddressPdfService {
 
   private async getScreenshotsPdfContent(
     screenshotDir: string,
-    items: ITemplateUrl[],
+    items: TemplateUrl[],
   ) {
     let content = '<div class="page">';
 
@@ -117,11 +116,11 @@ export class AddressPdfService {
     for (const item of items) {
       if (!!item.url) {
         const { base64String, fileName } =
-          await this.getBase64StringFromScreenshot(
-            browser,
-            item.url,
-            screenshotDir,
-          );
+          await this.getBase64StringFromScreenshot(browser, {
+            url: item.url,
+            directory: screenshotDir,
+            extension: 'jpg',
+          });
 
         screenshots.push(fileName);
 
@@ -170,16 +169,15 @@ export class AddressPdfService {
 
   private async getBase64StringFromScreenshot(
     browser: Browser,
-    url: string,
-    directory: string,
+    options: ScreenshotOptions,
   ) {
     try {
       const page = await browser.newPage();
 
-      await page.goto(url);
+      if (options) await page.goto(options.url);
 
-      const fileName = `${uuidv4()}.jpg`;
-      const screenshotPath = path.join(directory, fileName);
+      const fileName = `${uuidv4()}.${options.extension}`;
+      const screenshotPath = path.join(options.directory, fileName);
 
       const buffer = await page.screenshot({
         path: screenshotPath,
