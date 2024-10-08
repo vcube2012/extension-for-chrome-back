@@ -69,6 +69,8 @@ model PackageUser {
   is_trial     Boolean  @default(false)
   credits      Int
   available_to DateTime
+  created_at   DateTime
+  price        Decimal  @db.Decimal(10, 2)
 
   user    User    @relation(fields: [user_id], references: [id])
   package Package @relation(fields: [package_id], references: [id])

@@ -1,4 +1,12 @@
-import { Field, ID, Int, ObjectType, OmitType } from '@nestjs/graphql';
+import {
+  Field,
+  Float,
+  ID,
+  Int,
+  ObjectType,
+  OmitType,
+  PickType,
+} from '@nestjs/graphql';
 import { PackageRepoInterface } from '../../../../repositories/package/package-repo.interface';
 import { UserEntity } from '../../user/entity/user.entity';
 
@@ -10,7 +18,11 @@ export class PackageEntity extends OmitType(
 ) {}
 
 @ObjectType()
-export class PackageUserEntity {
+export class PackageUserEntity extends PickType(
+  PackageRepoInterface,
+  ['credits', 'price', 'created_at', 'is_trial', 'is_active'],
+  ObjectType,
+) {
   @Field(() => ID)
   id?: any;
 
@@ -20,14 +32,8 @@ export class PackageUserEntity {
   @Field(() => Int)
   user_id?: number;
 
-  @Field()
-  is_active?: boolean;
-
-  @Field()
-  is_trial?: boolean;
-
-  @Field(() => Int)
-  credits?: number;
+  @Field(() => Date)
+  available_to: Date;
 
   @Field(() => PackageEntity)
   package?: PackageEntity;

@@ -104,7 +104,9 @@ export abstract class PaymentDriver {
           is_active: true,
           is_trial: isTrial,
           credits: subscribePlan.credits,
+          price: subscribePlan.price,
           available_to: moment().add(1, unit).toDate(),
+          created_at: moment().toDate(),
         },
       });
 

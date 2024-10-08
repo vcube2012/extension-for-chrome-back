@@ -272,12 +272,15 @@ enum PackageType {
 }
 
 type PackageUserEntity {
+  credits: Int!
+  price: Float!
+  is_active: Boolean!
+  is_trial: Boolean!
+  created_at: DateTime!
   id: ID!
   package_id: Int!
   user_id: Int!
-  is_active: Boolean!
-  is_trial: Boolean!
-  credits: Int!
+  available_to: DateTime!
   package: PackageEntity!
   user: UserEntity!
 }
