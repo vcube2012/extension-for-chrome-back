@@ -12,6 +12,7 @@ import {
   ScreenshotOptions,
   TemplateUrl,
 } from './interfaces/address-pdf.interface';
+import { PdfOptions } from '../../common/pdf/interface/pdf-options.interface';
 
 const baseScreenshotsPath = 'screenshots';
 
@@ -22,7 +23,7 @@ export class AddressPdfService {
     private readonly pdfService: PdfService,
   ) {}
 
-  async makePdf(userId: number, addressId: number, html: string) {
+  async makePdf(userId: number, addressId: number, options: PdfOptions) {
     const favoriteAddress = await this.findFavoriteAddress(userId, addressId);
 
     if (!favoriteAddress || !favoriteAddress?.address) {
@@ -34,12 +35,17 @@ export class AddressPdfService {
     const content = await this.makePdfContent(
       favoriteAddress?.address,
       userId,
-      html,
+      options.content,
     );
 
-    await this.pdfService.generatePDF(content);
+    const pdfOptions: PdfOptions = {
+      ...options,
+      content: content,
+    };
 
-    return 'Pdf created';
+    const pdfBuffer = await this.pdfService.generatePDF(pdfOptions);
+
+    return JSON.stringify(pdfBuffer);
   }
 
   private async findFavoriteAddress(
@@ -122,6 +128,10 @@ export class AddressPdfService {
             extension: 'jpg',
           });
 
+        if (!base64String || !fileName) {
+          continue;
+        }
+
         screenshots.push(fileName);
 
         content += `<h2>${item.title}</h2>`;
@@ -190,5 +200,10 @@ export class AddressPdfService {
     } catch (error) {
       console.log(error);
     }
+
+    return {
+      base64String: null,
+      fileName: null,
+    };
   }
 }

@@ -167,7 +167,7 @@ type SettingDataPurchaseRange {
 
 type EntitySettingData {
   use_loan: Boolean!
-  fmr: Float!
+  fmr: Float
   purchase_range: SettingDataPurchaseRange!
   mortgage: SettingDataMortgage!
   expenses: SettingDataExpenses!
@@ -643,6 +643,9 @@ input RemoveFromFavoritesInput {
 input CreateFavoriteAddressPdfInput {
   address_id: Int!
   html: String!
+  header: String!
+  footer: String!
+  styles: String!
 }
 
 input UpdateSettingInput {
@@ -678,7 +681,7 @@ input UpdateSettingDataExpenses {
 }
 
 input UpdateFmrInput {
-  fmr: Float!
+  fmr: Float
 }
 
 input SaveTagsInput {

@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
+import { PdfOptions } from './interface/pdf-options.interface';
 
 @Injectable()
 export class PdfService {
-  async generatePDF(html: string, format: string = 'A4') {
+  async generatePDF(options: PdfOptions) {
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -11,7 +12,7 @@ export class PdfService {
 
     const page = await browser.newPage();
 
-    await page.goto(`http://localhost:4000`);
+    await page.goto(process.env.WEBSITE_URL);
 
     await page.setContent(
       `<html lang="en" style="box-sizing: border-box; margin: 0; padding: 0">
@@ -23,9 +24,14 @@ export class PdfService {
                   }
                 }
               </style>
+              ${!!options.styles ? options.styles : ''}
             </head>
             <body>
-              ${html}
+              ${!!options.headerTemplate ? options.headerTemplate : ''}
+              <main style="padding: 0 20px">
+                ${!!options.content ? options.content : ''}
+              </main>
+              ${!!options.footerTemplate ? options.footerTemplate : ''}
             </body>
             </html>`,
     );
@@ -34,21 +40,22 @@ export class PdfService {
       omitBackground: true,
       printBackground: true,
       displayHeaderFooter: true,
-      format: 'A4',
+      format: options.format,
       landscape: false,
       preferCSSPageSize: false,
       tagged: false,
-      path: 'test.pdf',
+      // path: 'test.pdf',
     };
 
-    if (format !== 'A4') {
+    if (options.format !== 'A4') {
       delete pdfConfig.format;
       delete pdfConfig.landscape;
-      delete pdfConfig.scale;
     }
 
-    await page.pdf(pdfConfig);
+    const buffer = await page.pdf(pdfConfig);
 
     await browser.close();
+
+    return Buffer.from(buffer);
   }
 }

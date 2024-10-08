@@ -12,4 +12,19 @@ export class CreateFavoriteAddressPdfInput {
   @IsNotEmpty()
   @IsString()
   html: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  header: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  footer: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  @IsString()
+  styles: string;
 }

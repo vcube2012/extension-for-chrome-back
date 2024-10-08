@@ -16,6 +16,7 @@ import { AddToFavoriteInput } from './inputs/add-to-favorite.input';
 import { RemoveFromFavoritesInput } from './inputs/remove-from-favorites.input';
 import { CreateFavoriteAddressPdfInput } from './inputs/create-favorite-address-pdf.input';
 import { AddressPdfService } from './address-pdf.service';
+import { PdfOptions } from '../../common/pdf/interface/pdf-options.interface';
 
 @UseGuards(AuthGuard)
 @Resolver(() => FavoriteAddressEntity)
@@ -77,10 +78,21 @@ export class AddressResolver {
     @Context() ctx: IContextServer,
     @Args('input') input: CreateFavoriteAddressPdfInput,
   ) {
+    const pdfOptions: PdfOptions = {
+      format: 'A4',
+      content: input.html,
+      styles: input.styles,
+      headerTemplate: input.header,
+      footerTemplate: input.footer,
+    };
+
+    ctx.res.header('Content-Type', 'application/pdf');
+    ctx.res.header('Content-Disposition', 'attachment; filename=report.pdf');
+
     return this.pdfService.makePdf(
       ctx.req.user.id,
       input.address_id,
-      input.html,
+      pdfOptions,
     );
   }
 }
