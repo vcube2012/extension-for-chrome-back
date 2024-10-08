@@ -13,6 +13,7 @@ import {
   TemplateUrl,
 } from './interfaces/address-pdf.interface';
 import { PdfOptions } from '../../common/pdf/interface/pdf-options.interface';
+import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 
 const baseScreenshotsPath = 'screenshots';
 
@@ -75,22 +76,23 @@ export class AddressPdfService {
     let content = `<div class="page">${html}</div>`;
 
     // Make screenshots for urls using puppeteer, save them, transform to base64 and output in pdf content
-    if (!!address.info?.crime_url || !!address.info?.flood_zone_url) {
-      const dir = path.join(baseScreenshotsPath, `${userId}_${address.id}`);
-
-      const urls = [
-        {
-          url: address.info.crime_url ?? null,
-          title: 'Crime',
-        },
-        {
-          url: address.info.flood_zone_url ?? null,
-          title: 'Flood Zone',
-        },
-      ];
-
-      content += await this.getScreenshotsPdfContent(dir, urls);
-    }
+    // if (!!address.info?.crime_url || !!address.info?.flood_zone_url) {
+    //   const dir = path.join(baseScreenshotsPath, `${userId}_${address.id}`);
+    //
+    //   const urls = [
+    //     {
+    //       url: address.info.crime_url ?? null,
+    //       title: 'Crime',
+    //       selector: '#map',
+    //     },
+    //     {
+    //       url: address.info.flood_zone_url ?? null,
+    //       title: 'Flood Zone',
+    //     },
+    //   ];
+    //
+    //   content += await this.getScreenshotsPdfContent(dir, urls);
+    // }
 
     // Output house images
     if (Number(address.images?.length) > 0) {
@@ -108,6 +110,7 @@ export class AddressPdfService {
 
     const screenshots = [];
 
+    const fileExtension = 'jpg';
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -123,9 +126,10 @@ export class AddressPdfService {
       if (!!item.url) {
         const { base64String, fileName } =
           await this.getBase64StringFromScreenshot(browser, {
-            url: item.url,
+            templateUrl: item,
             directory: screenshotDir,
-            extension: 'jpg',
+            extension: fileExtension,
+            waitForSelector: item.selector,
           });
 
         if (!base64String || !fileName) {
@@ -135,7 +139,7 @@ export class AddressPdfService {
         screenshots.push(fileName);
 
         content += `<h2>${item.title}</h2>`;
-        content += `<img src="data:image/jpg;base64,${base64String}" alt="${item.title}" width="90%"/>`;
+        content += `<img src="data:image/${fileExtension};base64,${base64String}" alt="${item.title}" width="90%"/>`;
       }
     }
 
@@ -184,7 +188,7 @@ export class AddressPdfService {
     try {
       const page = await browser.newPage();
 
-      if (options) await page.goto(options.url, { timeout: 10000 });
+      if (options) await page.goto(options.templateUrl.url, { timeout: 10000 });
 
       const fileName = `${uuidv4()}.${options.extension}`;
       const screenshotPath = path.join(options.directory, fileName);

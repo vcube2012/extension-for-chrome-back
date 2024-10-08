@@ -26,8 +26,7 @@ export class PdfService {
               </style>
               ${!!options.styles ? options.styles : ''}
             </head>
-            <body>
-              ${!!options.headerTemplate ? options.headerTemplate : ''}
+            <body>             
               <main style="padding: 0 20px">
                 ${!!options.content ? options.content : ''}
               </main>
@@ -37,7 +36,6 @@ export class PdfService {
     );
 
     const pdfConfig: puppeteer.PDFOptions = {
-      omitBackground: true,
       printBackground: true,
       displayHeaderFooter: true,
       format: options.format,
@@ -45,6 +43,7 @@ export class PdfService {
       preferCSSPageSize: false,
       tagged: false,
       // path: 'test.pdf',
+      headerTemplate: options.headerTemplate,
     };
 
     if (options.format !== 'A4') {
