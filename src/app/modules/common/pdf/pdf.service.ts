@@ -12,8 +12,6 @@ export class PdfService {
 
     const page = await browser.newPage();
 
-    await page.goto(process.env.WEBSITE_URL);
-
     await page.setContent(
       `<html lang="en" style="box-sizing: border-box; margin: 0; padding: 0">
             <head>
@@ -42,7 +40,7 @@ export class PdfService {
       landscape: false,
       preferCSSPageSize: false,
       tagged: false,
-      // path: 'test.pdf',
+      path: 'test.pdf',
       headerTemplate: options.headerTemplate,
     };
 

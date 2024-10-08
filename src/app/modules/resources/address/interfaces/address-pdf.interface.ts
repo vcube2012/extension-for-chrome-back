@@ -2,7 +2,6 @@ export interface TemplateUrl {
   url: string | null;
   title: string;
   selector: string;
-  // clip?: ScreenshotClip;
 }
 
 export interface ScreenshotClip {
