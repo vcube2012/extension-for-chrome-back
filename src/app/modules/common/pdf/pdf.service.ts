@@ -40,7 +40,7 @@ export class PdfService {
       landscape: false,
       preferCSSPageSize: false,
       tagged: false,
-      path: 'test.pdf',
+      // path: 'test.pdf',
       headerTemplate: options.headerTemplate,
     };
 
