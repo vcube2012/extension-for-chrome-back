@@ -184,7 +184,7 @@ export class AddressPdfService {
     try {
       const page = await browser.newPage();
 
-      if (options) await page.goto(options.url);
+      if (options) await page.goto(options.url, { timeout: 10000 });
 
       const fileName = `${uuidv4()}.${options.extension}`;
       const screenshotPath = path.join(options.directory, fileName);

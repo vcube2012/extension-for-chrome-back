@@ -644,7 +644,6 @@ input CreateFavoriteAddressPdfInput {
   address_id: Int!
   html: String!
   header: String!
-  footer: String!
   styles: String!
 }
 

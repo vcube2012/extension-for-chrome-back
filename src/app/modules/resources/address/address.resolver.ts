@@ -83,11 +83,9 @@ export class AddressResolver {
       content: input.html,
       styles: input.styles,
       headerTemplate: input.header,
-      footerTemplate: input.footer,
     };
 
     ctx.res.header('Content-Type', 'application/pdf');
-    ctx.res.header('Content-Disposition', 'attachment; filename=report.pdf');
 
     return this.pdfService.makePdf(
       ctx.req.user.id,

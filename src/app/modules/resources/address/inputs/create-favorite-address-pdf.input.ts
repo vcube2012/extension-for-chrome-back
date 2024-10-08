@@ -21,10 +21,5 @@ export class CreateFavoriteAddressPdfInput {
   @Field(() => String)
   @IsNotEmpty()
   @IsString()
-  footer: string;
-
-  @Field(() => String)
-  @IsNotEmpty()
-  @IsString()
   styles: string;
 }
