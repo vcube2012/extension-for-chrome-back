@@ -34,7 +34,7 @@ interface Expenses {
 type SocialMediaEntity {
   key: String!
   created_at: DateTime!
-  value: [SocialMediaItem!]!
+  value: [SocialMediaItem!]
 }
 
 """
@@ -55,13 +55,13 @@ enum SocialMedia {
 type VideoMainPageEntity {
   key: String!
   created_at: DateTime!
-  value: String!
+  value: String
 }
 
 type PartnerBonusEntity {
   key: String!
   created_at: DateTime!
-  value: Int!
+  value: Int
 }
 
 type TokenResponse {
