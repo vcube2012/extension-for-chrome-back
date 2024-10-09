@@ -26,7 +26,7 @@ export class SocialMediaEntity extends OmitType(
   ['updated_at'],
   ObjectType,
 ) {
-  @Field(() => [SocialMediaItem])
+  @Field(() => [SocialMediaItem], { nullable: true })
   value: any;
 }
 
@@ -45,7 +45,7 @@ export class VideoMainPageEntity extends OmitType(
   ['updated_at'],
   ObjectType,
 ) {
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   value: any;
 }
 
@@ -55,6 +55,6 @@ export class PartnerBonusEntity extends OmitType(
   ['updated_at'],
   ObjectType,
 ) {
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   value: any;
 }
