@@ -5,10 +5,7 @@ import { ExceptionHandlerDecorator } from '../../../decorators/exception-handler
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/auth/guard/auth.guard';
 import { IContextServer } from '../../common/graphql/graphql.module';
-import {
-  UpdateFmrInput,
-  UpdateSettingInput,
-} from './inputs/update-setting.input';
+import { UpdateSettingInput } from './inputs/update-setting.input';
 
 @UseGuards(AuthGuard)
 @Resolver()
@@ -22,14 +19,5 @@ export class SettingResolver {
     @Args('input') input: UpdateSettingInput,
   ) {
     return this.settingService.updateSettings(input, ctx.req.user.id);
-  }
-
-  @Mutation(() => SettingEntity)
-  @ExceptionHandlerDecorator()
-  async updateFmr(
-    @Context() ctx: IContextServer,
-    @Args('input') input: UpdateFmrInput,
-  ) {
-    return this.settingService.updateFmr(input.fmr, ctx.req.user.id);
   }
 }

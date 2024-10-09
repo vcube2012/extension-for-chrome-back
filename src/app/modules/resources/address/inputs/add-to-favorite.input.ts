@@ -6,6 +6,7 @@ import {
   AddressRepoInterface,
   FavoriteAddressInfoRepoInterface,
 } from '../../../../repositories/address/address-repo.interface';
+import { FmrData } from '../entity/favorite-address.entity';
 
 @InputType()
 class AddressInputInfo extends PickType(
@@ -45,15 +46,26 @@ export class FavoriteAddressPricesInput extends PickType(
   FavoriteAddressInfoRepoInterface,
   ['asking', 'offer', 'repairs', 'down', 'cashflow'],
   InputType,
+) {
+  @Field(() => FavoriteAddressPricesFmrInput)
+  @IsNotEmpty()
+  fmr_info: any;
+}
+
+@InputType()
+export class FavoriteAddressPricesFmrInput extends PickType(
+  FmrData,
+  ['price', 'percent'],
+  InputType,
 ) {}
 
 @InputType()
 export class AddToFavoriteInput {
-  @IsNotEmpty()
   @Field(() => AddressInput)
+  @IsNotEmpty()
   address: AddressInput;
 
-  @IsNotEmpty()
   @Field(() => FavoriteAddressPricesInput)
+  @IsNotEmpty()
   prices: FavoriteAddressPricesInput;
 }

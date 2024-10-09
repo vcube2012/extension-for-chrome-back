@@ -206,6 +206,7 @@ model FavoriteAddress {
   down     Decimal @db.Decimal(10, 4)
   cashflow Decimal @db.Decimal(10, 4)
   repairs  Decimal @db.Decimal(10, 4)
+  fmr_info Json
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt

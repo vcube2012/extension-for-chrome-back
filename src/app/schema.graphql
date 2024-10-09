@@ -126,24 +126,6 @@ type PaginationMeta {
   hasMorePages: Boolean!
 }
 
-type FavoriteAddressEntity {
-  address_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime
-  asking: Float!
-  offer: Float!
-  down: Float!
-  cashflow: Float!
-  repairs: Float!
-  address: AddressEntity
-  tags: [TagEntity!]!
-}
-
-type PaginatedFavoriteAddresses {
-  data: [FavoriteAddressEntity!]!
-  meta: PaginationMeta!
-}
-
 type SettingDataExpenses {
   property_taxes: Float
   insurance: Float
@@ -167,7 +149,6 @@ type SettingDataPurchaseRange {
 
 type EntitySettingData {
   use_loan: Boolean!
-  fmr: Float
   purchase_range: SettingDataPurchaseRange!
   mortgage: SettingDataMortgage!
   expenses: SettingDataExpenses!
@@ -336,6 +317,31 @@ type UserEntity {
   deposits: [DepositEntity!]!
   currentPackage: PackageEntity
   userPackages: [PackageUserEntity!]!
+}
+
+type FavoriteAddressEntity {
+  address_id: Int!
+  asking: Float!
+  offer: Float!
+  down: Float!
+  cashflow: Float!
+  repairs: Float!
+  fmr_info: FmrData!
+  created_at: DateTime!
+  updated_at: DateTime
+  address: AddressEntity
+  user: UserEntity
+  tags: [TagEntity!]!
+}
+
+type FmrData {
+  price: Float!
+  percent: Int!
+}
+
+type PaginatedFavoriteAddresses {
+  data: [FavoriteAddressEntity!]!
+  meta: PaginationMeta!
 }
 
 type StaticPageEntity {
@@ -583,7 +589,6 @@ type Mutation {
   removeFromFavorites(input: RemoveFromFavoritesInput!): Boolean!
   createPdf(input: CreateFavoriteAddressPdfInput!): String!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
-  updateFmr(input: UpdateFmrInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
   likeBlog(input: FindBlogInput!): Int
   unlikeBlog(input: FindBlogInput!): Int
@@ -632,11 +637,17 @@ input AddressInputInfo {
 }
 
 input FavoriteAddressPricesInput {
-  asking: Float = null
-  offer: Float = null
-  down: Float = null
-  cashflow: Float = null
-  repairs: Float = null
+  asking: Float!
+  offer: Float!
+  down: Float!
+  cashflow: Float!
+  repairs: Float!
+  fmr_info: FavoriteAddressPricesFmrInput!
+}
+
+input FavoriteAddressPricesFmrInput {
+  price: Float!
+  percent: Int!
 }
 
 input RemoveFromFavoritesInput {
@@ -680,10 +691,6 @@ input UpdateSettingDataExpenses {
   management: Float = null
   maintenance: Float = null
   vacancy: Float = null
-}
-
-input UpdateFmrInput {
-  fmr: Float
 }
 
 input SaveTagsInput {

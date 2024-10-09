@@ -157,58 +157,49 @@ export class AddressService {
   async addToFavorite(userId: number, input: AddToFavoriteInput) {
     const address = await this.createOrUpdate(input.address);
 
-    const updatedUser = await this.db.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        favoriteAddresses: {
-          upsert: {
-            where: {
-              user_id_address_id: {
-                user_id: userId,
-                address_id: address.id,
-              },
-            },
-            create: {
-              address_id: address.id,
-              asking: input.prices.asking,
-              down: input.prices.down,
-              repairs: input.prices.repairs,
-              cashflow: input.prices.cashflow,
-              offer: input.prices.offer,
-            },
-            update: {
-              address_id: address.id,
-              asking: input.prices.asking,
-              down: input.prices.down,
-              repairs: input.prices.repairs,
-              cashflow: input.prices.cashflow,
-              offer: input.prices.offer,
-              updated_at: new Date(),
-            },
-          },
-        },
-      },
-      include: {
-        favoriteAddresses: {
-          where: {
+    const favoriteAddress: FavoriteAddressEntity =
+      await this.db.favoriteAddress.upsert({
+        where: {
+          user_id_address_id: {
             user_id: userId,
             address_id: address.id,
           },
-          include: {
-            address: true,
-            tags: {
-              include: {
-                tag: true,
-              },
+        },
+        create: {
+          asking: input.prices.asking,
+          down: input.prices.down,
+          repairs: input.prices.repairs,
+          cashflow: input.prices.cashflow,
+          offer: input.prices.offer,
+          fmr_info: input.prices.fmr_info,
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          address: {
+            connect: {
+              id: address.id,
             },
           },
         },
-      },
-    });
-
-    const [favoriteAddress] = updatedUser.favoriteAddresses;
+        update: {
+          asking: input.prices.asking,
+          down: input.prices.down,
+          repairs: input.prices.repairs,
+          cashflow: input.prices.cashflow,
+          offer: input.prices.offer,
+          fmr_info: input.prices.fmr_info,
+        },
+        include: {
+          address: true,
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+      });
 
     return this.transformEntity(favoriteAddress);
   }

@@ -9,39 +9,76 @@ import {
   MaxLength,
 } from 'class-validator';
 import { Prisma } from '.prisma/client';
+import { FmrData } from '../../modules/resources/address/entity/favorite-address.entity';
 
 @InterfaceType()
 export class FavoriteAddressInfoRepoInterface {
-  @Field(() => Float, { nullable: true, defaultValue: null })
+  @Field(() => Float)
+  @IsNotEmpty()
   @IsNumber()
-  asking?: number;
+  asking: number;
 
-  @Field(() => Float, { nullable: true, defaultValue: null })
+  @Field(() => Float)
+  @IsNotEmpty()
   @IsNumber()
-  offer?: number;
+  offer: number;
 
-  @Field(() => Float, { nullable: true, defaultValue: null })
+  @Field(() => Float)
+  @IsNotEmpty()
   @IsNumber()
-  down?: number;
+  down: number;
 
-  @Field(() => Float, { nullable: true, defaultValue: null })
+  @Field(() => Float)
+  @IsNotEmpty()
   @IsNumber()
-  cashflow?: number;
+  cashflow: number;
 
-  @Field(() => Float, { nullable: true, defaultValue: null })
+  @Field(() => Float)
+  @IsNotEmpty()
   @IsNumber()
-  repairs?: number;
+  repairs: number;
 }
 
 @InterfaceType()
 export class FavoriteAddressRepoInterface {
   @Field(() => Int)
+  @IsNotEmpty()
   @IsNumber()
   user_id: number;
 
   @Field(() => Int)
+  @IsNotEmpty()
   @IsNumber()
   address_id: number;
+
+  @Field(() => Float)
+  @IsNotEmpty()
+  @IsNumber()
+  asking: any;
+
+  @Field(() => Float)
+  @IsNotEmpty()
+  @IsNumber()
+  offer: any;
+
+  @Field(() => Float)
+  @IsNotEmpty()
+  @IsNumber()
+  down: any;
+
+  @Field(() => Float)
+  @IsNotEmpty()
+  @IsNumber()
+  cashflow: any;
+
+  @Field(() => Float)
+  @IsNotEmpty()
+  @IsNumber()
+  repairs: any;
+
+  @Field(() => FmrData)
+  @IsNotEmpty()
+  fmr_info: any;
 
   @Field()
   @IsDate()

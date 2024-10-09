@@ -1,12 +1,5 @@
 import { Field, Float, InterfaceType } from '@nestjs/graphql';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 @InterfaceType()
 export class PurchaseRange {
@@ -95,9 +88,4 @@ export class SettingData {
   @Field(() => Expenses)
   @IsNotEmpty()
   expenses: Expenses;
-
-  @Field(() => Float, { nullable: true })
-  @IsOptional()
-  @IsNumber()
-  fmr?: number;
 }
