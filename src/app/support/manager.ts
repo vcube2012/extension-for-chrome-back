@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { PaymentDriver } from '../modules/common/payment/payment.driver';
 
 export class Manager {
   /**
@@ -20,6 +21,16 @@ export class Manager {
     }
 
     return this.drivers[driver];
+  }
+
+  getDrivers(): Record<string, PaymentDriver> {
+    const calledCustomCreators = {};
+
+    for (const driver of Object.keys(this.customCreators)) {
+      calledCustomCreators[driver] = this.callCustomCreator(driver);
+    }
+
+    return { ...this.drivers, ...calledCustomCreators };
   }
 
   extend(driver: string, callback: any) {

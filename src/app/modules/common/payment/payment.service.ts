@@ -87,7 +87,7 @@ export class PaymentService {
 
     await this.paymentManager
       .driver(paymentSystemEntity.merchant)
-      .unsubscribe(deposit.payment_id);
+      .unsubscribeByPaymentId(deposit.payment_id);
 
     await this.db.user.update({
       where: {
@@ -267,14 +267,13 @@ export class PaymentService {
       return false;
     }
 
-    // Check if the user has ever had a free plan
-    const trialCount = await this.db.packageUser.count({
+    // Check if the user has ever any plan
+    const userPackages = await this.db.packageUser.count({
       where: {
         user_id: user.id,
-        is_trial: true,
       },
     });
 
-    return trialCount <= 0;
+    return userPackages <= 0;
   }
 }

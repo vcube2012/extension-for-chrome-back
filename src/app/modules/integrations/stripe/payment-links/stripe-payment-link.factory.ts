@@ -27,6 +27,7 @@ export class StripePaymentLinkFactory {
     const data = {
       metadata: {
         deposit_id: params.deposit.id,
+        package_id: params.deposit.package.id,
         user_id: params.user.id,
       },
     };

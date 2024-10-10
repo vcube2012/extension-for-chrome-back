@@ -17,10 +17,29 @@ export abstract class PaymentDriver {
   ) {}
 
   // Webhook for handling subscription
-  abstract handleSubscription(data: any);
+  abstract handleSubscriptionCreated(data: any);
 
   // Unsubscribe user from current subscription
   abstract unsubscribe(subscriptionId: any);
+
+  // When package price was updated from admin panel
+  abstract handlePackageUpdate(packageId: number);
+
+  // When package was deleted or deactivated from admin panel
+  abstract unsubscribeAllUsersFromPackage(packageId: number);
+
+  // When package was activated from admin panel
+  abstract activateProduct(packageId: number);
+
+  // Webhook for successful payment
+  abstract handleInvoicePaidSuccessfully(data: any);
+
+  // Webhook for failed payment
+  abstract handleInvoiceFailed(data: any);
+
+  async unsubscribeByPaymentId(paymentId: string) {
+    await this.unsubscribe(paymentId);
+  }
 
   async depositSuccess(
     deposit: DepositEntity,
@@ -88,59 +107,69 @@ export abstract class PaymentDriver {
     });
   }
 
-  private async setNewPackageForUser(
+  async setNewPackageForUser(
     subscribePlan: PackageEntity,
     user: UserEntity,
     isTrial: boolean,
   ): Promise<UserEntity> {
-    return this.db.$transaction(async (tx): Promise<UserEntity> => {
-      const unit =
-        subscribePlan.type === PackageType.MONTHLY ? 'month' : 'year';
+    const date = this.getDateForSubscriptionPlan(subscribePlan.type);
 
-      const packageUser: PackageUserEntity = await tx.packageUser.create({
-        data: {
-          user_id: user.id,
-          package_id: subscribePlan.id,
-          is_active: true,
-          is_trial: isTrial,
-          credits: subscribePlan.credits,
-          price: subscribePlan.price,
-          available_to: moment().add(1, unit).toDate(),
-          created_at: moment().toDate(),
-        },
-      });
-
-      await tx.packageUser.updateMany({
-        where: {
-          id: {
-            not: packageUser.id,
-          },
-        },
-        data: {
-          is_active: false,
-        },
-      });
-
-      let date: any = moment();
-
-      if (subscribePlan.type === PackageType.MONTHLY) {
-        date = date.add(1, 'month').toDate();
-      } else {
-        date = date.add(1, 'year').toDate();
-      }
-
-      return tx.user.update({
-        where: {
-          id: user.id,
-        },
-        data: {
-          credits: {
-            increment: subscribePlan.credits,
-          },
-          package_available_to: date,
-          unsubscribed: false,
-        },
-      });
+    const packageUser: PackageUserEntity = await this.db.packageUser.create({
+      data: {
+        user_id: user.id,
+        package_id: subscribePlan.id,
+        is_active: true,
+        is_trial: isTrial,
+        credits: subscribePlan.credits,
+        price: subscribePlan.price,
+        available_to: date,
+        created_at: moment().toDate(),
+      },
     });
+
+    await this.db.packageUser.updateMany({
+      where: {
+        id: {
+          not: packageUser.id,
+        },
+      },
+      data: {
+        is_active: false,
+      },
+    });
+
+    return this.earnCredits(user.id, subscribePlan);
+  }
+
+  async earnCredits(
+    userId: number,
+    subscribePlan: PackageEntity,
+  ): Promise<UserEntity> {
+    const date = this.getDateForSubscriptionPlan(subscribePlan.type);
+
+    return this.db.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        credits: {
+          increment: subscribePlan.credits,
+        },
+        package_available_to: date,
+        unsubscribed: false,
+      },
+    });
+  }
+
+  getDateForSubscriptionPlan(period: string): Date {
+    let date: any = moment();
+
+    if (period === PackageType.MONTHLY) {
+      date = date.add(1, 'month').toDate();
+    } else {
+      date = date.add(1, 'year').toDate();
+    }
+
+    return date;
   }
 }

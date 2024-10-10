@@ -72,8 +72,8 @@ model PackageUser {
   created_at   DateTime
   price        Decimal  @db.Decimal(10, 2)
 
-  user    User    @relation(fields: [user_id], references: [id])
-  package Package @relation(fields: [package_id], references: [id])
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  package Package @relation(fields: [package_id], references: [id], onDelete: Cascade)
 
   @@map("package_user")
 }
@@ -372,9 +372,9 @@ model Deposit {
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
 
-  user          User          @relation(fields: [user_id], references: [id])
-  paymentSystem PaymentSystem @relation(fields: [payment_system_id], references: [id])
-  package       Package       @relation(fields: [package_id], references: [id])
+  user          User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  paymentSystem PaymentSystem @relation(fields: [payment_system_id], references: [id], onDelete: Cascade)
+  package       Package       @relation(fields: [package_id], references: [id], onDelete: Cascade)
 
   @@index(type)
   @@map("deposits")
