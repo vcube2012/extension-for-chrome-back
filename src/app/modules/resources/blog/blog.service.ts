@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
+import { BlogEntity, PaginatedBlogs } from './entity/blog.entity';
 
 enum LikeEnum {
   LIKE,
@@ -8,10 +9,25 @@ enum LikeEnum {
 
 @Injectable()
 export class BlogService {
-  constructor(private readonly db: DatabaseService) {}
+  private readonly db;
 
-  async paginateBlogs(page: number, perPage: number) {
-    return await this.db.paginate({
+  constructor() {
+    this.db = new DatabaseService().$extends({
+      result: {
+        blog: {
+          image: {
+            needs: { image: true },
+            compute(blog) {
+              return process.env.IMAGE_URL + 'blogs/' + blog.image;
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async paginateBlogs(page: number, perPage: number): Promise<PaginatedBlogs> {
+    return this.db.paginate({
       model: 'blog',
       query: {
         where: {
@@ -23,7 +39,7 @@ export class BlogService {
     });
   }
 
-  async findOneBySlug(slug: string) {
+  async findOneBySlug(slug: string): Promise<BlogEntity> {
     return this.db.blog.findUnique({
       where: {
         slug: slug,
@@ -41,7 +57,7 @@ export class BlogService {
   }
 
   async viewBlog(id: number) {
-    const blog = await this.db.blog.update({
+    const blog: BlogEntity = await this.db.blog.update({
       where: {
         id: id,
         is_active: true,

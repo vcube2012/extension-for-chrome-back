@@ -57,15 +57,11 @@ export class BlockService {
 
   private blockContent(content) {
     if (content.type === BlockType.PARTNERS) {
-      return {
-        ...content.data,
-        images: content.data.images.map((item) => {
-          return {
-            link: item.link,
-            image: process.env.IMAGE_URL + item.image,
-          };
-        }),
-      };
+      return this.partnersContent(content.data);
+    }
+
+    if (content.type === BlockType.HOUSES) {
+      return this.housesContent(content.data);
     }
 
     if (Object.values(BlockType).includes(content.type)) {
@@ -73,5 +69,29 @@ export class BlockService {
     }
 
     throw new InternalServerErrorException(`Undefined block - ${content.type}`);
+  }
+
+  private housesContent(content: any) {
+    return {
+      ...content,
+      houses: content.houses.map((houseInfo) => {
+        return {
+          ...houseInfo,
+          image: process.env.IMAGE_URL + houseInfo.image,
+        };
+      }),
+    };
+  }
+
+  private partnersContent(content: any) {
+    return {
+      ...content,
+      images: content.images.map((item) => {
+        return {
+          link: item.link,
+          image: process.env.IMAGE_URL + item.image,
+        };
+      }),
+    };
   }
 }
