@@ -158,81 +158,6 @@ type SettingEntity {
   data: EntitySettingData
 }
 
-type ReferralEntity {
-  id: Int!
-  first_name: String!
-  last_name: String!
-  email: String!
-  password: String!
-  avatar: String
-  credits: Float!
-  package_available_to: DateTime
-  username: String
-  partner_percent: Int
-  referrer_id: Int
-  unsubscribed: Boolean!
-  created_at: DateTime!
-}
-
-type PartnerEntity {
-  id: Int!
-  first_name: String!
-  last_name: String!
-  email: String!
-  password: String!
-  avatar: String
-  credits: Float!
-  package_available_to: DateTime
-  username: String
-  partner_percent: Int
-  referrer_id: Int
-  unsubscribed: Boolean!
-  created_at: DateTime!
-}
-
-type ReferralBonusEntity {
-  id: ID!
-  type: ReferralBonusType!
-  percent: Int!
-  amount: Float!
-  credit_card: String
-  withdrawal_status: WithdrawalStatus
-  created_at: DateTime!
-  referral: ReferralEntity
-}
-
-enum ReferralBonusType {
-  COMMISSION
-  WITHDRAWAL
-}
-
-enum WithdrawalStatus {
-  REQUESTED
-  DONE
-}
-
-type PartnerInfoEntity {
-  partnerPercent: Int!
-  username: String!
-}
-
-type PartnerStatisticsEntity {
-  balance: Float!
-  totalEarnings: Float!
-  referralsCount: Int!
-}
-
-type ReferralBonusesInfo {
-  results: PaginatedReferralBonuses!
-  statistics: PartnerStatisticsEntity!
-  partnerInfo: PartnerInfoEntity!
-}
-
-type PaginatedReferralBonuses {
-  data: [ReferralBonusEntity!]!
-  meta: PaginationMeta!
-}
-
 type PackageEntity {
   id: ID!
   type: PackageType!
@@ -266,37 +191,6 @@ type PackageUserEntity {
   user: UserEntity!
 }
 
-type DepositEntity {
-  id: ID!
-  user_id: Int!
-  payment_system_id: Int!
-  type: DepositType!
-  amount: Float!
-  status: DepositStatus!
-  payment_id: String
-  error: String
-  created_at: DateTime!
-  user: UserEntity
-  package: PackageEntity
-}
-
-enum DepositType {
-  NEW
-  RENEWAL
-}
-
-enum DepositStatus {
-  SUCCESS
-  WAITING
-  FAILED
-  TEMP
-}
-
-type PaginatedDeposits {
-  data: [DepositEntity!]!
-  meta: PaginationMeta!
-}
-
 type UserEntity {
   id: Int!
   first_name: String!
@@ -311,10 +205,8 @@ type UserEntity {
   referrer_id: Int
   unsubscribed: Boolean!
   created_at: DateTime!
+  can_activate_trial: Boolean!
   setting: SettingEntity
-  referrer: PartnerEntity
-  referrals: [ReferralEntity!]!
-  deposits: [DepositEntity!]!
   currentPackage: PackageEntity
   userPackages: [PackageUserEntity!]!
 }
@@ -381,6 +273,96 @@ type ReviewEntity {
   text: String!
   rating: Int!
   created_at: DateTime!
+}
+
+type ReferralEntity {
+  id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  password: String!
+  avatar: String
+  credits: Float!
+  package_available_to: DateTime
+  username: String
+  partner_percent: Int
+  referrer_id: Int
+  unsubscribed: Boolean!
+  created_at: DateTime!
+}
+
+type ReferralBonusEntity {
+  id: ID!
+  type: ReferralBonusType!
+  percent: Int!
+  amount: Float!
+  credit_card: String
+  withdrawal_status: WithdrawalStatus
+  created_at: DateTime!
+  referral: ReferralEntity
+}
+
+enum ReferralBonusType {
+  COMMISSION
+  WITHDRAWAL
+}
+
+enum WithdrawalStatus {
+  REQUESTED
+  DONE
+}
+
+type PartnerInfoEntity {
+  partnerPercent: Int!
+  username: String!
+}
+
+type PartnerStatisticsEntity {
+  balance: Float!
+  totalEarnings: Float!
+  referralsCount: Int!
+}
+
+type ReferralBonusesInfo {
+  results: PaginatedReferralBonuses!
+  statistics: PartnerStatisticsEntity!
+  partnerInfo: PartnerInfoEntity!
+}
+
+type PaginatedReferralBonuses {
+  data: [ReferralBonusEntity!]!
+  meta: PaginationMeta!
+}
+
+type DepositEntity {
+  id: ID!
+  user_id: Int!
+  payment_system_id: Int!
+  type: DepositType!
+  amount: Float!
+  status: DepositStatus!
+  payment_id: String
+  error: String
+  created_at: DateTime!
+  user: UserEntity
+  package: PackageEntity
+}
+
+enum DepositType {
+  NEW
+  RENEWAL
+}
+
+enum DepositStatus {
+  SUCCESS
+  WAITING
+  FAILED
+  TEMP
+}
+
+type PaginatedDeposits {
+  data: [DepositEntity!]!
+  meta: PaginationMeta!
 }
 
 type PaymentSystemEntity {

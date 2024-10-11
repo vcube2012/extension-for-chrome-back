@@ -25,7 +25,7 @@ export class AuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(ctx.req);
 
     if (!token) {
-      throw new BadRequestException('Token not found');
+      throw new BadRequestException('Unauthenticated');
     }
 
     try {
