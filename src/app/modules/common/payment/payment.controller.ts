@@ -16,17 +16,22 @@ export class PaymentController {
   async updateUserSubscriptionsAfterPackageUpdated(
     @Body() dto: SubscriptionChangedDto,
     @Param() params: any,
+    @Req() req,
   ) {
     try {
-      const drivers = this.paymentManager.getDrivers();
+      if (this.checkSalt(req.headers['x-custom-salt'])) {
+        const drivers = this.paymentManager.getDrivers();
 
-      for (const [driver, instance] of Object.entries(drivers)) {
-        if (dto.type === SubscriptionChangedType.UPDATE) {
-          await instance.handlePackageUpdate(Number(params.package));
-        } else if (dto.type === SubscriptionChangedType.UNSUBSCRIBE) {
-          await instance.unsubscribeAllUsersFromPackage(Number(params.package));
-        } else if (dto.type === SubscriptionChangedType.ACTIVATED) {
-          await instance.activateProduct(Number(params.package));
+        for (const [driver, instance] of Object.entries(drivers)) {
+          if (dto.type === SubscriptionChangedType.UPDATE) {
+            await instance.handlePackageUpdate(Number(params.package));
+          } else if (dto.type === SubscriptionChangedType.UNSUBSCRIBE) {
+            await instance.unsubscribeAllUsersFromPackage(
+              Number(params.package),
+            );
+          } else if (dto.type === SubscriptionChangedType.ACTIVATED) {
+            await instance.activateProduct(Number(params.package));
+          }
         }
       }
     } catch (error) {
@@ -68,5 +73,9 @@ export class PaymentController {
     const data = request.method === 'GET' ? request.query : request.body;
 
     return paymentDriver.handleInvoiceFailed(data);
+  }
+
+  private checkSalt(saltHeader: any): boolean {
+    return !!saltHeader && saltHeader === process.env.SALT;
   }
 }
