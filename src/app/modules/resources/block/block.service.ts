@@ -2,8 +2,6 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
 import { BlockPage } from './enums/block-page.enum';
 import { BlockType } from './enums/block-type.enum';
-import { BlockEntity } from './entity/block.entity';
-import { isLogLevelEnabled } from '@nestjs/common/services/utils';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -58,6 +56,18 @@ export class BlockService {
   }
 
   private blockContent(content) {
+    if (content.type === BlockType.PARTNERS) {
+      return {
+        ...content.data,
+        images: content.data.images.map((item) => {
+          return {
+            link: item.link,
+            image: process.env.IMAGE_URL + item.image,
+          };
+        }),
+      };
+    }
+
     if (Object.values(BlockType).includes(content.type)) {
       return content.data;
     }
