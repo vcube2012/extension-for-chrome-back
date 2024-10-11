@@ -16,17 +16,29 @@ export default class ScraperService {
     this.logger = new Logger();
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron(CronExpression.EVERY_MINUTE)
   async scrape() {
-    await new ScraperRunner().run();
+    console.log('Cron started: scrape');
+
+    try {
+      await new ScraperRunner().run();
+    } catch (error) {
+      console.log('Cron failed: scrape');
+    }
   }
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async scrapeMetropolitansAndCounties() {
-    const scrapeRunner = new ScraperRunner();
+    console.log('Cron started: scrapeMetropolitansAndCounties');
 
-    await scrapeRunner.scrapeMetropolitans();
-    await scrapeRunner.scrapeStatesAndMetropolitans();
+    try {
+      const scrapeRunner = new ScraperRunner();
+
+      await scrapeRunner.scrapeMetropolitans();
+      await scrapeRunner.scrapeStatesAndMetropolitans();
+    } catch (error) {
+      console.log('Cron failed: scrapeMetropolitansAndCounties');
+    }
   }
 
   async getMetropolitans() {
