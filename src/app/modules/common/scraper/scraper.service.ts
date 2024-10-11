@@ -27,7 +27,7 @@ export default class ScraperService {
     }
   }
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
   async scrapeMetropolitansAndCounties() {
     console.log('Cron started: scrapeMetropolitansAndCounties');
 
