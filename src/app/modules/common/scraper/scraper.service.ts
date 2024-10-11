@@ -16,7 +16,7 @@ export default class ScraperService {
     this.logger = new Logger();
   }
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async scrape() {
     console.log('Cron started: scrape');
 
