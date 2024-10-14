@@ -40,7 +40,9 @@ export class AddressResolver {
   async getOneFavorite(
     @Context() ctx: IContextServer,
     @Args('input') input: FindOneFavoriteInput,
-    @RequestedFieldsDecorator({ exclude: ['tags', 'address'] })
+    @RequestedFieldsDecorator({
+      exclude: ['tags', 'address', 'user', 'fmr_info'],
+    })
     fields: Prisma.FavoriteAddressSelect,
   ): Promise<FavoriteAddressEntity | null> {
     return this.addressService.findOneFavoriteAddress(

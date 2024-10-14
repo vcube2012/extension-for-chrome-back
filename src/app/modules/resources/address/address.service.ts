@@ -118,6 +118,7 @@ export class AddressService {
     if (!!fields) {
       query['select'] = {
         ...fields,
+        fmr_info: true,
         address: true,
         tags: {
           select: {
