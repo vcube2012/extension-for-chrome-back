@@ -137,7 +137,8 @@ export class AddressService {
       };
     }
 
-    const favoriteAddress = await this.db.favoriteAddress.findFirst(query);
+    const favoriteAddress: FavoriteAddressEntity =
+      await this.db.favoriteAddress.findFirst(query);
 
     if (!favoriteAddress) {
       return null;
