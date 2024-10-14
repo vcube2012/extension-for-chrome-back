@@ -51,28 +51,28 @@ export class PaymentController {
     return paymentDriver.handleSubscriptionCreated(data);
   }
 
-  @All('invoice-paid/:paymentMethod')
+  @All('payment-success/:paymentMethod')
   @ExceptionHandlerDecorator()
-  async handleInvoicePaid(@Req() request, @Param() params: any) {
+  async handleSuccessfullyPayment(@Req() request, @Param() params: any) {
     const paymentDriver: PaymentDriver = this.paymentManager.driver(
       params.paymentMethod,
     );
 
     const data = request.method === 'GET' ? request.query : request.body;
 
-    return paymentDriver.handleInvoicePaidSuccessfully(data);
+    return paymentDriver.handleSuccessfullyPayment(data);
   }
 
-  @All('invoice-failed/:paymentMethod')
+  @All('payment-failed/:paymentMethod')
   @ExceptionHandlerDecorator()
-  async handleInvoiceFailed(@Req() request, @Param() params: any) {
+  async handleFailedPayment(@Req() request, @Param() params: any) {
     const paymentDriver: PaymentDriver = this.paymentManager.driver(
       params.paymentMethod,
     );
 
     const data = request.method === 'GET' ? request.query : request.body;
 
-    return paymentDriver.handleInvoiceFailed(data);
+    return paymentDriver.handleFailedPayment(data);
   }
 
   private checkSalt(saltHeader: any): boolean {

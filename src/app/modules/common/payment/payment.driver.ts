@@ -32,10 +32,10 @@ export abstract class PaymentDriver {
   abstract activateProduct(packageId: number);
 
   // Webhook for successful payment
-  abstract handleInvoicePaidSuccessfully(data: any);
+  abstract handleSuccessfullyPayment(data: any);
 
   // Webhook for failed payment
-  abstract handleInvoiceFailed(data: any);
+  abstract handleFailedPayment(data: any);
 
   async unsubscribeByPaymentId(paymentId: string) {
     await this.unsubscribe(paymentId);
@@ -95,14 +95,23 @@ export abstract class PaymentDriver {
   async depositFailed(
     deposit: DepositEntity,
     error: string | null = null,
+    paymentId: string | null = null,
   ): Promise<DepositEntity> {
+    const data = {
+      status: DepositStatus.FAILED,
+      error: error,
+    };
+
+    if (!!paymentId) {
+      data['payment_id'] = paymentId;
+    }
+
     return this.db.deposit.update({
       where: {
         id: deposit.id,
       },
       data: {
-        status: DepositStatus.WAITING,
-        error: error,
+        ...data,
       },
     });
   }

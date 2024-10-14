@@ -153,9 +153,7 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
   }
 
   // When user was paid an invoice
-  async handleInvoicePaidSuccessfully(
-    data: Stripe.InvoicePaymentSucceededEvent,
-  ) {
+  async handleSuccessfullyPayment(data: Stripe.InvoicePaymentSucceededEvent) {
     const invoice: Stripe.Invoice = data.data.object;
 
     for (const lineItem of invoice.lines.data) {
@@ -234,8 +232,29 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     }
   }
 
-  async handleInvoiceFailed(data: any) {
-    console.log('handleInvoiceFailed');
+  async handleFailedPayment(data: Stripe.InvoicePaymentFailedEvent) {
+    const depositId =
+      data.data.object.subscription_details.metadata.deposit_id ?? null;
+
+    if (!depositId) {
+      return;
+    }
+
+    const deposit: DepositEntity = await this.db.deposit.findUniqueOrThrow({
+      where: {
+        id: Number(depositId),
+      },
+    });
+
+    const chargeId =
+      typeof data.data.object.charge === 'string'
+        ? data.data.object.charge
+        : data.data.object.charge.id;
+
+    const charge = await this.client.charges.retrieve(chargeId);
+    const error = `Error code: ${charge.failure_code}. Error message: ${charge.failure_message}`;
+
+    await this.depositFailed(deposit, error, data.data.object.id);
   }
 
   // Cancel subscription
