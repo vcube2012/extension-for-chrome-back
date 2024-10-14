@@ -18,7 +18,9 @@ export class BlogService {
           image: {
             needs: { image: true },
             compute(blog) {
-              return process.env.IMAGE_URL + 'blogs/' + blog.image;
+              return !!blog.image
+                ? process.env.IMAGE_URL + 'blogs/' + blog.image
+                : null;
             },
           },
         },
