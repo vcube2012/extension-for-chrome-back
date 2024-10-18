@@ -1,10 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import { ConfigService } from '@nestjs/config';
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { SocialAuthUserEntity } from '../../common/auth/entity/social-auth-user.entity';
 
 @Injectable()
