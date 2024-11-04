@@ -27,9 +27,9 @@ export const ExceptionHandlerDecorator = (name?: string) => {
           throw error;
         }
 
-        if (String(error?.statusCode || error?.status)?.includes(50)) {
+        if (String(error?.statusCode || error?.status)?.startsWith('50')) {
           throw new InternalServerErrorException('Internal Server Error');
-        } else if (String(error?.statusCode || error?.status)?.includes(403)) {
+        } else if (String(error?.statusCode || error?.status) === '403') {
           throw new ForbiddenError(error.message);
         } else if (error?.message?.length > 70) {
           throw new BadRequestException('Bad Request');
