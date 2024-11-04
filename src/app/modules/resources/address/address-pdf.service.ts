@@ -75,25 +75,6 @@ export class AddressPdfService {
     // Output html content passed from client
     let content = `<div class="page">${html}</div>`;
 
-    // Make screenshots for urls using puppeteer, save them, transform to base64 and output in pdf content
-    // if (!!address.info?.crime_url || !!address.info?.flood_zone_url) {
-    //   const dir = path.join(baseScreenshotsPath, `${userId}_${address.id}`);
-    //
-    //   const urls = [
-    //     {
-    //       url: address.info.crime_url ?? null,
-    //       title: 'Crime',
-    //       selector: '#map',
-    //     },
-    //     {
-    //       url: address.info.flood_zone_url ?? null,
-    //       title: 'Flood Zone',
-    //     },
-    //   ];
-    //
-    //   content += await this.getScreenshotsPdfContent(dir, urls);
-    // }
-
     // Output house images
     if (Number(address.images?.length) > 0) {
       content += this.getImagesPdfContent(address.images);
@@ -157,12 +138,15 @@ export class AddressPdfService {
 
   private getImagesPdfContent(images: string[]): string {
     let imagesContent = '<div class="page">';
-    imagesContent += '<h3>Photos</h3>';
+    imagesContent += '<span class="page-title">Photos</span>';
+    imagesContent += '<div class="images">';
 
     images.map(
-      (image) => (imagesContent += `<img src="${image}" width="50%"/>`),
+      (image) =>
+        (imagesContent += `<div class="images__item"><img src="${image}"/></div>`),
     );
 
+    imagesContent += '</div>';
     imagesContent += '</div>';
 
     return imagesContent;

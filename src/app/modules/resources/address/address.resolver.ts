@@ -84,7 +84,6 @@ export class AddressResolver {
       format: 'A4',
       content: input.html,
       styles: input.styles,
-      headerTemplate: input.header,
     };
 
     ctx.res.header('Content-Type', 'application/pdf');

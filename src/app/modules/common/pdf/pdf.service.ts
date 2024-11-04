@@ -19,13 +19,39 @@ export class PdfService {
                 @media print {
                   .page {
                     page-break-before: always;
+                    padding-left: 12px;
+                    padding-right: 12px;
+                  }
+                  
+                  .page:not(:first-child) {
+                    padding-top: 24px;
+                  }
+                  
+                  .page-title {
+                    font-size: 24px;
+                    font-weight: 700;
+                  }
+                  
+                  .images {
+                    width: 100%;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-gap: 10px;
+                    margin-top: 20px;
+                  }
+                  
+                  .images__item img {
+                    width: 100%;
+                    height: auto;
+                    display: block;
+                    object-fit: cover;
                   }
                 }
               </style>
               ${!!options.styles ? options.styles : ''}
             </head>
             <body>             
-              <main style="padding: 0 20px">
+              <main>
                 ${!!options.content ? options.content : ''}
               </main>
               ${!!options.footerTemplate ? options.footerTemplate : ''}
@@ -35,13 +61,10 @@ export class PdfService {
 
     const pdfConfig: puppeteer.PDFOptions = {
       printBackground: true,
-      displayHeaderFooter: true,
       format: options.format,
       landscape: false,
       preferCSSPageSize: false,
       tagged: false,
-      // path: 'test.pdf',
-      headerTemplate: options.headerTemplate,
     };
 
     if (options.format !== 'A4') {
