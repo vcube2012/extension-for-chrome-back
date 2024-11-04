@@ -37,14 +37,34 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
 
   // Create stripe product (subscription plan)
   async createProduct(packageEntity: PackageEntity) {
-    const stripeId = await this.service.findOne({
+    let stripeId = await this.service.findOne({
       model_id: packageEntity.id,
       model_type: 'package',
       stripe_type: StripeType.PRODUCTS,
     });
 
     const productFactory = new StripeProductFactory(this.client);
-    const product = await productFactory.create(packageEntity, stripeId);
+
+    let product: Stripe.Product;
+
+    try {
+      product = await productFactory.create(packageEntity, stripeId);
+    } catch (error) {
+      if (error.statusCode === 404) {
+        await this.service.delete(stripeId);
+        product = await productFactory.create(packageEntity);
+        stripeId = product.id;
+        await this.service.create({
+          stripe_id: stripeId,
+          stripe_type: StripeType.PRODUCTS,
+          model_id: packageEntity.id,
+          model_type: 'package',
+        });
+      } else {
+        throw error;
+      }
+    }
+
     const price = await productFactory.findPriceFromProduct(product);
 
     if (!!stripeId && product.id !== stripeId) {
@@ -330,7 +350,7 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
 
   // When package price updated from admin panel
   async handlePackageUpdate(packageId: number) {
-    const stripeId = await this.service.findOne({
+    let stripeId = await this.service.findOne({
       model_id: packageId,
       model_type: 'package',
       stripe_type: StripeType.PRODUCTS,
@@ -348,10 +368,26 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
       });
 
     const productFactory = new StripeProductFactory(this.client);
-    const stripeProduct = await productFactory.create(
-      subscriptionPlan,
-      stripeId,
-    );
+
+    let stripeProduct: Stripe.Product;
+
+    try {
+      stripeProduct = await productFactory.create(subscriptionPlan, stripeId);
+    } catch (error) {
+      if (error.statusCode === 404) {
+        await this.service.delete(stripeId);
+        stripeProduct = await productFactory.create(subscriptionPlan);
+        stripeId = stripeProduct.id;
+        await this.service.create({
+          stripe_id: stripeId,
+          stripe_type: StripeType.PRODUCTS,
+          model_id: subscriptionPlan.id,
+          model_type: 'package',
+        });
+      } else {
+        throw error;
+      }
+    }
 
     const priceId =
       typeof stripeProduct.default_price === 'string'
