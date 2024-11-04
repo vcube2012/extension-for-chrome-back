@@ -27,11 +27,11 @@ export const ExceptionHandlerDecorator = (name?: string) => {
           throw error;
         }
 
-        if (error?.statusCode?.includes(50)) {
+        if ((error?.statusCode || error?.status)?.includes(50)) {
           throw new InternalServerErrorException('Internal Server Error');
-        } else if (error?.statusCode?.includes(403)) {
+        } else if ((error?.statusCode || error?.status)?.includes(403)) {
           throw new ForbiddenError(error.message);
-        } else if (error.message?.length > 70) {
+        } else if (error?.message?.length > 70) {
           throw new BadRequestException('Bad Request');
         } else {
           throw new BadRequestException(error.message);
