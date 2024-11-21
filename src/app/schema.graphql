@@ -167,6 +167,7 @@ type PackageEntity {
   old_price: Float
   is_active: Boolean!
   is_bestseller: Boolean!
+  is_best_value: Boolean!
   is_trial: Boolean!
   advantages: [String!]!
   created_at: DateTime!
