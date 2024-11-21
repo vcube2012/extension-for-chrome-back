@@ -123,7 +123,16 @@ export abstract class PaymentDriver {
   ): Promise<UserEntity> {
     const date = this.getDateForSubscriptionPlan(subscribePlan.type);
 
-    const packageUser: PackageUserEntity = await this.db.packageUser.create({
+    await this.db.packageUser.updateMany({
+      where: {
+        user_id: user.id,
+      },
+      data: {
+        is_active: false,
+      },
+    });
+
+    await this.db.packageUser.create({
       data: {
         user_id: user.id,
         package_id: subscribePlan.id,
@@ -133,17 +142,6 @@ export abstract class PaymentDriver {
         price: subscribePlan.price,
         available_to: date,
         created_at: moment().toDate(),
-      },
-    });
-
-    await this.db.packageUser.updateMany({
-      where: {
-        id: {
-          not: packageUser.id,
-        },
-      },
-      data: {
-        is_active: false,
       },
     });
 
