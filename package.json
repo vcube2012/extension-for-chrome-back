@@ -13,6 +13,7 @@
     "db:generate": "yarn prisma generate",
     "db:studio": "yarn prisma studio",
     "console": "ts-node src/console.ts",
+    "db:seed": "yarn console db:seed",
     "type-check": "tsc --noEmit",
     "lint": "eslint \"{src,libs,test}/**/*.ts\" --fix",
     "prettier": "prettier --write \"src/**/*.{js,ts}\"",
