@@ -41,6 +41,9 @@ export class PackageRepoInterface {
   is_bestseller?: boolean;
 
   @Field({ defaultValue: false })
+  is_best_value?: boolean;
+
+  @Field({ defaultValue: false })
   is_trial?: boolean;
 
   @Field(() => [String])

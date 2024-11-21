@@ -1,6 +1,5 @@
 import {
   Field,
-  Float,
   ID,
   Int,
   ObjectType,
