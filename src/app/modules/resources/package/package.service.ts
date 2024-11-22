@@ -14,9 +14,14 @@ export class PackageService {
       where: {
         is_active: true,
       },
-      orderBy: {
-        sort_order: 'asc',
-      },
+      orderBy: [
+        {
+          type: 'asc',
+        },
+        {
+          sort_order: 'asc',
+        },
+      ],
     });
   }
 }
