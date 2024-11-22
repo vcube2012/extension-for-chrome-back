@@ -455,11 +455,11 @@ type Advantage {
 type HouseInfo {
   beds: Float!
   baths: Float!
-  square: Float!
-  down: Float!
-  cashflow: Float!
-  cap_rate: Float!
-  price: Float!
+  square: String!
+  down: String!
+  cashflow: String!
+  cap_rate: String!
+  price: String!
   image: String!
   address: String!
   sub_text: String!

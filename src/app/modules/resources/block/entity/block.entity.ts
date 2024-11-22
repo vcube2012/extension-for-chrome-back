@@ -141,20 +141,20 @@ class HouseInfo {
   @Field(() => Float)
   baths: number;
 
-  @Field(() => Float)
-  square: number;
+  @Field(() => String)
+  square: string;
 
-  @Field(() => Float)
-  down: number;
+  @Field(() => String)
+  down: string;
 
-  @Field(() => Float)
-  cashflow: number;
+  @Field(() => String)
+  cashflow: string;
 
-  @Field(() => Float)
-  cap_rate: number;
+  @Field(() => String)
+  cap_rate: string;
 
-  @Field(() => Float)
-  price: number;
+  @Field(() => String)
+  price: string;
 
   @Field(() => String)
   image: string;
