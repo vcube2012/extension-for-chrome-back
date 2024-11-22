@@ -649,31 +649,31 @@ input UpdateSettingInput {
 }
 
 input UpdateSettingData {
-  use_loan: Boolean! = false
+  use_loan: Boolean! = true
   purchase_range: UpdateSettingDataPurchaseRange!
   mortgage: UpdateSettingDataMortgage!
   expenses: UpdateSettingDataExpenses!
 }
 
 input UpdateSettingDataPurchaseRange {
-  from: Float = null
-  to: Float = null
+  from: Float = 20000
+  to: Float = 100000
 }
 
 input UpdateSettingDataMortgage {
-  down_payment: Float = null
-  interest_rate: Float = null
-  loan_term: Float = null
-  closing_costs: Float = null
+  down_payment: Float = 20
+  interest_rate: Float = 7.5
+  loan_term: Float = 30
+  closing_costs: Float = 3000
 }
 
 input UpdateSettingDataExpenses {
-  property_taxes: Float = null
-  insurance: Float = null
-  hoa_fee: Float = null
-  management: Float = null
-  maintenance: Float = null
-  vacancy: Float = null
+  property_taxes: Float = 1200
+  insurance: Float = 60
+  hoa_fee: Float = 0
+  management: Float = 10
+  maintenance: Float = 10
+  vacancy: Float = 5
 }
 
 input SaveTagsInput {

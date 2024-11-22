@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../globals/database/database.service';
 import { UpdateSettingInput } from './inputs/update-setting.input';
 
