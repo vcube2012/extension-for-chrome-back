@@ -285,7 +285,7 @@ model Faq {
 
   question   String @db.VarChar(500)
   answer     String @db.VarChar(1000)
-  sort_order Int    @db.SmallInt
+  sort_order Int    @default(100) @db.SmallInt
 
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt
