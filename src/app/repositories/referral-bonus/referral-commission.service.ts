@@ -39,6 +39,8 @@ export class ReferralCommissionService {
       referrerPercent = setting?.value ?? 0;
     }
 
+    referrerPercent = Number(referrerPercent);
+
     if (!referrer || referrerPercent <= 0 || amount <= 0) {
       return;
     }

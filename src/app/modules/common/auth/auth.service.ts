@@ -9,7 +9,6 @@ import { SocialAuthUserEntity } from './entity/social-auth-user.entity';
 import { DatabaseService } from '../../globals/database/database.service';
 import { compareSync, hashSync } from 'bcrypt';
 import { SocialAuthType } from '../../../repositories/user/user-repo.interface';
-import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
 import { faker } from '@faker-js/faker';
 import { UserEntity } from '../../resources/user/entity/user.entity';
 
@@ -24,7 +23,6 @@ export class AuthService {
     private readonly socialAuthService: SocialAuthRepoService,
     private readonly db: DatabaseService,
     private jwtService: JwtService,
-    private readonly settingService: SiteSettingRepoService,
   ) {}
 
   async socialSignIn(

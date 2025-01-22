@@ -66,11 +66,11 @@ export abstract class PaymentDriver {
       isTrial,
     );
 
-    if (deposit.user?.referrer_id) {
+    if (updatedDeposit.user?.referrer_id) {
       await this.referralSystem.calculateReferralCommission(
-        deposit.user.referrer_id,
-        deposit.user.id,
-        deposit.amount,
+        updatedDeposit.user.referrer_id,
+        updatedDeposit.user.id,
+        updatedDeposit.amount,
       );
     }
 
