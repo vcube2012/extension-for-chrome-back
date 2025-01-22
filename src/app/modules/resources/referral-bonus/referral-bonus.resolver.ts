@@ -10,7 +10,6 @@ import {
 } from './entity/referral-bonus.entity';
 import { PaginationInput } from '../../../repositories/common/pagination/pagination.input';
 import { WithdrawInput } from './inputs/withdraw.input';
-import { lowerFirst } from 'lodash';
 
 @UseGuards(AuthGuard)
 @Resolver()

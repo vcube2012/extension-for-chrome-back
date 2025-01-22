@@ -45,7 +45,7 @@ export class ReferralBonusService {
 
     const userBalance = queryResults[0]?.balance ?? 0;
 
-    if (userBalance <= amount) {
+    if (userBalance < amount) {
       throw new BadRequestException(
         'You do not have enough funds in your balance',
       );
