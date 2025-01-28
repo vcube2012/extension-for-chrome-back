@@ -70,7 +70,7 @@ export class ReferralBonusService {
     page: number,
     perPage: number,
   ): Promise<PaginatedReferralBonuses> {
-    return this.db.paginate({
+    const bonuses = await this.db.paginate({
       model: 'referralBonus',
       query: {
         where: {
@@ -86,6 +86,16 @@ export class ReferralBonusService {
       page: page,
       limit: perPage,
     });
+
+    bonuses.data = bonuses.data.map((bonus: ReferralBonusEntity) => {
+      if (bonus.type === ReferralBonusType.WITHDRAWAL) {
+        bonus.percent = null;
+      }
+
+      return bonus;
+    });
+
+    return bonuses;
   }
 
   async getPartnerStatistics(userId: number): Promise<PartnerStatisticsEntity> {

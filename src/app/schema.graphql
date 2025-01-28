@@ -31,6 +31,10 @@ interface Expenses {
   vacancy: Float
 }
 
+type TokenResponse {
+  token: String!
+}
+
 type SocialMediaEntity {
   key: String!
   created_at: DateTime!
@@ -62,10 +66,6 @@ type PartnerBonusEntity {
   key: String!
   created_at: DateTime!
   value: Int
-}
-
-type TokenResponse {
-  token: String!
 }
 
 type PaymentUrlResponseEntity {
@@ -295,7 +295,7 @@ type ReferralEntity {
 type ReferralBonusEntity {
   id: ID!
   type: ReferralBonusType!
-  percent: Int!
+  percent: Int
   amount: Float!
   credit_card: String
   withdrawal_status: WithdrawalStatus

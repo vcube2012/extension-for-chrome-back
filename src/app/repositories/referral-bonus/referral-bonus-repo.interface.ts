@@ -29,11 +29,11 @@ export class ReferralBonusRepoInterface {
   @Field(() => ReferralBonusType)
   type: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { nullable: true })
   @IsInt()
   @Max(100)
   @Min(0)
-  percent: number;
+  percent?: number;
 
   @Field(() => Float)
   @IsNumber()
