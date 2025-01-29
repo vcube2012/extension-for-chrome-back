@@ -9,7 +9,7 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const port = process.env.PORT;
-  const env = process.env.NODE_ENV;
+  const env = process.env.APP_ENV;
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
