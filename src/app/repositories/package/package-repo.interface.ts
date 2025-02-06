@@ -28,6 +28,9 @@ export class PackageRepoInterface {
   @Field(() => Int)
   credits: number;
 
+  @Field(() => Int, { nullable: true })
+  trial_credits?: number;
+
   @Field(() => Float)
   price: any;
 

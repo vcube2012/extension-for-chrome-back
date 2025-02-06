@@ -132,35 +132,38 @@ export abstract class PaymentDriver {
       },
     });
 
+    const userCredits = isTrial
+      ? subscribePlan.trial_credits
+      : subscribePlan.credits;
+
     await this.db.packageUser.create({
       data: {
         user_id: user.id,
         package_id: subscribePlan.id,
         is_active: true,
         is_trial: isTrial,
-        credits: subscribePlan.credits,
+        credits: userCredits,
         price: subscribePlan.price,
         available_to: date,
         created_at: moment().toDate(),
       },
     });
 
-    return this.earnCredits(user.id, subscribePlan);
+    return this.earnCredits(user.id, date, userCredits);
   }
 
   async earnCredits(
     userId: number,
-    subscribePlan: PackageEntity,
+    date: Date,
+    credits: number,
   ): Promise<UserEntity> {
-    const date = this.getDateForSubscriptionPlan(subscribePlan.type);
-
     return this.db.user.update({
       where: {
         id: userId,
       },
       data: {
         credits: {
-          increment: subscribePlan.credits,
+          increment: credits,
         },
         package_available_to: date,
         unsubscribed: false,

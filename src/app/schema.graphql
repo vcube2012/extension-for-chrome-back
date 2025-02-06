@@ -163,6 +163,7 @@ type PackageEntity {
   type: PackageType!
   name: String!
   credits: Int!
+  trial_credits: Int
   price: Float!
   old_price: Float
   is_active: Boolean!

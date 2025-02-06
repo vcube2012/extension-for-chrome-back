@@ -135,6 +135,8 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
       );
     }
 
+    console.log(subscription.metadata);
+
     const deposit: DepositEntity = await this.db.deposit.findUniqueOrThrow({
       where: {
         id: Number(subscription.metadata.deposit_id),
@@ -236,6 +238,8 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
           },
         });
 
+        const date = this.getDateForSubscriptionPlan(packageEntity.type);
+
         await this.db.packageUser.updateMany({
           where: {
             user_id: userId,
@@ -243,11 +247,11 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
             is_active: true,
           },
           data: {
-            available_to: this.getDateForSubscriptionPlan(packageEntity.type),
+            available_to: date,
           },
         });
 
-        await this.earnCredits(userId, packageEntity);
+        await this.earnCredits(userId, date, packageEntity.credits);
       }
     }
   }
