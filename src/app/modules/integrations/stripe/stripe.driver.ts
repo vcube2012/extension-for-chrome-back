@@ -18,6 +18,7 @@ import {
   DepositType,
 } from '../../../repositories/deposit/deposit-repo.interface';
 import { PaymentSystemEntity } from '../../resources/payment-system/entity/payment-system.entity';
+import { UserPackageService } from '../../../repositories/package/user-package.service';
 
 export class StripeDriver extends PaymentDriver implements WithPagePayment {
   private readonly client: Stripe;
@@ -28,8 +29,9 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
     private readonly redirectUri: string,
     protected readonly db: DatabaseService,
     protected readonly referralSystem: ReferralCommissionService,
+    protected readonly userPackageService: UserPackageService,
   ) {
-    super(db, referralSystem);
+    super(db, referralSystem, userPackageService);
 
     this.client = new Stripe(secret);
     this.service = new StripeService(db);
@@ -238,7 +240,9 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
           },
         });
 
-        const date = this.getDateForSubscriptionPlan(packageEntity.type);
+        const date = this.userPackageService.getDateForSubscriptionPlan(
+          packageEntity.type,
+        );
 
         await this.db.packageUser.updateMany({
           where: {
@@ -251,7 +255,11 @@ export class StripeDriver extends PaymentDriver implements WithPagePayment {
           },
         });
 
-        await this.earnCredits(userId, date, packageEntity.credits);
+        await this.userPackageService.earnCredits(
+          userId,
+          date,
+          packageEntity.credits,
+        );
       }
     }
   }

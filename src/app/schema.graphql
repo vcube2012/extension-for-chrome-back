@@ -163,7 +163,6 @@ type PackageEntity {
   type: PackageType!
   name: String!
   credits: Int!
-  trial_credits: Int
   price: Float!
   old_price: Float
   is_active: Boolean!
@@ -574,6 +573,7 @@ type Mutation {
   createPdf(input: CreateFavoriteAddressPdfInput!): String!
   updateSetting(input: UpdateSettingInput!): SettingEntity!
   addTag(input: SaveTagsInput!): [TagEntity!]!
+  buyFreePackage(input: BuyFreePackageInput!): String!
   likeBlog(input: FindBlogInput!): Int
   unlikeBlog(input: FindBlogInput!): Int
   withdraw(input: WithdrawInput!): ReferralBonusEntity!
@@ -680,6 +680,10 @@ input UpdateSettingDataExpenses {
 input SaveTagsInput {
   address_id: Int!
   tags: [String!]!
+}
+
+input BuyFreePackageInput {
+  package_id: Int!
 }
 
 input WithdrawInput {

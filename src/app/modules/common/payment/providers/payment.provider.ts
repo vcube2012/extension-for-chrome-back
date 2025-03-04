@@ -3,11 +3,13 @@ import { PaymentManager } from '../payment.manager';
 import { DatabaseService } from '../../../globals/database/database.service';
 import { ReferralCommissionService } from '../../../../repositories/referral-bonus/referral-commission.service';
 import { StripeDriver } from '../../../integrations/stripe/stripe.driver';
+import { UserPackageService } from '../../../../repositories/package/user-package.service';
 
 export const paymentProvider = (
   configService: ConfigService,
   databaseService: DatabaseService,
   referralSystem: ReferralCommissionService,
+  userPackageService: UserPackageService,
 ) => {
   const paymentManager = new PaymentManager();
 
@@ -19,6 +21,7 @@ export const paymentProvider = (
         configService.get<string>('stripe.redirect_uri'),
         databaseService,
         referralSystem,
+        userPackageService,
       ),
   );
 

@@ -1,19 +1,14 @@
 import { DatabaseService } from '../../globals/database/database.service';
 import { DepositEntity } from '../../resources/deposit/entity/deposit.entity';
 import { DepositStatus } from '../../../repositories/deposit/deposit-repo.interface';
-import {
-  PackageEntity,
-  PackageUserEntity,
-} from '../../resources/package/entity/package.entity';
-import { UserEntity } from '../../resources/user/entity/user.entity';
-import * as moment from 'moment';
-import { PackageType } from '../../../repositories/package/package-repo.interface';
 import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
+import { UserPackageService } from '../../../repositories/package/user-package.service';
 
 export abstract class PaymentDriver {
   protected constructor(
     protected readonly db: DatabaseService,
     protected readonly referralSystem: ReferralCommissionService,
+    protected readonly userPackageService: UserPackageService,
   ) {}
 
   // Webhook for handling subscription
@@ -60,9 +55,9 @@ export abstract class PaymentDriver {
       },
     });
 
-    await this.setNewPackageForUser(
+    await this.userPackageService.setNewPackageForUser(
       updatedDeposit.package,
-      updatedDeposit.user,
+      updatedDeposit.user.id,
       isTrial,
     );
 
@@ -114,72 +109,5 @@ export abstract class PaymentDriver {
         ...data,
       },
     });
-  }
-
-  async setNewPackageForUser(
-    subscribePlan: PackageEntity,
-    user: UserEntity,
-    isTrial: boolean,
-  ): Promise<UserEntity> {
-    const date = this.getDateForSubscriptionPlan(subscribePlan.type);
-
-    await this.db.packageUser.updateMany({
-      where: {
-        user_id: user.id,
-      },
-      data: {
-        is_active: false,
-      },
-    });
-
-    const userCredits = isTrial
-      ? subscribePlan.trial_credits
-      : subscribePlan.credits;
-
-    await this.db.packageUser.create({
-      data: {
-        user_id: user.id,
-        package_id: subscribePlan.id,
-        is_active: true,
-        is_trial: isTrial,
-        credits: userCredits,
-        price: subscribePlan.price,
-        available_to: date,
-        created_at: moment().toDate(),
-      },
-    });
-
-    return this.earnCredits(user.id, date, userCredits);
-  }
-
-  async earnCredits(
-    userId: number,
-    date: Date,
-    credits: number,
-  ): Promise<UserEntity> {
-    return this.db.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        credits: {
-          increment: credits,
-        },
-        package_available_to: date,
-        unsubscribed: false,
-      },
-    });
-  }
-
-  getDateForSubscriptionPlan(period: string): Date {
-    let date: any = moment();
-
-    if (period === PackageType.MONTHLY) {
-      date = date.add(1, 'month').toDate();
-    } else {
-      date = date.add(1, 'year').toDate();
-    }
-
-    return date;
   }
 }

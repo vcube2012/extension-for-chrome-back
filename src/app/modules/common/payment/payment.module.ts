@@ -9,6 +9,7 @@ import { DatabaseService } from '../../globals/database/database.service';
 import { paymentProvider } from './providers/payment.provider';
 import { ReferralCommissionService } from '../../../repositories/referral-bonus/referral-commission.service';
 import { SiteSettingRepoService } from '../../../repositories/site-setting/site-setting-repo.service';
+import { UserPackageService } from '../../../repositories/package/user-package.service';
 
 @Module({
   providers: [
@@ -17,15 +18,27 @@ import { SiteSettingRepoService } from '../../../repositories/site-setting/site-
     UserRepoService,
     ReferralCommissionService,
     SiteSettingRepoService,
+    UserPackageService,
     {
       provide: PaymentManager,
-      inject: [ConfigService, DatabaseService, ReferralCommissionService],
+      inject: [
+        ConfigService,
+        DatabaseService,
+        ReferralCommissionService,
+        UserPackageService,
+      ],
       useFactory: (
         configService: ConfigService,
         db: DatabaseService,
         referralSystem: ReferralCommissionService,
+        userPackageService: UserPackageService,
       ) => {
-        return paymentProvider(configService, db, referralSystem);
+        return paymentProvider(
+          configService,
+          db,
+          referralSystem,
+          userPackageService,
+        );
       },
     },
   ],
