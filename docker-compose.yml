@@ -1,6 +1,6 @@
 version: '3.8'
 
-name: nest_proj
+name: estate_hack
 
 services:
   db-dev:
