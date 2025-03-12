@@ -51,6 +51,16 @@ export class PaymentService {
       throw new BadRequestException("You don't have any active package!");
     }
 
+    const countOfPrevPackages = await this.db.packageUser.count({
+      where: {
+        user_id: userId,
+      },
+    });
+
+    if (countOfPrevPackages > 0) {
+      throw new BadRequestException('You have already had packages before');
+    }
+
     return this.payWithPaymentPage(
       user.id,
       paymentSystemId,
@@ -70,24 +80,26 @@ export class PaymentService {
       throw new BadRequestException("You don't have any subscriptions!");
     }
 
-    const deposit: DepositEntity = await this.db.deposit.findFirst({
-      where: {
-        user_id: user.id,
-        package_id: user.currentPackage.id,
-        status: DepositStatus.SUCCESS,
-      },
-      orderBy: {
-        id: 'desc',
-      },
-    });
+    if (!user.currentPackage.is_trial) {
+      const deposit: DepositEntity = await this.db.deposit.findFirst({
+        where: {
+          user_id: user.id,
+          package_id: user.currentPackage.id,
+          status: DepositStatus.SUCCESS,
+        },
+        orderBy: {
+          id: 'desc',
+        },
+      });
 
-    const paymentSystemEntity = await this.findPaymentSystem(
-      deposit.payment_system_id,
-    );
+      const paymentSystemEntity = await this.findPaymentSystem(
+        deposit.payment_system_id,
+      );
 
-    await this.paymentManager
-      .driver(paymentSystemEntity.merchant)
-      .unsubscribeByPaymentId(deposit.payment_id);
+      await this.paymentManager
+        .driver(paymentSystemEntity.merchant)
+        .unsubscribeByPaymentId(deposit.payment_id);
+    }
 
     await this.db.user.update({
       where: {

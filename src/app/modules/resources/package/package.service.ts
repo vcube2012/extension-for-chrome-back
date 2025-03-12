@@ -56,26 +56,25 @@ export class PackageService {
   }
 
   @Cron(CronExpression.EVERY_1ST_DAY_OF_MONTH_AT_MIDNIGHT)
-  async handleFreePackage() {
-    return this.db.$queryRaw`
-        WITH users_with_free_packages AS (
-            SELECT
-                users.id as user_id,
-                packages.credits,
-                packages.type
+  async handleUserCredits() {
+    await this.db.$queryRaw`
+      WITH users_with_free_packages AS (
+        SELECT
+          users.id as user_id,
+          packages.credits,
+          packages.type
             FROM users
             LEFT JOIN package_user
-                ON users.id = package_user.user_id
-                AND package_user.is_active = true
-                AND package_user.is_trial = true
+              ON users.id = package_user.user_id
+              AND package_user.is_active = true
+              AND package_user.is_trial = true
             INNER JOIN packages
-                ON packages.id = package_user.package_id
-                AND packages.is_active = true
-                AND packages.is_trial = true
+              ON packages.id = package_user.package_id
+              AND packages.is_active = true
+              AND packages.is_trial = true
         )
         UPDATE users
-        SET credits = users_with_free_packages.credits
-            from users_with_free_packages
+        SET credits = users_with_free_packages.credits from users_with_free_packages
         WHERE id IN (SELECT user_id FROM users_with_free_packages)`;
   }
 
